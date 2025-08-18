@@ -16,14 +16,13 @@ void Player::setPlayerPower(int Power) {
     PlayerPower = Power; 
 }
 
-void Player::setPlayerPos(int X, int Y) {
-    PlayerPosX = X;
-    PlayerPosY = Y;
+void Player::setPlayerPosX(int X) {
+    PlayerPosX = X; 
 }
 
-//void Player::setPlayerPosY(int Y) {
-//    PlayerPosY = Y; 
-//}
+void Player::setPlayerPosY(int Y) {
+    PlayerPosY = Y; 
+}
 
 void Player::setPlayerLvl(int Lvl) {
     PlayerLvl = Lvl; 
@@ -69,13 +68,13 @@ int Player::getPlayerPower(void) const {
     return PlayerPower; 
 }
 
-int Player::getPlayerPos(void) const {
-    return PlayerPosX, PlayerPosY;
+int Player::getPlayerPosX(void) const {
+    return PlayerPosX; 
 }
 
-//int Player::getPlayerPosY(void) const {
-//    return PlayerPosY; 
-//}
+int Player::getPlayerPosY(void) const {
+    return PlayerPosY; 
+}
 
 int Player::getPlayerLvl(void) const {
     return PlayerLvl; 
@@ -154,8 +153,8 @@ void Player::InitPlayer(Player &MC)
         //MC.setPlayerMoveset({});
         break;
     }
-    MC.setPlayerPos(0, 0);
-    //MC.setPlayerPosY(0);
+    MC.setPlayerPosX(0);
+    MC.setPlayerPosY(0);
     MC.setPlayerLvl(1);
     MC.setPlayerXP(0);
     MC.setPlayerEquippedWeapon("None");

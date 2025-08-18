@@ -22,8 +22,8 @@ public:
 	void setPlayerClass(std::string Class);
 	void setPlayerHP(int HP);
 	void setPlayerPower(int Power);
-	void setPlayerPos(int X, int Y);
-	//void setPlayerPosY(int Y);
+	void setPlayerPosX(int X);
+	void setPlayerPosY(int Y);
 	void setPlayerLvl(int Lvl);
 	void setPlayerXP(int XP);
 	void setPlayerEquippedWeapon(std::string Weapon);
@@ -35,8 +35,8 @@ public:
 	std::string getPlayerClass(void) const;
 	int getPlayerHP(void) const;
 	int getPlayerPower(void) const;
-	int getPlayerPos(void) const;
-	//int getPlayerPosY(void) const;
+	int getPlayerPosX(void) const;
+	int getPlayerPosY(void) const;
 	int getPlayerLvl(void) const;
 	int getPlayerXP(void) const;
 	std::string getPlayerEquippedWeapon(void) const;
