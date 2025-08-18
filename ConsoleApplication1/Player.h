@@ -14,6 +14,8 @@ private:
 	int PlayerCurrency;
 	int PlayerKarma;
 
+	//Moveset PlayerMoveset;
+
 protected:
 
 public:
@@ -28,6 +30,7 @@ public:
 	void setPlayerEquippedArmor(std::string Armor);
 	void setPlayerCurrency(int Currency);
 	void setPlayerKarma(int Karma);
+	//void setPlayerMoveset(const Moveset& m);
 
 	std::string getPlayerClass(void) const;
 	int getPlayerHP(void) const;
@@ -40,6 +43,7 @@ public:
 	std::string getPlayerEquippedArmor(void) const;
 	int getPlayerCurrency(void) const;
 	int getPlayerKarma(void) const;
+	//Moveset getPlayerMoveset() const;
 
 	Player();
 	Player(std::string PlayerClass, int PlayerHP, int PlayerPower, int PlayerPosX, int PlayerPosY, int PlayerLvl, int PlayerXP, std::string PlayerEquippedWeapon, std::string PlayerEquippedArmor, int PlayerCurrency, int PlayerKarma);
