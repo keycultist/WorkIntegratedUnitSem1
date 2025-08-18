@@ -2,13 +2,17 @@
 //
 
 #include <iostream>
+#include "Player.h"
 
 int main()
 {
-    std::cout << "Hello Worlfdd hi vdasdasdasroddhhhd!\n";
+    Player MC;
+    //Player* MC = nullptr;
+    Player::InitPlayer(MC);
+    Player::ShowPlayerStats(MC);
 }
 
-// Run program: Ctrl + F5 or Deghhgghghbug > Start Without Debugging menu
+// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu
 
 // Tips for Getting Started: 
