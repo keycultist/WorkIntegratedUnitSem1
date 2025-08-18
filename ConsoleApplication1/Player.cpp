@@ -49,6 +49,11 @@ void Player::setPlayerKarma(int Karma)
     PlayerKarma = Karma;
 }
 
+//void Player::setPlayerMoveset(const Moveset& m)
+//{
+//    PlayerMoveset = m;
+//}
+
 
 
 std::string Player::getPlayerClass(void) const {
@@ -96,23 +101,17 @@ int Player::getPlayerKarma(void) const
     return PlayerKarma;
 }
 
+//Moveset Player::getPlayerMoveset() const
+//{
+//    return PlayerMoveset();
+//}
+
 Player::Player()
 {
 }
 
 Player::Player(std::string PlayerClass, int PlayerHP, int PlayerPower, int PlayerPosX, int PlayerPosY, int PlayerLvl, int PlayerXP, std::string PlayerEquippedWeapon, std::string PlayerEquippedArmor, int PlayerCurrency, int PlayerKarma)
 {
-    PlayerClass = "";
-    PlayerHP = 0;
-    PlayerPower = 0;
-    PlayerPosX = 0;
-    PlayerPosY = 0;
-    PlayerLvl = 0;
-    PlayerXP = 0;
-    PlayerEquippedWeapon = "";
-    PlayerEquippedArmor = "";
-    PlayerCurrency = 0;
-    PlayerKarma = 0;
 }
 
 Player::~Player()
@@ -133,21 +132,25 @@ void Player::InitPlayer(Player &MC)
         MC.setPlayerClass("Warrior");
         MC.setPlayerHP(100);
         MC.setPlayerPower(4);
+        //MC.setPlayerMoveset({});
         break;
     case 2:
         MC.setPlayerClass("Mage");
         MC.setPlayerHP(70);
         MC.setPlayerPower(7);
+        //MC.setPlayerMoveset({});
         break;
     case 3:
         MC.setPlayerClass("Hunter");
         MC.setPlayerHP(40);
         MC.setPlayerPower(10);
+        //MC.setPlayerMoveset({});
         break;
     default:
         MC.setPlayerClass("Warrior");
         MC.setPlayerHP(100);
         MC.setPlayerPower(4);
+        //MC.setPlayerMoveset({});
         break;
     }
     MC.setPlayerPosX(0);
@@ -170,4 +173,5 @@ void Player::ShowPlayerStats(Player &MC)
     std::cout << "EXP: " << MC.getPlayerXP() << std::endl;
     std::cout << "Currency: " << MC.getPlayerCurrency() << std::endl;
     std::cout << "Karma: " << MC.getPlayerKarma() << std::endl;
+    //std::cout << "Moveset: " << MC.getPlayerMoveset() << std::endl;
 }
