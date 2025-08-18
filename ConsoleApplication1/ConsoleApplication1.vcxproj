@@ -126,7 +126,6 @@
     <ClCompile Include="ConsoleApplication1.cpp" />
     <ClCompile Include="divine_intervention.cpp" />
     <ClCompile Include="entity.cpp" />
-    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConsoleApplication1.h" />
