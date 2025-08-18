@@ -9,6 +9,7 @@ class Enemy
 		int EnemyPower;
 		int EnemyPosX, EnemyPosY;
 		int EnemyLvl;
+		int EnemyXP;
 		std::string EnemyEquippedWeapon;
 		std::string EnemyEquippedArmor;
 
@@ -20,6 +21,8 @@ class Enemy
 		void SetEnemyHP(int HP);
 		void SetEnemyPower(int Power);
 		void SetEnemyPos(int X, int Y);
+		void SetEnemyLvl(int Lvl);
+		void SetEnemyXP(int XP);
 		void SetEnemyEquippedWeapon(std::string Weapon);
 		void SetEnemyEquippedArmor(std::string Armor);
 
