@@ -8,7 +8,7 @@ int main()
     std::cout << "Hello Worlfdd hi vdasdasdasroddd!\n";
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
+// Run program: Ctrl + F5 or Deghhgghghbug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu
 
 // Tips for Getting Started: 
