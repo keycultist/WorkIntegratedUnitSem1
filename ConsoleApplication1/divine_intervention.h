@@ -21,8 +21,8 @@ class DivineIntervention {
 private:
     std::map<God, std::string> godNames;
     std::map<God, std::vector<std::string>> godDialogues;
-    std::random_device rd;
-    std::mt19937 gen;
+	std::random_device rd;        //random_device is used to seed the random number generator
+	std::mt19937 gen;            //should be a random number generator
 
     struct GodProbability {
         God god;

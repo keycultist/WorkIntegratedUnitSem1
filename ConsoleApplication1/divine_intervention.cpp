@@ -1,7 +1,7 @@
 #include "divine_intervention.h"
 #include <iostream>
 
-DivineIntervention::DivineIntervention() : gen(rd()) {
+DivineIntervention::DivineIntervention() : gen(rd()) {  
     // God names
     godNames = {
         {God::SAGACITY, "Sagacity the Renaissance"},
@@ -51,7 +51,7 @@ DivineIntervention::DivineIntervention() : gen(rd()) {
     godDialogues[God::PREYSEYE] = {
         "\"Morality's dichotomy is a conundrum best left to the omniscient, a distinction reserved for one of superior insight, namely myself.\"",
         "\"The forthcoming calibration of your metaphysical essence is about to commence.\"",
-        "\"The dichotomy of Virtue and Vice. The antithesis of Rectitude and Iniquity.\"",
+        "\"The division of Virtue and Vice. The antithesis of Rectitude and Iniquity. To which path shall one's predilections be inclined?\"",
         "\"The existential balance of moral gravitas, shall it incline in your direction or not? We shall, in due course, behold the veritable outcome.\""
     };
 }
@@ -75,13 +75,13 @@ void DivineIntervention::applyEffect(God god, Entity& player, Entity& enemy) con
     std::cout << godNames.at(god) << " manifests before you!\n";
     std::cout << getRandomDialogue(god) << "\n\n";
 
-    bool affectsPlayer = std::bernoulli_distribution(0.5)(gen);
+    bool affectsPlayer = std::bernoulli_distribution(0.5)(gen);     //huh?!?!
     Entity& primaryTarget = affectsPlayer ? player : enemy;
     Entity& secondaryTarget = affectsPlayer ? enemy : player;
 
     switch (god) {
     case God::SAGACITY: {
-        int effect = std::uniform_int_distribution<>(-3, 3)(gen);
+		int effect = std::uniform_int_distribution<>(-3, 3)(gen);     //uniform_int_distribution is used to generate a random number in a specified range
         if (effect == 0) effect = 1;
         std::cout << "The scent of books and arcane energies swirl around the battlefield!\n";
         primaryTarget.applyBuff("MAGIC", effect);
