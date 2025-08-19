@@ -3,6 +3,37 @@
 #include <iostream>
 #include <vector>
 #include "Renderer.h"
+#include <map>
+
+enum class RoomType {
+    SMALL,      // 7x7 room
+    MEDIUM,     // 11x11 room
+    LARGE,      // 15x15 room
+    SHOP,       // 19x19 room
+    TREASURE,   // 9x9 room
+    CORRIDOR    // 3x3 connector
+};
+
+struct Room {
+    int id;             // Unique room identifier
+    int x, y;           // Center position
+    RoomType type;      // What kind of room
+    int width, height;  // Dimensions
+    char floorChar;     // What character to fill floor with
+    bool visited;       // Has player been here?
+    bool cleared;       // Has room been completed?
+
+    Room(int id, int x, int y, RoomType type) : id(id), x(x), y(y), type(type), visited(false), cleared(false) {
+        switch (type) {
+        case RoomType::SMALL:    width = 7; height = 7; floorChar = '.'; break;
+        case RoomType::MEDIUM:   width = 11; height = 11; floorChar = '.'; break;
+        case RoomType::LARGE:    width = 15; height = 15; floorChar = '.'; break;
+        case RoomType::SHOP:     width = 11; height = 11; floorChar = 'B'; break;
+        case RoomType::TREASURE: width = 9; height = 9; floorChar = '$'; break;
+        case RoomType::CORRIDOR: width = 3; height = 3; floorChar = '.'; break;
+        }
+    }
+};
 
 class Map : public Renderer
 {
@@ -12,9 +43,15 @@ private:
     int tilesFilled;
     char InnerRoom[256][256];
 	
+    std::vector<Room> rooms;    
+    std::map<int, Room*> roomLookup;  
+    Room* currentRoom;                 
+    int nextRoomId;                    
 protected:
 
 public:
+
+    std::string getRoomTypeName(RoomType type);
 
     void CreateNewFloor(int Difficulty);
 
@@ -25,4 +62,42 @@ public:
     void fillBoard(char** Board, int sizeX, int sizeY) override;
 
     void drawBoard(char** Board, int sizeX, int sizeY) override;
+
+    void generateRoom(const Room& room, char** board, int boardSizeX, int boardSizeY);
+    void generateLargeRoom(const Room& room);  // Uses InnerRoom for big rooms
+
+    std::string getRoomTypeName(RoomType type);
+
+
+    Room* detectPlayerRoom(int playerX, int playerY);
+    void renderCurrentRoom(Room* room, char** roomBoard, int boardSize);
+    bool isPlayerInRoom(int playerX, int playerY, const Room& room);
+    void switchToRoomView(int playerX, int playerY);
+
+    Room* getRoomById(int roomId);
+    Room* getRoomByIndex(int index);
+    std::vector<Room*> getRoomsByType(RoomType type);
+    int getRoomCount() { return rooms.size(); }
+    int getCurrentRoomId() { return currentRoom ? currentRoom->id : -1; }
+    Room* getCurrentRoom() { return currentRoom; }
+
+    void markRoomVisited(int roomId);
+    void markRoomCleared(int roomId);
+    bool isRoomVisited(int roomId);
+    bool isRoomCleared(int roomId);
+
+    int getVisitedRoomCount();
+    int getClearedRoomCount();
+    int getRoomCountByType(RoomType type);
+
+    std::string getRoomTypeName(RoomType type);
+    void printRoomInfo();  // Debug function to show all rooms
+
+    bool isLastRoom(int roomId);
+    bool isLastRoom(Room* room);
+    Room* getLastRoom();
+    int getLastRoomId();
+
+    bool isLastRoomShop();
+    Room* getFinalShop();
 };

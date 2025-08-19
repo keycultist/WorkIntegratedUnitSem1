@@ -34,21 +34,397 @@ void Events::initializeEvents() {
         "In an attempt to raise morale by singing your favorite childhood song, you accidentally awakened a sleeping orc.. Its anger is immeasurable! (Trigger combat event)",
         "A goblin dressed in jester attire steals your gold! Fight for your belongings back or admit defeat and lose your gold (Trigger combat event or go on as per normal)",
         "You entered a room where the familiarity of darkness envelops the room but scribbles on the wall catches your attention. The mural on the wall tells tales of an ancient-sealed entity wreaking havoc who can only be stopped by a person possessing unwavering courage."
+        "The suspicious frog, seemingly appearing out of nowhere asks you a question again, “You are doomed to die by an ancient curse. Luckily, there lies a chest with a potion which would save you. However, guarding the chest is a child possessing the same fate as you. Do you take the cure for yourself or let the child take the cure.”"
+        "You have been ignoring it, but the whispers of the dungeon have been getting louder. You decided to respond to the whispers only to be replied with a sudden deafening silence.. The dungeon knows of your presence."
     };
 }
 
-void Events::EventTriggered() {
-    // Generate random number between 1-100 for event type selection
+void Events::EventTriggered(int& PlayerKarma, int PlayerCurrency) {  
     int eventTypeChance = std::rand() % 100 + 1;
 
     if (eventTypeChance <= 60) {
         // 60% chance for Minor Event
         int eventIndex = std::rand() % minorEvents.size();
-        std::cout << minorEvents[eventIndex] << std::endl;
+
+        // Check if it's the suspicious frog event (index 2)
+        if (eventIndex == 1) {
+            int PlayerHP = PlayerHP + 5;
+        }
+        if (eventIndex == 2) {
+            handleSuspiciousFrogEvent(PlayerKarma);
+        }
+        if (eventIndex == 6) {
+            handleFreePrisonerEvent(PlayerKarma);
+        }
+        if (eventIndex == 7) {
+            handleMutatedRatEvent(PlayerKarma);
+        }
+        if (eventIndex == 9) {
+            handleTalkingChestEvent(PlayerKarma);
+        }
+        else {
+            std::cout << minorEvents[eventIndex] << std::endl;
+        }
     }
     else {
         // 40% chance for Medium Event
         int eventIndex = std::rand() % mediumEvents.size();
+
+        if (eventIndex == 10) { //skeletal warrior
+            CombatEventTriggered();
+        }
+        if (eventIndex == 11) {
+            handleSpectralEntityEvent(PlayerKarma);
+        }
+        if (eventIndex == 12) {
+            handleHunchedBackGoblinEvent(PlayerCurrency);
+        }
+        if (eventIndex == 13) {
+            handleMageKarmaTestEvent(PlayerKarma);
+        }
+        if (eventIndex == 15) { //sleeping orc
+            CombatEventTriggered();
+        }
+        if (eventIndex == 16) { //goblin jester
+            handleGoblinJesterEvent(PlayerCurrency);
+        }
+        if (eventIndex == 18) { 
+            handleSuspiciousFrog2Event(PlayerKarma);
+        }
         std::cout << mediumEvents[eventIndex] << std::endl;
     }
+}
+
+void Events::handleSuspiciousFrogEvent(int& PlayerKarma) {
+    std::cout << "A suspicious frog hops next to you. It asks, \"You come across a dying enemy at its last breath. They beg for mercy to spare their lives. Do you end their life or try to save them even though they could very well take your kindness for granted?\"" << std::endl;
+    std::cout << "\nWhat do you choose?" << std::endl;
+    std::cout << "1. Save the dying enemy" << std::endl;
+    std::cout << "2. End their life" << std::endl;
+    std::cout << "Enter your choice (1 or 2): ";
+
+    int choice;
+    std::cin >> choice;
+
+    // Input validation
+    while (choice != 1 && choice != 2) {
+        std::cout << "Invalid choice! Please enter 1 or 2: ";
+        std::cin >> choice;
+    }
+
+    if (choice == 1) {
+        // Player chooses to save the enemy
+        int PlayerKarma = PlayerKarma + 10;  // Gain karma for showing mercy
+        std::cout << "\nYou choose compassion and try to save the dying enemy." << std::endl;
+        std::cout << "The frog nods approvingly. \"Compassion in the face of betrayal shows true strength\"" << std::endl;
+        std::cout << "Karma increased by 10! Current karma: " << PlayerKarma << std::endl;
+    }
+    else {
+        // Player chooses to end the enemy's life
+        int PlayerKarma = PlayerKarma - 10;  // Lose karma for showing no mercy
+        std::cout << "\nYou choose to end the enemy's suffering permanently." << std::endl;
+        std::cout << "The frog shakes its head sadly. \"Sometimes the easy path comes at a cost.\"" << std::endl;
+        std::cout << "Karma decreased by 10! Current karma: " << PlayerKarma << std::endl;
+    }
+
+    std::cout << "The frog croaks once more before hopping away into the shadows. You wonder if you made the right choice." << std::endl;
+}
+
+void Events::handleFreePrisonerEvent(int& PlayerKarma) {
+    std::cout << "You discovered a prisoner chained to the wall, “please..free me” He whispers weakly. Upon further inspection, the prisoner does not seem to be human but a monster race. Do you free him? " << std::endl;
+    std::cout << "\nWhat do you choose?" << std::endl;
+    std::cout << "1. Free the prisoner" << std::endl;
+    std::cout << "2. Leave it up to fate to decide" << std::endl;
+    std::cout << "Enter your choice (1 or 2): ";
+
+    int choice;
+    std::cin >> choice;
+
+    while (choice != 1 && choice != 2) {
+        std::cout << "Invalid choice! Please enter 1 or 2: ";
+        std::cin >> choice;
+    }
+
+    if (choice == 1) {
+        // Player chooses to free the prisoner
+        int PlayerKarma = PlayerKarma + 10; // Gain karma 
+        std::cout << "You chose to free the prisoner" << std::endl;
+        std::cout << "\"Thank you so much..i will never forget the kindess you have showed me..may the gods have mercy on your soul.\"" << std::endl;
+        std::cout << "Karma increased by 10! Current karma: " << PlayerKarma << std::endl;
+    }
+    else {
+        // Player chooses NOT to free the prisoner
+        int PlayerKarma = PlayerKarma - 10; // Lose karma 
+        std::cout << "You chose NOT to free the prisoner" << std::endl;
+        std::cout << "\"I see..i guess it was to be expected..may the gods have mercy on your soul.\"" << std::endl;
+        std::cout << "Karma decreased by 10! Current karma: " << PlayerKarma << std::endl;
+    }
+
+    std::cout << "You left the prisoner..pondering if you made the right choice. " << std::endl;
+}
+
+void Events::handleMutatedRatEvent(int& PlayerKarma) {
+    std::cout << "A mutated rat taps you on the shoulder and demands for 5 gold pieces. It assures you that it needs it for food but his darting eyes and fidgety demeanor suggests otherwise. Do you spare 5 gold pieces?" << std::endl;
+    std::cout << "\nWhat do you choose?" << std::endl;
+    std::cout << "1. Give the rat your gold" << std::endl;
+    std::cout << "2. The rat can go and find his own gold" << std::endl;
+    std::cout << "Enter your choice (1 or 2): ";
+
+    int choice;
+    std::cin >> choice;
+
+    while (choice != 1 && choice != 2) {
+        std::cout << "Invalid choice! Please enter 1 or 2: ";
+        std::cin >> choice;
+    }
+
+    if (choice == 1) {
+        // Player chooses to give 5 gold to the rat
+        int PlayerKarma = PlayerKarma + 10;  // Gain karma, lose gold
+        int PlayerCurrency = PlayerCurrency -5;
+        std::cout << "You chose to give the rat your gold" << std::endl;
+        std::cout << "The rat chuckled.\" You are one kind fellow, see you around!!\"" << std::endl;
+        std::cout << "Karma increased by 10! Current karma: " << PlayerKarma << std::endl;
+    }
+    else {
+        // Player chooses NOT to give 5 gold to the rat
+        int PlayerKarma = PlayerKarma - 10;  // Lose karma, gold stays the same
+        std::cout << "You chose NOT to give the rat your gold" << std::endl;
+        std::cout << "The rat snorted. \"Whatever, you better watch your back now..\"" << std::endl;
+        std::cout << "Karma decreased by 10! Current karma: " << PlayerKarma << std::endl;
+    }
+
+    std::cout << "After making your choice with the rat, you reminisced the days where you used to hunt rats for food" << std::endl;
+}
+
+void Events::handleTalkingChestEvent(int& PlayerKarma) {
+    std::cout << "A talking chest fills the once silent air with complaints of his “mimic” appearance, do you spend some time keeping it company?" << std::endl;
+    std::cout << "\nWhat do you choose?" << std::endl;
+    std::cout << "1. Have a conversation with the chest" << std::endl;
+    std::cout << "2. You have better things to do" << std::endl;
+    std::cout << "Enter your choice (1 or 2): ";
+
+    int choice;
+    std::cin >> choice;
+
+    while (choice != 1 && choice != 2) {
+        std::cout << "Invalid choice! Please enter 1 or 2: ";
+        std::cin >> choice;
+    }
+
+    if (choice == 1) {
+        // Player chooses to talk to the chest
+        int PlayerKarma = PlayerKarma + 10;  // Gain karma, maybe gain certain stat increases? magic power increase?
+        int PlayerPower = PlayerPower + 5;
+        std::cout << "You chose to talk to the chest" << std::endl;
+        std::cout << "You find yourself having a pleasant and knowledge-filled conversation with the chest" << std::endl;
+        std::cout << "Karma increased by 10! Current karma: " << PlayerKarma << std::endl;
+    }
+    else {
+        // Player chooses NOT to talk to the chest
+        int PlayerKarma = PlayerKarma - 10;  // Lose karma
+        std::cout << "You chose NOT to talk to the chest" << std::endl;
+        std::cout << "The chest voice creaked disappointedly like rusty hinges, low and weary" << std::endl;
+        std::cout << "Karma decreased by 5! Current karma: " << PlayerKarma << std::endl;
+    }
+
+    std::cout << "After making your choice with the chest, you wondered if the chest could store things inside of itself" << std::endl;
+}
+
+void Events::handleSpectralEntityEvent(int& PlayerKarma) {
+    std::cout << "A spectral entity presents you with a choice, to burn the straw doll in its hands and be rewarded with a rare weapon but suffer a karma penalty." << std::endl;
+    std::cout << "\nWhat do you choose?" << std::endl;
+    std::cout << "1. Burn the doll and lose karma but gain a weapon" << std::endl;
+    std::cout << "2. Nothing, i dont want to lose karma" << std::endl;
+    std::cout << "Enter your choice (1 or 2): ";
+
+    int choice;
+    std::cin >> choice;
+
+    while (choice != 1 && choice != 2) {
+        std::cout << "Invalid choice! Please enter 1 or 2: ";
+        std::cin >> choice;
+    }
+
+    if (choice == 1) {
+        // Player chooses to burn the straw doll
+        int PlayerKarma = PlayerKarma - 10;  //Lose karma but gain weapon
+        //weapon code here
+        std::cout << "You chose to burn the strawdoll, you felt a slight chill run down your spine but a new weapon in your hands" << std::endl;
+        std::cout << "The entity hummed lowly. \"Lets see if your sacrifice will prove useful down the road..\"" << std::endl;
+        std::cout << "Karma decreased by 10! Current karma: " << PlayerKarma << std::endl;
+    }
+    else {
+        // Player chooses NOT to burn the strawdoll
+        std::cout << "You chose NOT to burn the strawdoll" << std::endl;
+        std::cout << "The entity seems surprised with your decision. \"Highly unexpected, your kind are always highly materialistic and filled with greed.\"  " << std::endl;
+    }
+
+    std::cout << "After making your choice with the entity. You wondered if it was a decision worth making." << std::endl;
+}
+
+void Events::handleHunchedBackGoblinEvent(int& PlayerCurrency) {
+    std::cout << "A hunchedback goblin emerges from the shadows and insists that his riddles are so hard, no living soul can crack them! He bets his gold on it" << std::endl;
+    std::cout << "\nWhat do you choose?" << std::endl;
+    std::cout << "1. Bring it on!" << std::endl;
+    std::cout << "2. I dont want to answer your riddles" << std::endl;
+    std::cout << "Enter your choice (1 or 2): ";
+
+    int choice;
+    std::cin >> choice;
+
+    while (choice != 1 && choice != 2) {
+        std::cout << "Invalid choice! Please enter 1 or 2: ";
+        std::cin >> choice;
+    }
+
+    if (choice == 1) {
+        // Player chooses to answer the riddles
+       
+    std::string answer;
+            // Riddle 1
+            std::cout << "Riddle 1: What has keys but cannot open any door\n> ";
+            std::getline(std::cin, answer);
+            std::transform(answer.begin(), answer.end(), answer.begin(), ::tolower);
+            if (answer == "piano" || answer == "a piano") {
+                std::cout << "The goblin snarls, disappointed. \"Grrr... correct.\"\n";
+                PlayerCurrency += 10;
+            }
+            else {
+                std::cout << "The goblin cackles. \"Wrong! The answer was 'piano'.\"\n";
+            }
+
+            // Riddle 2
+            std::cout << "\nRiddle 2: What goes up but will never come down\n> ";
+            std::getline(std::cin, answer);
+            std::transform(answer.begin(), answer.end(), answer.begin(), ::tolower);
+            if (answer == "age") {
+                std::cout << "The goblin grumbles. \"Another one right...\"\n";
+                PlayerCurrency += 10;
+            }
+            else {
+                std::cout << "The goblin snickers. \"Wrong again! The answer was 'age'.\"\n";
+            }
+
+            // Riddle 3
+            std::cout << "\nRiddle 3: What can be caught but not thrown\n> ";
+            std::getline(std::cin, answer);
+            std::transform(answer.begin(), answer.end(), answer.begin(), ::tolower);
+            if (answer == "cold" || answer == "a cold") {
+                std::cout << "The goblin glares. \"You... you cheated! Still, correct.\"\n";
+                PlayerCurrency += 10;
+            }
+            else {
+                std::cout << "The goblin dances with glee. \"Wrong! The answer was 'a cold'.\"\n";
+            }
+
+            std::cout << "\nThe goblin hisses: \"Your reward... " << PlayerCurrency << " gold coins. Begone before I change my mind!\"\n";
+        }
+
+    else {
+        // Player chooses NOT to answer the riddle
+        std::cout << "You chose NOT to answer the riddles" << std::endl;
+        std::cout << "\"Hah! I knew you were a wuss! No living being alive could possibly answer my riddles!\"" << std::endl;
+    }
+
+    std::cout << "The hunchedback goblin disappears into the shadows, you hope you never see it again" << std::endl;
+}
+
+void Events::handleMageKarmaTestEvent(int& PlayerKarma) {
+    std::cout << "A mage wants to test your karma, have a high enough karma and be rewarded with a health potion" << std::endl;
+    std::cout << "\nWhat do you choose?" << std::endl;
+    std::cout << "1. Lets go for it" << std::endl;
+    std::cout << "2. Maybe next time" << std::endl;
+    std::cout << "Enter your choice (1 or 2): ";
+
+    int choice;
+    std::cin >> choice;
+
+    while (choice != 1 && choice != 2) {
+        std::cout << "Invalid choice! Please enter 1 or 2: ";
+        std::cin >> choice;
+    }
+
+    if (choice == 1) {
+        // Player chooses to test his karma
+        std::cout << "You chose to test your karma" << std::endl;
+        if (PlayerKarma >= 70) {
+            std::cout << "\"Ahh..a karma worthy of respect, may your path stay true..the dungeon always watches\"" << std::endl;
+            //Player give healath potion? Gold? code
+        }
+        else {
+            std::cout << "\"This place has many monsters..but you..you wear your evil like armor.\"" << std::endl;
+        }
+
+    }
+    else {
+        // Player chooses NOT to test his karma
+        std::cout << "You chose NOT to test your karma" << std::endl;
+        std::cout << "The mage mumbles and stumbles away in disappointment" << std::endl;
+    }
+
+    std::cout << "After your interaction with the mage, you cant help but think that a lucky rock could help you in your future endeavours" << std::endl;
+}
+
+void Events::handleGoblinJesterEvent(int& PlayerCurrency) {
+    std::cout << "A goblin dressed in jester attire steals your gold! Fight for your precious gold back or admit defeat and lose it!" << std::endl;
+    std::cout << "\nWhat do you choose?" << std::endl;
+    std::cout << "1. Fight the goblin" << std::endl;
+    std::cout << "2. Not worth the blood" << std::endl;
+    std::cout << "Enter your choice (1 or 2): ";
+
+    int choice;
+    std::cin >> choice;
+
+    while (choice != 1 && choice != 2) {
+        std::cout << "Invalid choice! Please enter 1 or 2: ";
+        std::cin >> choice;
+    }
+
+    if (choice == 1) {
+        // Player chooses to fight the goblin
+        std::cout << "You chose to fight the goblin" << std::endl;
+        CombatEventTriggered();
+
+    }
+    else {
+        // Player chooses NOT to fight the goblin
+        std::cout << "You chose NOT to fight the goblin" << std::endl;
+        std::cout << "The goblin quickly darts around the room gleefully before making his exit" << std::endl;
+    }
+
+    std::cout << "After that close encounter with the goblin, you cant help but remember why you always hated goblins" << std::endl;
+}
+
+void Events::handleSuspiciousFrog2Event(int& PlayerKarma) {
+    std::cout << "A suspicious frog hops next to you. It asks, \"You are doomed to die by an ancient curse. Luckily, there lies a chest with a potion which would save you. However, guarding the chest is a child possessing the same fate as you. Do you take the cure for yourself or let the child take the cure?\"" << std::endl;
+    std::cout << "\nWhat do you choose?" << std::endl;
+    std::cout << "1. Take the cure for yourself" << std::endl;
+    std::cout << "2. Let the child have the cure" << std::endl;
+    std::cout << "Enter your choice (1 or 2): ";
+
+    int choice;
+    std::cin >> choice;
+
+    // Input validation
+    while (choice != 1 && choice != 2) {
+        std::cout << "Invalid choice! Please enter 1 or 2: ";
+        std::cin >> choice;
+    }
+
+    if (choice == 1) {
+        // Player chooses to take the cure for himself
+        int PlayerKarma = PlayerKarma - 10;  // Lose karma for saving himself
+        std::cout << "\nYou chose to save yourself." << std::endl;
+        std::cout << "The frog shakes its head disappointingly. You may have saved yourself..but the dungeon grows colder with your decision.\"\"" << std::endl;
+        std::cout << "Karma decreased by 10! Current karma: " << PlayerKarma << std::endl;
+    }
+    else {
+        // Player chooses to save the child
+        int PlayerKarma = PlayerKarma + 10;  // Gain karma for saving the child
+        std::cout << "\nYou choose to save the child instead." << std::endl;
+        std::cout << "The frog nods its head approvingly. \"A noble sacrifice, a soul freely given may find peace.\"" << std::endl;
+        std::cout << "Karma increased by 10! Current karma: " << PlayerKarma << std::endl;
+    }
+
+    std::cout << "The frog croaks once more before hopping away into the shadows. You wonder if you made the right choice." << std::endl;
 }

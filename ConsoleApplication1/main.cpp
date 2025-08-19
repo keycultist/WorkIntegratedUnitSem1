@@ -3,12 +3,18 @@
 
 #include <iostream>
 #include "Player.h"
+#include "Map.h"
+#include "Renderer.h"
 
 int main()
 {
     Player MC;
     MC.InitPlayer();
     MC.ShowPlayerStats();
+
+    Map GMap;
+
+    GMap.CreateNewFloor(2);
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
