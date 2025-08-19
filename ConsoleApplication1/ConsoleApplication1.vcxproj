@@ -124,6 +124,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\WIU_Y1_Sem1\WIU_Y1_Sem1\Item.cpp" />
+    <ClCompile Include="..\..\WIU_Y1_Sem1\WIU_Y1_Sem1\Shop.cpp" />
     <ClCompile Include="Combat.cpp" />
     <ClCompile Include="Events.cpp" />
     <ClCompile Include="main.cpp" />
@@ -133,6 +135,8 @@
     <ClCompile Include="Renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\WIU_Y1_Sem1\WIU_Y1_Sem1\Item.h" />
+    <ClInclude Include="..\..\WIU_Y1_Sem1\WIU_Y1_Sem1\Shop.h" />
     <ClInclude Include="Combat.h" />
     <ClInclude Include="Events.h" />
     <ClInclude Include="Map.h" />
