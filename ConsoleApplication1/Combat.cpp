@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <time.h> 
 
-void Combat::InitCombat(Player& MC, Enemy& target, std::string MoveName)
+void Combat::InitCombat(Player& MC, Enemy& target)
 {
 	std::cout << "Enemy Encountered! (Press any button to continue)" << std::endl;
 	int chP = _getch();
@@ -12,29 +12,37 @@ void Combat::InitCombat(Player& MC, Enemy& target, std::string MoveName)
 
 	bool InCombat = true;
 	while (InCombat) {
-		Update(InCombat, MC, target, Movename);
+		Update(InCombat, MC, target);
 	}
 }
 
-bool Combat::Update(bool& InCombat, Player& MC, Enemy& target, std::string MoveName)
+bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 {
 	std::cout << "What will you do?" << std::endl;
 	std::cout << "(1) Attack" << std::endl;
 	std::cout << "(2) Defend" << std::endl;
 	std::cout << "(3) Item" << std::endl;
 	std::cout << "(4) Run" << std::endl;
+	int ChosenMove;
+	bool Critted = false;
+	int Critting = rand() % 100 + 1;
 	bool Defend = false;
+	int RunChance = rand() % 3;
 	int chP = _getch();
 	system("cls");
 	switch (chP) {
 	case '1':
 		//Include Player Moveset
 		std::cout << "Choose a Move" << std::endl;
-		std::cout << "(1) " << std::endl;
-		std::cout << "(2) " << std::endl;
-		std::cout << "(3) " << std::endl;
-		std::cout << "(4) " << std::endl;
-		Combat::PlayerAttack(MC, target, Movename);
+		std::cout << "(1) " << MC.GetMoveset().GetMove(0).MoveName << std::endl;
+		std::cout << "(2) " << MC.GetMoveset().GetMove(1).MoveName << std::endl;
+		std::cout << "(3) " << MC.GetMoveset().GetMove(2).MoveName << std::endl;
+		std::cout << "(4) " << MC.GetMoveset().GetMove(3).MoveName << std::endl;
+		std::cin >> ChosenMove;
+		if (Critting <= MC.GetPlayerCritChance()) {
+			Critted = true;
+		}
+		Combat::PlayerAttack(MC, target, ChosenMove, Critted);
 		break;
 	case '2':
 		Defend = true;
@@ -43,7 +51,6 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target, std::string MoveN
 		//Input inventory system
 		break;
 	case '4':
-		int RunChance = rand() % 3;
 		if (RunChance == 2) {
 			std::cout << "Successfuly Ran Away" << std::endl;
 			return true;
@@ -74,7 +81,7 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target, std::string MoveN
 		system("cls");
 		int EnemyMoveChoice = rand() % 4 + 1;
 		// Include Enemy Moveset
-		switch (EnemyMoveChoice) {
+		/*switch (EnemyMoveChoice) {
 		case 1:
 			break;
 		case 2:
@@ -85,20 +92,26 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target, std::string MoveN
 			break;
 		default:
 			break;
-		}
-		Combat::EnemyAttack(MC, target, Movename, Defend);
+		}*/
+		Combat::EnemyAttack(MC, target, EnemyMoveChoice, Defend);
 		return false;
 	}
 }
 
-void Combat::PlayerAttack(Player& MC, Enemy& target, std::string MoveName)
+void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove, bool Critted)
 {
-	std::cout << MC.GetPlayerClass() << " used " << MoveName << std::endl;
-	target.SetEnemyHP(target.GetEnemyHP() - MC.GetPlayerPower());
+	std::cout << MC.GetPlayerClass() << " used " << MC.GetMoveset().GetMove(ChosenMove).MoveName << std::endl;
+	if (Critted) {
+		target.SetEnemyHP(target.GetEnemyHP() - ((MC.GetPlayerPower() + MC.GetMoveset().GetMove(ChosenMove).MoveStrength) * MC.GetMoveset().GetMove(ChosenMove).Hits) * 2);
+		std::cout << "Critical Hit!" << std::endl;
+	}
+	else {
+		target.SetEnemyHP(target.GetEnemyHP() - (MC.GetPlayerPower() + MC.GetMoveset().GetMove(ChosenMove).MoveStrength) * MC.GetMoveset().GetMove(ChosenMove).Hits);
+	}
 	std::cout << target.GetEnemyClass() << " has " << target.GetEnemyHP() << " HP left." << std::endl;
 }
 
-void Combat::EnemyAttack(Player& MC, Enemy& target, std::string MoveName, bool Defend)
+void Combat::EnemyAttack(Player& MC, Enemy& target, int ChosenMove, bool Defend)
 {
 	std::cout << target.GetEnemyClass() << " used " << MoveName << std::endl;
 	if (!Defend) {

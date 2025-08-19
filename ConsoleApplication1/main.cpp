@@ -8,7 +8,7 @@ int main()
 {
     Player MC;
     //Player* MC = nullptr;
-    Player::InitPlayer(MC);
+    MC.InitPlayer(MC);
     Player::ShowPlayerStats(MC);
 }
 
