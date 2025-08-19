@@ -36,7 +36,7 @@ void Moveset::EnemyInit()
     Moveset EnenmyNameMoveset;
     //Add enemy movesets
 
-    EnenmyNameMoveset.SetMove();
+    EnenmyNameMoveset.SetMove(Move("Test", 1, 999, "Abyssal"));
 }
 
 void Moveset::PlayerInit(const std::string Class)

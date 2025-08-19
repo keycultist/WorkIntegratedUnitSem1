@@ -7,9 +7,8 @@
 int main()
 {
     Player MC;
-    //Player* MC = nullptr;
-    MC.InitPlayer(MC);
-    Player::ShowPlayerStats(MC);
+    MC.InitPlayer();
+    MC.ShowPlayerStats();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
