@@ -130,6 +130,7 @@
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Moveset.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Combat.h" />
@@ -140,6 +141,7 @@
     <ClCompile Include="ConsoleApplication1.cpp" />
     <ClCompile Include="divine_intervention.cpp" />
     <ClCompile Include="entity.cpp" />
+    <ClInclude Include="Renderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConsoleApplication1.h" />

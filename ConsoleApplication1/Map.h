@@ -6,12 +6,27 @@
 class Map
 {
 
-public:
+private:
+    char FloorGrid[128][128];
+    int tilesFilled;
+    char InnerRoom[256][256];
 	
 protected:
 
-private:
-	char Map[128][128];
+public:
 
-	char InnerRoom[256][256];
+    Map() : tilesFilled(0) {
+        for (int h = 0; h < 128; ++h) {
+            for (int v = 0; v < 128; ++v) {
+                FloorGrid[h][v] = ' ';
+            }
+        }
+
+    }
+
+
+
+    void CreateNewFloor(int Difficulty) const {
+
+    }
 };
