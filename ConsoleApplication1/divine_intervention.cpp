@@ -12,15 +12,48 @@ DivineIntervention::DivineIntervention() : gen(rd()) {
     };
 }
 
-God DivineIntervention::getRandomGod() const {
-    // 30% chance for any god to intervene
-    if (std::uniform_int_distribution<>(1, 100)(gen) > 30) {
-        return God::NONE;
-    }
+    // God-specific dialogues
+    godDialogues[God::SAGACITY] = {
+        "\"Let me enlighten your magical essence!\"",
+        "\"The arcane flows through you like never before!\"",
+        "\"Knowledge is power - feel my gift!\"",
+        "\"Your spells shall sing with new potency!\""
+    };
 
-    int total = 0;
-    for (const auto& gp : godProbabilities) {
-        total += gp.probability;
+    godDialogues[God::AURORA] = {
+        "\"Feel the strength of the dawn in your arms!\"",
+        "\"Your strikes shall shine like the morning sun!\"",
+        "\"I grant you the power to cleave mountains!\"",
+        "\"Let your weapon sing with divine might!\""
+    };
+
+    godDialogues[God::CHRYSES] = {
+        "\"Gold makes the world turn, does it not?\"",
+        "\"Let me adjust your financial fortunes...\"",
+        "\"Wealth comes and goes like the tides!\"",
+        "\"The clink of coin is my favorite music!\""
+    };
+
+    godDialogues[God::FERONIA] = {
+        "\"The gift of life is mine to bestow!\"",
+        "\"Your vitality ebbs and flows like the seasons!\"",
+        "\"Health is the greatest wealth, is it not?\"",
+        "\"Let me touch your mortal vessel!\""
+    };
+
+    godDialogues[God::KERES] = {
+        "\"Suffering is the truest teacher!\"",
+        "\"Pain is my gift to you mortals!\"",
+        "\"Your life force is but a plaything to me!\"",
+        "\"Let me show you true agony!\""
+    };
+
+    godDialogues[God::PREYSEYE] = {
+        "\"The scales of morality tip before you!\"",
+        "\"Your soul's weight shall be measured!\"",
+        "\"Right and wrong are but my playthings!\"",
+        "\"Let us examine your ethical choices!\""
+    };
     }
 
     int roll = std::uniform_int_distribution<>(1, total)(gen);
