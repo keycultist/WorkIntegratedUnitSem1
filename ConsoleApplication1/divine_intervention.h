@@ -5,22 +5,24 @@
 #include <random>
 #include <map>
 #include <string>
+#include <vector>
 
 enum class God {
     NONE,
-    SAGACITY,  // Affects magic attack
-    AURORA,    // Affects physical attack
-    CHRYSES,   // Affects gold
-    FERONIA,   // Affects HP (can be positive or negative)
-    KERES,     // Always reduces HP
-    PREYSEYE   // Affects karma
+    SAGACITY,
+    AURORA,
+    CHRYSES,
+    FERONIA,
+    KERES,
+    PREYSEYE
 };
 
 class DivineIntervention {
 private:
-    std::map<God, std::string> godNames; //idk what this does
-	std::random_device rd;  // Random number generator
-    std::mt19937 gen; //huh?????
+    std::map<God, std::string> godNames;
+    std::map<God, std::vector<std::string>> godDialogues;
+    std::random_device rd;
+    std::mt19937 gen;
 
     struct GodProbability {
         God god;
@@ -31,10 +33,12 @@ private:
         {God::SAGACITY, 15},
         {God::AURORA, 15},
         {God::CHRYSES, 20},
-        {God::FERONIA, 20},  // Reduced from 25 to make room
-        {God::KERES, 20},    // Reduced from 25 to make room
-        {God::PREYSEYE, 10}  // New god with 10% weight
+        {God::FERONIA, 20},
+        {God::KERES, 20},
+        {God::PREYSEYE, 10}
     };
+
+    std::string getRandomDialogue(God god) const;
 
 public:
     DivineIntervention();
