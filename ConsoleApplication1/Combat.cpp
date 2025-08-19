@@ -34,10 +34,11 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 	case '1':
 		//Include Player Moveset
 		std::cout << "Choose a Move" << std::endl;
-		std::cout << "(1) " << MC.GetMoveset().GetMove(0).MoveName << std::endl;
-		std::cout << "(2) " << MC.GetMoveset().GetMove(1).MoveName << std::endl;
-		std::cout << "(3) " << MC.GetMoveset().GetMove(2).MoveName << std::endl;
-		std::cout << "(4) " << MC.GetMoveset().GetMove(3).MoveName << std::endl;
+		std::cout << "Note: Dark moves cost 15% of your HP" << std::endl;
+		std::cout << "(1) " << MC.GetMoveset().GetMove(0).MoveName << " Strength: " << MC.GetMoveset().GetMove(0).MoveStrength << " Hit(s): " << MC.GetMoveset().GetMove(0).Hits << " Type: " << MC.GetMoveset().GetMove(0).MoveType << std::endl;
+		std::cout << "(2) " << MC.GetMoveset().GetMove(1).MoveName << " Strength: " << MC.GetMoveset().GetMove(1).MoveStrength << " Hit(s): " << MC.GetMoveset().GetMove(1).Hits << " Type: " << MC.GetMoveset().GetMove(1).MoveType << std::endl;
+		std::cout << "(3) " << MC.GetMoveset().GetMove(2).MoveName << " Strength: " << MC.GetMoveset().GetMove(2).MoveStrength << " Hit(s): " << MC.GetMoveset().GetMove(2).Hits << " Type: " << MC.GetMoveset().GetMove(2).MoveType << std::endl;
+		std::cout << "(4) " << MC.GetMoveset().GetMove(3).MoveName << " Strength: " << MC.GetMoveset().GetMove(3).MoveStrength << " Hit(s): " << MC.GetMoveset().GetMove(3).Hits << " Type: " << MC.GetMoveset().GetMove(3).MoveType << std::endl;
 		std::cin >> ChosenMove;
 		if (Critting <= MC.GetPlayerCritChance()) {
 			Critted = true;
@@ -71,6 +72,7 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 	if (target.GetEnemyHP() <= 0) {
 		std::cout << "Enemy Defeated! Gained XP!" << std::endl;
 		MC.SetPlayerXP(MC.GetPlayerXP() + target.GetEnemyXP());
+		MC.LevelUpCheck();
 		int chP = _getch();
 		system("cls");
 		return true;
@@ -100,15 +102,21 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 
 void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove, bool Critted)
 {
-	std::cout << MC.GetPlayerClass() << " used " << MC.GetMoveset().GetMove(ChosenMove).MoveName << std::endl;
-	if (Critted) {
-		target.SetEnemyHP(target.GetEnemyHP() - ((MC.GetPlayerPower() + MC.GetMoveset().GetMove(ChosenMove).MoveStrength) * MC.GetMoveset().GetMove(ChosenMove).Hits) * 2);
-		std::cout << "Critical Hit!" << std::endl;
+	if (MC.GetMoveset().GetMove(ChosenMove).MoveType == "Dark") {
+		std::cout << "Dark Move Used! -15%HP" << std::endl;
+		MC.SetPlayerHP(MC.GetPlayerHP() * 0.85);
 	}
-	else {
-		target.SetEnemyHP(target.GetEnemyHP() - (MC.GetPlayerPower() + MC.GetMoveset().GetMove(ChosenMove).MoveStrength) * MC.GetMoveset().GetMove(ChosenMove).Hits);
+	for (int i = 0; i < MC.GetMoveset().GetMove(ChosenMove).Hits; i++) {
+		std::cout << MC.GetPlayerClass() << " used " << MC.GetMoveset().GetMove(ChosenMove).MoveName << std::endl;
+		if (Critted) {
+			target.SetEnemyHP(target.GetEnemyHP() - (MC.GetPlayerPower() + MC.GetMoveset().GetMove(ChosenMove).MoveStrength) * 2);
+			std::cout << "Critical Hit!" << std::endl;
+		}
+		else {
+			target.SetEnemyHP(target.GetEnemyHP() - (MC.GetPlayerPower() + MC.GetMoveset().GetMove(ChosenMove).MoveStrength));
+		}
+		std::cout << target.GetEnemyClass() << " has " << target.GetEnemyHP() << " HP left." << std::endl;
 	}
-	std::cout << target.GetEnemyClass() << " has " << target.GetEnemyHP() << " HP left." << std::endl;
 }
 
 void Combat::EnemyAttack(Player& MC, Enemy& target, int ChosenMove, bool Defend)
