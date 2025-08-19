@@ -52,8 +52,10 @@ public:
 	Player(std::string PlayerClass, int PlayerHP, int PlayerPower, int PlayerCritChance, int PlayerPosX, int PlayerPosY, int PlayerLvl, int PlayerXP, std::string PlayerEquippedWeapon, std::string PlayerEquippedArmor, int PlayerCurrency, int PlayerKarma);
 	~Player();
 
-	void InitPlayer(Player& MC);
-	static void ShowPlayerStats(Player& MC);
+	void InitPlayer();
+	void ShowPlayerStats() const;
+	void LevelUpCheck();
+	void LevelUp();
 };
 
 

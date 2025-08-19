@@ -81,7 +81,7 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 		system("cls");
 		int EnemyMoveChoice = rand() % 4 + 1;
 		// Include Enemy Moveset
-		/*switch (EnemyMoveChoice) {
+		switch (EnemyMoveChoice) {
 		case 1:
 			break;
 		case 2:
@@ -92,7 +92,7 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 			break;
 		default:
 			break;
-		}*/
+		}
 		Combat::EnemyAttack(MC, target, EnemyMoveChoice, Defend);
 		return false;
 	}

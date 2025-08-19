@@ -124,9 +124,8 @@ Player::~Player()
 {
 }
 
-void Player::InitPlayer(Player& MC)
+void Player::InitPlayer()
 {
-    //MC = new Player();
     int ChosenClass;
     std::cout << "What Class are You? (Warrior by default)" << std::endl;
     std::cout << "[1] Warrior" << std::endl;
@@ -135,45 +134,76 @@ void Player::InitPlayer(Player& MC)
     std::cin >> ChosenClass;
     switch (ChosenClass) {
     case 1:
-        MC.SetPlayerClass("Warrior");
-        MC.SetPlayerHP(100);
-        MC.SetPlayerPower(4);
+        SetPlayerClass("Warrior");
+        SetPlayerHP(100);
+        SetPlayerPower(4);
         break;
     case 2:
-        MC.SetPlayerClass("Mage");
-        MC.SetPlayerHP(70);
-        MC.SetPlayerPower(7);
+        SetPlayerClass("Mage");
+        SetPlayerHP(70);
+        SetPlayerPower(7);
         break;
     case 3:
-        MC.SetPlayerClass("Hunter");
-        MC.SetPlayerHP(40);
-        MC.SetPlayerPower(10);
+        SetPlayerClass("Hunter");
+        SetPlayerHP(40);
+        SetPlayerPower(10);
         break;
     default:
-        MC.SetPlayerClass("Warrior");
-        MC.SetPlayerHP(100);
-        MC.SetPlayerPower(4);
+        SetPlayerClass("Warrior");
+        SetPlayerHP(100);
+        SetPlayerPower(4);
         break;
     }
-    MC.SetPlayerPosX(0);
-    MC.SetPlayerPosY(0);
-    MC.SetPlayerLvl(1);
-    MC.SetPlayerXP(0);
-    MC.SetPlayerEquippedWeapon("None");
-    MC.SetPlayerEquippedArmor("None");
-    MC.SetPlayerCurrency(0);
-    MC.SetPlayerKarma(0);
-    moveset.PlayerInit(MC.GetPlayerClass());
-    std::cout << "You are a " << MC.GetPlayerClass() << ". With " << MC.GetPlayerHP() << " HP and " << MC.GetPlayerPower() << " Power." << std::endl;
+    SetPlayerPosX(0);
+    SetPlayerPosY(0);
+    SetPlayerLvl(1);
+    SetPlayerXP(0);
+    SetPlayerEquippedWeapon("None");
+    SetPlayerEquippedArmor("None");
+    SetPlayerCurrency(0);
+    SetPlayerKarma(0);
+    moveset.PlayerInit(GetPlayerClass());
+    std::cout << "You are a " << GetPlayerClass() << ". With " << GetPlayerHP() << " HP and " << GetPlayerPower() << " Power." << std::endl;
 }
 
-void Player::ShowPlayerStats(Player& MC)
+void Player::ShowPlayerStats() const
 {
-    std::cout << "Class: " << MC.GetPlayerClass() << std::endl;
-    std::cout << "HP: " << MC.GetPlayerHP() << std::endl;
-    std::cout << "Power: " << MC.GetPlayerPower() << std::endl;
-    std::cout << "Level: " << MC.GetPlayerLvl() << std::endl;
-    std::cout << "EXP: " << MC.GetPlayerXP() << std::endl;
-    std::cout << "Currency: " << MC.GetPlayerCurrency() << std::endl;
-    std::cout << "Karma: " << MC.GetPlayerKarma() << std::endl;
+    std::cout << "Class: " << GetPlayerClass() << std::endl;
+    std::cout << "HP: " << GetPlayerHP() << std::endl;
+    std::cout << "Power: " << GetPlayerPower() << std::endl;
+    std::cout << "Level: " << GetPlayerLvl() << std::endl;
+    std::cout << "EXP: " << GetPlayerXP() << std::endl;
+    std::cout << "Currency: " << GetPlayerCurrency() << std::endl;
+    std::cout << "Karma: " << GetPlayerKarma() << std::endl;
+}
+
+void Player::LevelUpCheck()
+{
+    int baseXP = 10;
+
+    while (GetPlayerXP() >= baseXP)
+    {
+        SetPlayerXP(GetPlayerXP() - baseXP);
+        SetPlayerLvl(GetPlayerLvl() + 1);
+
+        std::cout << "Level up! You are now level " << GetPlayerLvl() << "!\n";
+
+        baseXP += 10;
+    }
+}
+
+void Player::LevelUp()
+{
+    if (GetPlayerClass() == "Warrior") {
+        SetPlayerHP(GetPlayerHP() + 10);
+        SetPlayerPower(GetPlayerPower() + 3);
+    }
+    else if (GetPlayerClass() == "Mage") {
+        SetPlayerHP(GetPlayerHP() + 6);
+        SetPlayerPower(GetPlayerPower() + 4);
+    }
+    else if (GetPlayerClass() == "Hunter") {
+        SetPlayerHP(GetPlayerHP() + 3);
+        SetPlayerPower(GetPlayerPower() + 5);
+    }
 }
