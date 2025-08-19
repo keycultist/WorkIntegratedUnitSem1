@@ -55,6 +55,11 @@ void Player::SetPlayerKarma(int Karma)
     PlayerKarma = Karma;
 }
 
+void Player::SetCurrentDifficulty(int Difficulty)
+{
+    CurrentDifficulty = Difficulty;
+}
+
 
 
 std::string Player::GetPlayerClass(void) const {
@@ -107,6 +112,11 @@ int Player::GetPlayerKarma(void) const
     return PlayerKarma;
 }
 
+int Player::GetCurrentDifficulty(void) const
+{
+    return CurrentDifficulty;
+}
+
 Moveset& Player::GetMoveset()
 {
     return moveset;
@@ -128,9 +138,9 @@ void Player::InitPlayer()
 {
     int ChosenClass;
     std::cout << "What Class are You? (Warrior by default)" << std::endl;
-    std::cout << "[1] Warrior" << std::endl;
-    std::cout << "[2] Mage" << std::endl;
-    std::cout << "[3] Hunter" << std::endl;
+    std::cout << "(1) Warrior" << std::endl;
+    std::cout << "(2) Mage" << std::endl;
+    std::cout << "(3) Hunter" << std::endl;
     std::cin >> ChosenClass;
     switch (ChosenClass) {
     case 1:
@@ -161,7 +171,8 @@ void Player::InitPlayer()
     SetPlayerEquippedWeapon("None");
     SetPlayerEquippedArmor("None");
     SetPlayerCurrency(0);
-    SetPlayerKarma(0);
+    SetPlayerKarma(50);
+    SetCurrentDifficulty(1);
     moveset.PlayerInit(GetPlayerClass());
     std::cout << "You are a " << GetPlayerClass() << ". With " << GetPlayerHP() << " HP and " << GetPlayerPower() << " Power." << std::endl;
 }
@@ -185,25 +196,284 @@ void Player::LevelUpCheck()
     {
         SetPlayerXP(GetPlayerXP() - baseXP);
         SetPlayerLvl(GetPlayerLvl() + 1);
+        LevelUp();
 
-        std::cout << "Level up! You are now level " << GetPlayerLvl() << "!\n";
+        std::cout << "Level up! You are now level " << GetPlayerLvl() << "!" << std::endl;
 
-        baseXP += 10;
+        baseXP += 18;
     }
 }
 
 void Player::LevelUp()
 {
+    int replaceindex;
     if (GetPlayerClass() == "Warrior") {
-        SetPlayerHP(GetPlayerHP() + 10);
+        SetPlayerHP(GetPlayerHP() + 15);
         SetPlayerPower(GetPlayerPower() + 3);
+        if (GetPlayerLvl() == 2) {
+            moveset.SetMove(Moveset::Move("Double Slash",3,2,"Physical"));
+        }
+        if (GetPlayerLvl() == 4) {
+            if (GetPlayerKarma() > 50) {
+                moveset.SetMove(Moveset::Move("Holy Thrust", 5, 1, "Physical"));
+            }
+            else if (GetPlayerKarma() == 50) {
+                moveset.SetMove(Moveset::Move("Swiss Strike", 4, 3, "Physical"));
+            }
+            else if (GetPlayerKarma() < 50) {
+                moveset.SetMove(Moveset::Move("Dark Blades", 2, 3, "Magical"));
+            }
+        }
+        if (GetPlayerLvl() == 5) {
+            std::cout << "You are trying to learn Triple Slash, 4 Strength, 3 Hits, Physical." << std::endl;
+            ListMovesToReplace();
+            std::cin >> replaceindex;
+            if (replaceindex != 5) {
+                moveset.ReplaceMove(Moveset::Move("Triple Slash", 4, 3, "Physical"), replaceindex);
+            }
+        }
+        if (GetPlayerLvl() == 7) {
+            if (GetPlayerKarma() > 50) {
+                std::cout << "You are trying to learn Hallowed Ground, 20 Healing, 1 Hit, Heal." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Hallowed Ground", -20, 1, "Heal"), replaceindex);
+                }
+            }
+            else if (GetPlayerKarma() == 50) {
+                std::cout << "You are trying to learn Full Gray Moon, 4 Strength, 6 Hits, Physical." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Full Gray Moon", 4, 6, "Physical"), replaceindex);
+                }
+            }
+            else if (GetPlayerKarma() < 50) {
+                std::cout << "You are trying to learn Blood Sacrifice, 5 Strength, 5 Hits, Dark." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Blood Sacrifice", 5, 5, "Dark"), replaceindex);
+                }
+            }
+        }
+        if (GetPlayerLvl() == 8) {
+            std::cout << "You are trying to learn Quadruple Slash, 5 Strength, 4 Hits, Physical." << std::endl;
+            ListMovesToReplace();
+            std::cin >> replaceindex;
+            if (replaceindex != 5) {
+                moveset.ReplaceMove(Moveset::Move("Quadruple Slash", 5, 4, "Physical"), replaceindex);
+            }
+        }
+        if (GetPlayerLvl() == 10) {
+            if (GetPlayerKarma() > 50) {
+                std::cout << "You are trying to learn God's Will, 15 Strength, 2 Hits, Magical." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("God's Will", 15, 2, "Magical"), replaceindex);
+                }
+            }
+            else if (GetPlayerKarma() == 50) {
+                std::cout << "You are trying to learn Like Stone, Forever Unchanging, 20 Strength, 2 Hits, Physical." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Like Stone, Forever Unchanging", 20, 2, "Physical"), replaceindex);
+                }
+            }
+            else if (GetPlayerKarma() < 50) {
+                std::cout << "You are trying to learn Acheron, 5 Strength, 10 Hits, Dark." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Acheron", 5, 10, "Dark"), replaceindex);
+                }
+            }
+        }
     }
     else if (GetPlayerClass() == "Mage") {
-        SetPlayerHP(GetPlayerHP() + 6);
+        SetPlayerHP(GetPlayerHP() + 11);
         SetPlayerPower(GetPlayerPower() + 4);
+        if (GetPlayerLvl() == 2) {
+            moveset.SetMove(Moveset::Move("Fireball", 6, 1, "Magical"));
+        }
+        if (GetPlayerLvl() == 4) {
+            if (GetPlayerKarma() > 50) {
+                moveset.SetMove(Moveset::Move("Light Ray", 1, 8, "Magical"));
+            }
+            else if (GetPlayerKarma() == 50) {
+                moveset.SetMove(Moveset::Move("Tri-Elemental", 4, 4, "Magical"));
+            }
+            else if (GetPlayerKarma() < 50) {
+                moveset.SetMove(Moveset::Move("Hellfire", 2, 5, "Magical"));
+            }
+        }
+        if (GetPlayerLvl() == 5) {
+            std::cout << "You are trying to learn Aura Farm, 15 Healing, 1 Hit, Heal." << std::endl;
+            ListMovesToReplace();
+            std::cin >> replaceindex;
+            if (replaceindex != 5) {
+                moveset.ReplaceMove(Moveset::Move("Aura Farm", -15, 1, "Heal"), replaceindex);
+            }
+        }
+        if (GetPlayerLvl() == 7) {
+            if (GetPlayerKarma() > 50) {
+                std::cout << "You are trying to learn Dignified End, 15 Strength, 1 Hit, Physical." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Dignified End", 15, 1, "Physical"), replaceindex);
+                }
+            }
+            else if (GetPlayerKarma() == 50) {
+                std::cout << "You are trying to learn Axisal, 10 Strength, 2 Hits, Magical." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Axisal", 10, 2, "Magical"), replaceindex);
+                }
+            }
+            else if (GetPlayerKarma() < 50) {
+                std::cout << "You are trying to learn Red Red Room, 3 Strength, 7 Hits, Dark." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Red Red Room", 3, 7, "Dark"), replaceindex);
+                }
+            }
+        }
+        if (GetPlayerLvl() == 8) {
+            std::cout << "You are trying to learn Rolling Waves, 4 Strength, 5 Hits, Magical." << std::endl;
+            ListMovesToReplace();
+            std::cin >> replaceindex;
+            if (replaceindex != 5) {
+                moveset.ReplaceMove(Moveset::Move("Rolling Waves", 4, 5, "Magical"), replaceindex);
+            }
+        }
+        if (GetPlayerLvl() == 10) {
+            if (GetPlayerKarma() > 50) {
+                std::cout << "You are trying to learn Purging Light, 30 Strength, 1 Hit, Magical." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Purging Light", 30, 1, "Magical"), replaceindex);
+                }
+            }
+            else if (GetPlayerKarma() == 50) {
+                std::cout << "You are trying to learn Gold-Silver Horizon, 6 Strength, 6 Hits, Magical." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Gold-Silver Horizon", 6, 6, "Magical"), replaceindex);
+                }
+            }
+            else if (GetPlayerKarma() < 50) {
+                std::cout << "You are trying to learn Paimonial Wrath, 1 Strength, 30 Hits, Dark." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Paimonial Wrath", 1, 30, "Dark"), replaceindex);
+                }
+            }
+        }
     }
     else if (GetPlayerClass() == "Hunter") {
-        SetPlayerHP(GetPlayerHP() + 3);
+        SetPlayerHP(GetPlayerHP() + 8);
         SetPlayerPower(GetPlayerPower() + 5);
+        if (GetPlayerLvl() == 2) {
+            moveset.SetMove(Moveset::Move("Triple Shot", 2, 3, "Physical"));
+        }
+        if (GetPlayerLvl() == 4) {
+            if (GetPlayerKarma() > 50) {
+                moveset.SetMove(Moveset::Move("True Strike", 15, 1, "Magical"));
+            }
+            else if (GetPlayerKarma() == 50) {
+                moveset.SetMove(Moveset::Move("Thread Thin", 4, 5, "Physical"));
+            }
+            else if (GetPlayerKarma() < 50) {
+                moveset.SetMove(Moveset::Move("Underhanded Tactics", 3, 8, "Physical"));
+            }
+        }
+        if (GetPlayerLvl() == 5) {
+            std::cout << "You are trying to learn Shadow Strike, 16 Strength, 1 Hit, Physical." << std::endl;
+            ListMovesToReplace();
+            std::cin >> replaceindex;
+            if (replaceindex != 5) {
+                moveset.ReplaceMove(Moveset::Move("Shadow Strike", 16, 1, "Physical"), replaceindex);
+            }
+        }
+        if (GetPlayerLvl() == 7) {
+            if (GetPlayerKarma() > 50) {
+                std::cout << "You are trying to learn Windrider, 3 Strength, 6 Hits, Magical." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Windrider", 3, 6, "Magical"), replaceindex);
+                }
+            }
+            else if (GetPlayerKarma() == 50) {
+                std::cout << "You are trying to learn Pendulum, 14 Strength, 2 Hits, Magical." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Pendulum", 14, 2, "Magical"), replaceindex);
+                }
+            }
+            else if (GetPlayerKarma() < 50) {
+                std::cout << "You are trying to learn Ehe, 1 Strength, 13 Hits, Dark." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Ehe", 1, 13, "Dark"), replaceindex);
+                }
+            }
+        }
+        if (GetPlayerLvl() == 8) {
+            std::cout << "You are trying to learn Checkmate, 20 Strength, 1 Hit, Physical." << std::endl;
+            ListMovesToReplace();
+            std::cin >> replaceindex;
+            if (replaceindex != 5) {
+                moveset.ReplaceMove(Moveset::Move("Checkmate", 20, 1, "Physical"), replaceindex);
+            }
+        }
+        if (GetPlayerLvl() == 10) {
+            if (GetPlayerKarma() > 50) {
+                std::cout << "You are trying to learn Magarula, 40 Strength, 1 Hit, Magical." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Magarula", 40, 1, "Magical"), replaceindex);
+                }
+            }
+            else if (GetPlayerKarma() == 50) {
+                std::cout << "You are trying to learn Infinity, 1 Strength, 50 Hits, Dark." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Infinity", 1, 50, "Dark"), replaceindex);
+                }
+            }
+            else if (GetPlayerKarma() < 50) {
+                std::cout << "You are trying to learn Styx's Call, 5 Strength, 10 Hits, Magical." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Styx's Call", 5, 10, "Magical"), replaceindex);
+                }
+            }
+        }
     }
+}
+
+void Player::ListMovesToReplace()
+{
+    std::cout << "Replace which move?" << std::endl;
+    std::cout << "Current Moves" << std::endl;
+    std::cout << "(1) " << GetMoveset().GetMove(0).MoveName << std::endl;
+    std::cout << "(2) " << GetMoveset().GetMove(1).MoveName << std::endl;
+    std::cout << "(3) " << GetMoveset().GetMove(2).MoveName << std::endl;
+    std::cout << "(4) " << GetMoveset().GetMove(3).MoveName << std::endl;
+    std::cout << "(5) Don't learn this move" << std::endl;
 }

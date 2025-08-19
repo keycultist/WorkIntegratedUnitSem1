@@ -15,6 +15,7 @@ private:
 	std::string PlayerEquippedArmor;
 	int PlayerCurrency;
 	int PlayerKarma;
+	int CurrentDifficulty;
 
 	Moveset moveset;
 
@@ -33,6 +34,7 @@ public:
 	void SetPlayerEquippedArmor(std::string Armor);
 	void SetPlayerCurrency(int Currency);
 	void SetPlayerKarma(int Karma);
+	void SetCurrentDifficulty(int Difficulty);
 
 	std::string GetPlayerClass(void) const;
 	int GetPlayerHP(void) const;
@@ -46,6 +48,7 @@ public:
 	std::string GetPlayerEquippedArmor(void) const;
 	int GetPlayerCurrency(void) const;
 	int GetPlayerKarma(void) const;
+	int GetCurrentDifficulty(void) const;
 	Moveset& GetMoveset();
 
 	Player();
@@ -56,6 +59,7 @@ public:
 	void ShowPlayerStats() const;
 	void LevelUpCheck();
 	void LevelUp();
+	void ListMovesToReplace();
 };
 
 
