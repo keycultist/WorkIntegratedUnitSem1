@@ -107,7 +107,7 @@ void DivineIntervention::applyEffect(God god, Entity& player, Entity& enemy) con
     case God::FERONIA: {
         int effect = std::uniform_int_distribution<>(-15, 15)(gen);
         if (effect == 0) effect = 10;
-        std::cout << "Sprouts and blossoms begin to blossom on the ground!\n";
+        std::cout << "Sprouts and blossoms begin to flourish on the ground!\n";
         primaryTarget.applyBuff("HP", effect);
         secondaryTarget.applyBuff("HP", effect / 2);
         break;
