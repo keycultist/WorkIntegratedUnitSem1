@@ -2,8 +2,9 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include "Renderer.h"
 
-class Map
+class Map : public Renderer
 {
 
 private:
@@ -15,18 +16,13 @@ protected:
 
 public:
 
-    Map() : tilesFilled(0) {
-        for (int h = 0; h < 128; ++h) {
-            for (int v = 0; v < 128; ++v) {
-                FloorGrid[h][v] = ' ';
-            }
-        }
+    void CreateNewFloor(int Difficulty);
 
-    }
+    void RequestFloorUpdate();
 
+    void RequestRoomUpdate();
+        
+    void fillBoard(char** Board, int sizeX, int sizeY) override;
 
-
-    void CreateNewFloor(int Difficulty) const {
-
-    }
+    void drawBoard(char** Board, int sizeX, int sizeY) override;
 };
