@@ -33,10 +33,10 @@ int Moveset::size() const {
 
 void Moveset::EnemyInit()
 {
-    Moveset EnenmyNameMoveset;
-    //Add enemy movesets
+    Moveset EnemyNameMoveset;
 
-    EnenmyNameMoveset.SetMove(Move("Test", 1, 999, "Abyssal"));
+    //Add enemy movesets
+    EnemyNameMoveset.SetMove(Move("Test", 1, 999, "Abyssal"));
 }
 
 void Moveset::PlayerInit(const std::string Class)
