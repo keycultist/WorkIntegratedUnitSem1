@@ -3,11 +3,11 @@
 
 #include "entity.h"
 #include <random>
-#include <map>
-#include <string>
+#include <map>       //<map> is basically a container that stores key words (gods) and value pairs. Keys MUST be unique. Values can have the same key and has to be tied to the key.
+#include <string>    
 #include <vector>
 
-enum class God {
+enum class God {     //enum = enumerated type, which means the set of datas are numbered and ordered (basically a list)
     NONE,
     SAGACITY,
     AURORA,
@@ -19,12 +19,12 @@ enum class God {
 
 class DivineIntervention {
 private:
-    std::map<God, std::string> godNames;
-    std::map<God, std::vector<std::string>> godDialogues;
-	std::random_device rd;        //random_device is used to seed the random number generator
+	std::map<God, std::string> godNames; //map that stores the names of the gods into god names
+    std::map<God, std::vector<std::string>> godDialogues;      
+	std::random_device rd;        //random_device is used to seed the random number generator that is non-determistic.   
 	std::mt19937 gen;            //should be a random number generator
 
-    struct GodProbability {
+	struct GodProbability {            //struct is a type of user defined data structure that groups keys & values together. In this case, it groups the god and its probability.
         God god;
         int probability;
     };
