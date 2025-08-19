@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "Moveset.h"
 class Player
 {
 private:
@@ -14,7 +15,7 @@ private:
 	int PlayerCurrency;
 	int PlayerKarma;
 
-	//Moveset PlayerMoveset;
+	Moveset moveset;
 
 protected:
 
@@ -30,7 +31,6 @@ public:
 	void SetPlayerEquippedArmor(std::string Armor);
 	void SetPlayerCurrency(int Currency);
 	void SetPlayerKarma(int Karma);
-	//void SetPlayerMoveset(const Moveset& m);
 
 	std::string GetPlayerClass(void) const;
 	int GetPlayerHP(void) const;
@@ -43,14 +43,14 @@ public:
 	std::string GetPlayerEquippedArmor(void) const;
 	int GetPlayerCurrency(void) const;
 	int GetPlayerKarma(void) const;
-	//Moveset GetPlayerMoveset() const;
+	Moveset& GetMoveset();
 
 	Player();
 	Player(std::string PlayerClass, int PlayerHP, int PlayerPower, int PlayerPosX, int PlayerPosY, int PlayerLvl, int PlayerXP, std::string PlayerEquippedWeapon, std::string PlayerEquippedArmor, int PlayerCurrency, int PlayerKarma);
 	~Player();
 
-	static void InitPlayer(Player &MC);
-	static void ShowPlayerStats(Player &MC);
+	void InitPlayer(Player& MC);
+	static void ShowPlayerStats(Player& MC);
 };
 
 
