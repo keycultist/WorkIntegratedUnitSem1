@@ -127,12 +127,14 @@
     <ClCompile Include="Combat.cpp" />
     <ClCompile Include="Events.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Map.cpp" />
     <ClCompile Include="Moveset.cpp" />
     <ClCompile Include="Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Combat.h" />
     <ClInclude Include="Events.h" />
+    <ClInclude Include="Map.h" />
     <ClInclude Include="Moveset.h" />
     <ClInclude Include="Player.h" />
     <ClCompile Include="ConsoleApplication1.cpp" />
