@@ -27,7 +27,7 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target, std::string MoveN
 	int chP = _getch();
 	system("cls");
 	switch (chP) {
-	case 1:
+	case '1':
 		//Include Player Moveset
 		std::cout << "Choose a Move" << std::endl;
 		std::cout << "(1) " << std::endl;
@@ -36,13 +36,13 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target, std::string MoveN
 		std::cout << "(4) " << std::endl;
 		Combat::PlayerAttack(MC, target, Movename);
 		break;
-	case 2:
+	case '2':
 		Defend = true;
 		break;
-	case 3:
+	case '3':
 		//Input inventory system
 		break;
-	case 4:
+	case '4':
 		int RunChance = rand() % 3;
 		if (RunChance == 2) {
 			std::cout << "Successfuly Ran Away" << std::endl;
@@ -50,7 +50,7 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target, std::string MoveN
 		}
 		else if (RunChance == 1) {
 			std::cout << "Ran Away but Damaged" << std::endl;
-			MC.setPlayerHP(MC.getPlayerHP() - 5);
+			MC.SetPlayerHP(MC.GetPlayerHP() - 5);
 			return true;
 		}
 		else {
@@ -61,9 +61,9 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target, std::string MoveN
 	default:
 		break;
 	}
-	if (target.getEnemyHP() <= 0) {
+	if (target.GetEnemyHP() <= 0) {
 		std::cout << "Enemy Defeated! Gained XP!" << std::endl;
-		MC.setPlayerXP(MC.getPlayerXP() + target.getEnemyXP());
+		MC.SetPlayerXP(MC.GetPlayerXP() + target.GetEnemyXP());
 		int chP = _getch();
 		system("cls");
 		return true;
@@ -86,21 +86,26 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target, std::string MoveN
 		default:
 			break;
 		}
-		Combat::EnemyAttack(MC, target, Movename);
+		Combat::EnemyAttack(MC, target, Movename, Defend);
 		return false;
 	}
 }
 
 void Combat::PlayerAttack(Player& MC, Enemy& target, std::string MoveName)
 {
-	std::cout << MC.getPlayerClass() << " used " << MoveName << std::endl;
-	target.setEnemyHP(target.getEnemyHP() - MC.getPlayerPower());
-	std::cout << target.getEnemyClass() << " has " << target.getEnemyHP() << " HP left." << std::endl;
+	std::cout << MC.GetPlayerClass() << " used " << MoveName << std::endl;
+	target.SetEnemyHP(target.GetEnemyHP() - MC.GetPlayerPower());
+	std::cout << target.GetEnemyClass() << " has " << target.GetEnemyHP() << " HP left." << std::endl;
 }
 
-void Combat::EnemyAttack(Player& MC, Enemy& target, std::string MoveName)
+void Combat::EnemyAttack(Player& MC, Enemy& target, std::string MoveName, bool Defend)
 {
-	std::cout << target.getEnemyClass() << " used " << MoveName << std::endl;
-	MC.setPlayerHP(MC.getPlayerHP() - target.getEnemyPower());
-	std::cout << MC.getPlayerClass() << " has " << MC.getPlayerHP() << " HP left." << std::endl;
+	std::cout << target.GetEnemyClass() << " used " << MoveName << std::endl;
+	if (!Defend) {
+		MC.SetPlayerHP(MC.GetPlayerHP() - target.GetEnemyPower());
+	}
+	else if (Defend) {
+		MC.SetPlayerHP(MC.GetPlayerHP() - (target.GetEnemyPower() * 0.40));
+	}
+	std::cout << MC.GetPlayerClass() << " has " << MC.GetPlayerHP() << " HP left." << std::endl;
 }

@@ -30,6 +30,8 @@ class Enemy
 		int GetEnemyHP(void) const;
 		int GetEnemyPower(void) const;
 		int GetEnemyPos(void) const;
+		int GetEnemyLvl(void) const;
+		int GetEnemyXP(void) const;
 		std::string GetEnemyWeapon(void) const;
 		std::string GetEnemyEquippedWeapon(void) const;
 

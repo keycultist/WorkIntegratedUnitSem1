@@ -19,31 +19,31 @@ private:
 protected:
 
 public:
-	void setPlayerClass(std::string Class);
-	void setPlayerHP(int HP);
-	void setPlayerPower(int Power);
-	void setPlayerPosX(int X);
-	void setPlayerPosY(int Y);
-	void setPlayerLvl(int Lvl);
-	void setPlayerXP(int XP);
-	void setPlayerEquippedWeapon(std::string Weapon);
-	void setPlayerEquippedArmor(std::string Armor);
-	void setPlayerCurrency(int Currency);
-	void setPlayerKarma(int Karma);
-	//void setPlayerMoveset(const Moveset& m);
+	void SetPlayerClass(std::string Class);
+	void SetPlayerHP(int HP);
+	void SetPlayerPower(int Power);
+	void SetPlayerPosX(int X);
+	void SetPlayerPosY(int Y);
+	void SetPlayerLvl(int Lvl);
+	void SetPlayerXP(int XP);
+	void SetPlayerEquippedWeapon(std::string Weapon);
+	void SetPlayerEquippedArmor(std::string Armor);
+	void SetPlayerCurrency(int Currency);
+	void SetPlayerKarma(int Karma);
+	//void SetPlayerMoveset(const Moveset& m);
 
-	std::string getPlayerClass(void) const;
-	int getPlayerHP(void) const;
-	int getPlayerPower(void) const;
-	int getPlayerPosX(void) const;
-	int getPlayerPosY(void) const;
-	int getPlayerLvl(void) const;
-	int getPlayerXP(void) const;
-	std::string getPlayerEquippedWeapon(void) const;
-	std::string getPlayerEquippedArmor(void) const;
-	int getPlayerCurrency(void) const;
-	int getPlayerKarma(void) const;
-	//Moveset getPlayerMoveset() const;
+	std::string GetPlayerClass(void) const;
+	int GetPlayerHP(void) const;
+	int GetPlayerPower(void) const;
+	int GetPlayerPosX(void) const;
+	int GetPlayerPosY(void) const;
+	int GetPlayerLvl(void) const;
+	int GetPlayerXP(void) const;
+	std::string GetPlayerEquippedWeapon(void) const;
+	std::string GetPlayerEquippedArmor(void) const;
+	int GetPlayerCurrency(void) const;
+	int GetPlayerKarma(void) const;
+	//Moveset GetPlayerMoveset() const;
 
 	Player();
 	Player(std::string PlayerClass, int PlayerHP, int PlayerPower, int PlayerPosX, int PlayerPosY, int PlayerLvl, int PlayerXP, std::string PlayerEquippedWeapon, std::string PlayerEquippedArmor, int PlayerCurrency, int PlayerKarma);

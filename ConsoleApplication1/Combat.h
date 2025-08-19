@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include "Player.h"
+#include "Enemy.h"
 class Combat
 {
 public:
@@ -9,6 +10,6 @@ public:
 	bool Update(bool& InCombat, Player& MC, Enemy& target, std::string MoveName);
 
 	static void PlayerAttack(Player& MC, Enemy& target, std::string MoveName);
-	static void EnemyAttack(Player& MC, Enemy& target, std::string MoveName);
+	static void EnemyAttack(Player& MC, Enemy& target, std::string MoveName, bool Defend);
 };
 
