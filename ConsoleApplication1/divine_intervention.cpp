@@ -121,7 +121,7 @@ void DivineIntervention::applyEffect(God god, Entity& player, Entity& enemy) con
     }
     case God::PREYSEYE: {
         int karmaChange = std::uniform_int_distribution<>(1, 20)(gen);
-        if (std::bernoulli_distribution(0.5)(gen)) {
+		if (std::bernoulli_distribution(0.5)(gen)) {                 //srsly what is bernoulli_distribution
             karmaChange = -karmaChange;
         }
         float multiplierChange = std::uniform_real_distribution<float>(0.1f, 0.3f)(gen);
