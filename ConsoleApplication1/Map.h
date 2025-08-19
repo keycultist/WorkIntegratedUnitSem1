@@ -24,7 +24,6 @@ struct Room {
     bool cleared;       // Has room been completed?
 
     Room(int id, int x, int y, RoomType type) : id(id), x(x), y(y), type(type), visited(false), cleared(false) {
-        // Set dimensions based on type
         switch (type) {
         case RoomType::SMALL:    width = 7; height = 7; floorChar = '.'; break;
         case RoomType::MEDIUM:   width = 11; height = 11; floorChar = '.'; break;
@@ -52,6 +51,8 @@ protected:
 
 public:
 
+    std::string getRoomTypeName(RoomType type);
+
     void CreateNewFloor(int Difficulty);
 
     void RequestFloorUpdate();
@@ -61,4 +62,42 @@ public:
     void fillBoard(char** Board, int sizeX, int sizeY) override;
 
     void drawBoard(char** Board, int sizeX, int sizeY) override;
+
+    void generateRoom(const Room& room, char** board, int boardSizeX, int boardSizeY);
+    void generateLargeRoom(const Room& room);  // Uses InnerRoom for big rooms
+
+    std::string getRoomTypeName(RoomType type);
+
+
+    Room* detectPlayerRoom(int playerX, int playerY);
+    void renderCurrentRoom(Room* room, char** roomBoard, int boardSize);
+    bool isPlayerInRoom(int playerX, int playerY, const Room& room);
+    void switchToRoomView(int playerX, int playerY);
+
+    Room* getRoomById(int roomId);
+    Room* getRoomByIndex(int index);
+    std::vector<Room*> getRoomsByType(RoomType type);
+    int getRoomCount() { return rooms.size(); }
+    int getCurrentRoomId() { return currentRoom ? currentRoom->id : -1; }
+    Room* getCurrentRoom() { return currentRoom; }
+
+    void markRoomVisited(int roomId);
+    void markRoomCleared(int roomId);
+    bool isRoomVisited(int roomId);
+    bool isRoomCleared(int roomId);
+
+    int getVisitedRoomCount();
+    int getClearedRoomCount();
+    int getRoomCountByType(RoomType type);
+
+    std::string getRoomTypeName(RoomType type);
+    void printRoomInfo();  // Debug function to show all rooms
+
+    bool isLastRoom(int roomId);
+    bool isLastRoom(Room* room);
+    Room* getLastRoom();
+    int getLastRoomId();
+
+    bool isLastRoomShop();
+    Room* getFinalShop();
 };
