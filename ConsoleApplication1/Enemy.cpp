@@ -1,6 +1,7 @@
 // Inclusions
 
 #include "Enemy.h"
+#include "Moveset.h"
 #include <iostream>
 #include <string>
 #include <cctype>
@@ -81,4 +82,8 @@ std::string Enemy::GetEnemyEquippedWeapon(void) const {
 
 std::string Enemy::GetEnemyEquippedArmor(void) const {
 	return EnemyEquippedArmor;
+}
+
+Moveset& Enemy::GetMoveSet() {
+	return moveset;
 }

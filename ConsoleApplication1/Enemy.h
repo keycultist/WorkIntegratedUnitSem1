@@ -1,6 +1,10 @@
 #ifndef ENEMY_H
 #define ENEMY_H
 
+#pragma once
+
+#include "Moveset.h"
+
 class Enemy
 {
 	private:
@@ -13,6 +17,7 @@ class Enemy
 		std::string EnemyEquippedWeapon;
 		std::string EnemyEquippedArmor;
 
+		Moveset moveset;
 	protected:
 
 
@@ -35,10 +40,14 @@ class Enemy
 		int GetEnemyXP(void) const;
 		std::string GetEnemyEquippedWeapon(void) const;
 		std::string GetEnemyEquippedArmor(void) const;
+		Moveset& GetMoveSet();
 
 		Enemy();
 		Enemy(std::string EnemyClass, int EnemyHP, int EnemyPower, int EnemyPosX, int EnemyPosY, int EnemyLvl, std::string EnemyEquippedWeapon, std::string EnemyEquippedArmor);
 		~Enemy();
+
+		void InitEnemy(Enemy& EC);
+		static void ShowEnemyStats(Enemy& EC);
 };
 
 #endif
