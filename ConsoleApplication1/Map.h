@@ -18,7 +18,11 @@ public:
 
     void CreateNewFloor(int Difficulty);
 
-    void RequestFloorUpdate() const;
+    void RequestFloorUpdate();
+
+    void RequestRoomUpdate();
         
     void fillBoard(char** Board, int sizeX, int sizeY) override;
+
+    void drawBoard(char** Board, int sizeX, int sizeY) override;
 };
