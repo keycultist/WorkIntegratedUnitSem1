@@ -23,7 +23,11 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 	std::cout << "(2) Defend" << std::endl;
 	std::cout << "(3) Item" << std::endl;
 	std::cout << "(4) Run" << std::endl;
+	int ChosenMove;
+	bool Critted = false;
+	int Critting = rand() % 100 + 1;
 	bool Defend = false;
+	int RunChance = rand() % 3;
 	int chP = _getch();
 	system("cls");
 	switch (chP) {
@@ -34,10 +38,7 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 		std::cout << "(2) " << MC.GetMoveset().GetMove(1).MoveName << std::endl;
 		std::cout << "(3) " << MC.GetMoveset().GetMove(2).MoveName << std::endl;
 		std::cout << "(4) " << MC.GetMoveset().GetMove(3).MoveName << std::endl;
-		int ChosenMove;
 		std::cin >> ChosenMove;
-		bool Critted = false;
-		int Critting = rand() % 100 + 1;
 		if (Critting <= MC.GetPlayerCritChance()) {
 			Critted = true;
 		}
@@ -50,7 +51,6 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 		//Input inventory system
 		break;
 	case '4':
-		int RunChance = rand() % 3;
 		if (RunChance == 2) {
 			std::cout << "Successfuly Ran Away" << std::endl;
 			return true;
@@ -113,7 +113,7 @@ void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove, bool Critte
 
 void Combat::EnemyAttack(Player& MC, Enemy& target, int ChosenMove, bool Defend)
 {
-	std::cout << target.GetEnemyClass() << " used " << MoveName. << std::endl;
+	std::cout << target.GetEnemyClass() << " used " << MoveName << std::endl;
 	if (!Defend) {
 		MC.SetPlayerHP(MC.GetPlayerHP() - target.GetEnemyPower());
 	}
