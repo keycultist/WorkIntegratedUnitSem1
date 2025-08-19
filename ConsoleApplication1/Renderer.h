@@ -1,3 +1,6 @@
+#pragma once
+#include "Map.h"
+
 class Renderer {
 public:
     virtual void fillBoard(char** board, int sizeX, int sizeY);
