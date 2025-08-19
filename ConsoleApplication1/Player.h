@@ -7,6 +7,7 @@ private:
 	std::string PlayerClass;
 	int PlayerHP;
 	int PlayerPower;
+	int PlayerCritChance;
 	int PlayerPosX, PlayerPosY;
 	int PlayerLvl;
 	int PlayerXP;
@@ -23,6 +24,7 @@ public:
 	void SetPlayerClass(std::string Class);
 	void SetPlayerHP(int HP);
 	void SetPlayerPower(int Power);
+	void SetPlayerCritChance(int CritChance);
 	void SetPlayerPosX(int X);
 	void SetPlayerPosY(int Y);
 	void SetPlayerLvl(int Lvl);
@@ -35,6 +37,7 @@ public:
 	std::string GetPlayerClass(void) const;
 	int GetPlayerHP(void) const;
 	int GetPlayerPower(void) const;
+	int GetPlayerCritChance(void) const;
 	int GetPlayerPosX(void) const;
 	int GetPlayerPosY(void) const;
 	int GetPlayerLvl(void) const;
@@ -46,7 +49,7 @@ public:
 	Moveset& GetMoveset();
 
 	Player();
-	Player(std::string PlayerClass, int PlayerHP, int PlayerPower, int PlayerPosX, int PlayerPosY, int PlayerLvl, int PlayerXP, std::string PlayerEquippedWeapon, std::string PlayerEquippedArmor, int PlayerCurrency, int PlayerKarma);
+	Player(std::string PlayerClass, int PlayerHP, int PlayerPower, int PlayerCritChance, int PlayerPosX, int PlayerPosY, int PlayerLvl, int PlayerXP, std::string PlayerEquippedWeapon, std::string PlayerEquippedArmor, int PlayerCurrency, int PlayerKarma);
 	~Player();
 
 	void InitPlayer(Player& MC);

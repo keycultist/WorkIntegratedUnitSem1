@@ -9,7 +9,7 @@ public:
 	void InitCombat(Player& MC, Enemy& target);
 	bool Update(bool& InCombat, Player& MC, Enemy& target);
 
-	static void PlayerAttack(Player& MC, Enemy& target, int ChosenMove);
+	static void PlayerAttack(Player& MC, Enemy& target, int ChosenMove, bool Critted);
 	static void EnemyAttack(Player& MC, Enemy& target, int ChosenMove, bool Defend);
 };
 

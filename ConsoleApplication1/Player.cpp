@@ -17,6 +17,11 @@ void Player::SetPlayerPower(int Power) {
     PlayerPower = Power;
 }
 
+void Player::SetPlayerCritChance(int CritChance)
+{
+    PlayerCritChance = CritChance;
+}
+
 void Player::SetPlayerPosX(int X) {
     PlayerPosX = X;
 }
@@ -64,6 +69,11 @@ int Player::GetPlayerPower(void) const {
     return PlayerPower;
 }
 
+int Player::GetPlayerCritChance(void) const
+{
+    return PlayerCritChance;
+}
+
 int Player::GetPlayerPosX(void) const {
     return PlayerPosX;
 }
@@ -106,7 +116,7 @@ Player::Player()
 {
 }
 
-Player::Player(std::string PlayerClass, int PlayerHP, int PlayerPower, int PlayerPosX, int PlayerPosY, int PlayerLvl, int PlayerXP, std::string PlayerEquippedWeapon, std::string PlayerEquippedArmor, int PlayerCurrency, int PlayerKarma)
+Player::Player(std::string PlayerClass, int PlayerHP, int PlayerPower, int PlayerCritChance, int PlayerPosX, int PlayerPosY, int PlayerLvl, int PlayerXP, std::string PlayerEquippedWeapon, std::string PlayerEquippedArmor, int PlayerCurrency, int PlayerKarma)
 {
 }
 

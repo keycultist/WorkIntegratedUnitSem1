@@ -36,7 +36,12 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 		std::cout << "(4) " << MC.GetMoveset().GetMove(3).MoveName << std::endl;
 		int ChosenMove;
 		std::cin >> ChosenMove;
-		Combat::PlayerAttack(MC, target, ChosenMove);
+		bool Critted = false;
+		int Critting = rand() % 100 + 1;
+		if (Critting <= MC.GetPlayerCritChance()) {
+			Critted = true;
+		}
+		Combat::PlayerAttack(MC, target, ChosenMove, Critted);
 		break;
 	case '2':
 		Defend = true;
@@ -93,10 +98,16 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 	}
 }
 
-void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
+void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove, bool Critted)
 {
 	std::cout << MC.GetPlayerClass() << " used " << MC.GetMoveset().GetMove(ChosenMove).MoveName << std::endl;
-	target.SetEnemyHP(target.GetEnemyHP() - (MC.GetPlayerPower() + MC.GetMoveset().GetMove(ChosenMove).MoveStrength) * MC.GetMoveset().GetMove(ChosenMove).Hits);
+	if (Critted) {
+		target.SetEnemyHP(target.GetEnemyHP() - ((MC.GetPlayerPower() + MC.GetMoveset().GetMove(ChosenMove).MoveStrength) * MC.GetMoveset().GetMove(ChosenMove).Hits) * 2);
+		std::cout << "Critical Hit!" << std::endl;
+	}
+	else {
+		target.SetEnemyHP(target.GetEnemyHP() - (MC.GetPlayerPower() + MC.GetMoveset().GetMove(ChosenMove).MoveStrength) * MC.GetMoveset().GetMove(ChosenMove).Hits);
+	}
 	std::cout << target.GetEnemyClass() << " has " << target.GetEnemyHP() << " HP left." << std::endl;
 }
 
