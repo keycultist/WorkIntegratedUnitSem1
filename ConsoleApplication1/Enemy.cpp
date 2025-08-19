@@ -87,3 +87,7 @@ std::string Enemy::GetEnemyEquippedArmor(void) const {
 Moveset& Enemy::GetMoveSet() {
 	return moveset;
 }
+
+void Enemy::ShowEnemyStats(Enemy& MC) {
+	// Return Enemy Stats Here with STD::COUT!!!! (tedious)
+}
