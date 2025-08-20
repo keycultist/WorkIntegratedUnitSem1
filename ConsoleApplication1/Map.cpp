@@ -71,6 +71,8 @@ void Map::CreateNewFloor(int Difficulty) {
             roomType = RoomType::SMALL;
         }
 
+        // Create Enemies in rooms.
+
         roomPlans.push_back({ allPositions[positionIndex++], roomType });
     }
 

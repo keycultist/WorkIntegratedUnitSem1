@@ -37,7 +37,7 @@ void Moveset::EnemyInit(const std::string Class)
 
     //Add enemy movesets
     if (Class == "Cleaver") {
-        EnemyNameMoveset.SetMove(Move("Lesser Cleave, Vertical", 1, 4, "Abyssal"));
+        EnemyNameMoveset.SetMove(Move("Lesser Cleave, Vertical", 1, 5, "Abyssal"));
 		EnemyNameMoveset.SetMove(Move("Lesser Spear", 4, 1, "Abyssal"));
     }
     else if (Class == "Silent") {
@@ -45,12 +45,24 @@ void Moveset::EnemyInit(const std::string Class)
 		EnemyNameMoveset.SetMove(Move("Mook", 1, 5, "Physical"));
     }
     else if (Class == "Mani") {
-        EnemyNameMoveset.SetMove(Move("Ankle Splitter", 3, 1, "Physical"));
+        EnemyNameMoveset.SetMove(Move("Ankle Splitter", 5, 1, "Physical"));
         EnemyNameMoveset.SetMove(Move("Rising Dragon", 1, 3, "Physical"));
+    }
+    else if (Class == "Resonant") {
+        EnemyNameMoveset.SetMove(Move("Trails of Blue", 3, 1, "Physical"));
+        EnemyNameMoveset.SetMove(Move("Tempestuous Danza", 5, 1, "Physical"));
     }
     else if (Class == "Grunt") {
         EnemyNameMoveset.SetMove(Move("Slash", 2, 1, "Physical"));
         EnemyNameMoveset.SetMove(Move("Dust", 1, 4, "Physical"));
+    }
+    else if (Class == "Necromancer") {
+		EnemyNameMoveset.SetMove(Move("Avaunt", 1, 3, "Abyssal"));
+        EnemyNameMoveset.SetMove(Move("Lich's Grasp", 5, 1, "Abyssal"));
+    }
+    else if (Class == "Rogue") {
+        EnemyNameMoveset.SetMove(Move("Shadow Step", 3, 1, "Abyssal"));
+        EnemyNameMoveset.SetMove(Move("Lethality", 1, 4, "Abyssal"));
     }
 
     // Special Classes (bosses, etc) Fourth move activates thru conditionals
@@ -71,6 +83,12 @@ void Moveset::EnemyInit(const std::string Class)
         EnemyNameMoveset.SetMove(Move("Goshoryu", 3, 4, "Physical"));
         EnemyNameMoveset.SetMove(Move("Demon Flip", 1, 5, "Physical"));
         EnemyNameMoveset.SetMove(Move("Shun Goku Satsu", 1, 25, "Physical"));
+    }
+    else if (Class == "AzureResonance") {
+        EnemyNameMoveset.SetMove(Move("Trails of Blue", 3, 2, "Physical"));
+        EnemyNameMoveset.SetMove(Move("Tempestuous Danza", 5, 2, "Physical"));
+        EnemyNameMoveset.SetMove(Move("Final Impromptu", 6, 2, "Physical"));
+        EnemyNameMoveset.SetMove(Move("Grand Finale", 1, 25, "Physical"));
     }
 }
 
