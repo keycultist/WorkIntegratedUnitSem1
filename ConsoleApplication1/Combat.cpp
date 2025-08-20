@@ -24,8 +24,6 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 	std::cout << "(3) Item" << std::endl;
 	std::cout << "(4) Run" << std::endl;
 	int ChosenMove;
-	bool Critted = false;
-	int Critting = rand() % 100 + 1;
 	bool Defend = false;
 	int RunChance = rand() % 3;
 	int chP = _getch();
@@ -40,10 +38,7 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 		std::cout << "(3) " << MC.GetMoveset().GetMove(2).MoveName << " Strength: " << MC.GetMoveset().GetMove(2).MoveStrength << " Hit(s): " << MC.GetMoveset().GetMove(2).Hits << " Type: " << MC.GetMoveset().GetMove(2).MoveType << std::endl;
 		std::cout << "(4) " << MC.GetMoveset().GetMove(3).MoveName << " Strength: " << MC.GetMoveset().GetMove(3).MoveStrength << " Hit(s): " << MC.GetMoveset().GetMove(3).Hits << " Type: " << MC.GetMoveset().GetMove(3).MoveType << std::endl;
 		std::cin >> ChosenMove;
-		if (Critting <= MC.GetPlayerCritChance()) {
-			Critted = true;
-		}
-		Combat::PlayerAttack(MC, target, ChosenMove, Critted);
+		Combat::PlayerAttack(MC, target, ChosenMove - 1);
 		break;
 	case '2':
 		Defend = true;
@@ -100,13 +95,22 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 	}
 }
 
-void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove, bool Critted)
+void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
 {
+	int Critting = rand() % 100 + 1;
+	bool Critted = false;
 	if (MC.GetMoveset().GetMove(ChosenMove).MoveType == "Dark") {
 		std::cout << "Dark Move Used! -15%HP" << std::endl;
 		MC.SetPlayerHP(MC.GetPlayerHP() * 0.85);
 	}
 	for (int i = 0; i < MC.GetMoveset().GetMove(ChosenMove).Hits; i++) {
+		Critting = rand() % 100 + 1;
+		if (Critting <= MC.GetPlayerCritChance()) {
+			Critted = true;
+		}
+		else {
+			Critted = false;
+		}
 		std::cout << MC.GetPlayerClass() << " used " << MC.GetMoveset().GetMove(ChosenMove).MoveName << std::endl;
 		if (Critted) {
 			target.SetEnemyHP(target.GetEnemyHP() - (MC.GetPlayerPower() + MC.GetMoveset().GetMove(ChosenMove).MoveStrength) * 2);
@@ -121,7 +125,7 @@ void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove, bool Critte
 
 void Combat::EnemyAttack(Player& MC, Enemy& target, int ChosenMove, bool Defend)
 {
-	std::cout << target.GetEnemyClass() << " used " << MoveName << std::endl;
+	std::cout << target.GetEnemyClass() << " used " << target.GetMoveSet().GetMove(ChosenMove).MoveName << std::endl;
 	if (!Defend) {
 		MC.SetPlayerHP(MC.GetPlayerHP() - target.GetEnemyPower());
 	}
