@@ -65,8 +65,6 @@ std::string DivineIntervention::getRandomDialogue(God god) const {
     return dialogues[dist(gen)];
 }
 
-// ... (keep existing getRandomGod implementation)
-
 void DivineIntervention::applyEffect(God god, Entity& player, Entity& enemy) const {
     if (god == God::NONE) return;
 
