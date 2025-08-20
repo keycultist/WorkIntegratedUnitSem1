@@ -24,7 +24,7 @@ public:
 	Move GetMove(int index) const;
 	int size() const;
 
-	void EnemyInit();
+	void EnemyInit(const std::string Class);
 	void PlayerInit(const std::string Class);
 };
 

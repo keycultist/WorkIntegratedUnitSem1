@@ -31,13 +31,36 @@ int Moveset::size() const {
     return Moves.size();
 }
 
-void Moveset::EnemyInit()
+void Moveset::EnemyInit(const std::string Class)
 {
     Moveset EnemyNameMoveset;
 
     //Add enemy movesets
-    EnemyNameMoveset.SetMove(Move("Test", 1, 999, "Abyssal"));
+    if (Class == "Cleaver") {
+        EnemyNameMoveset.SetMove(Move("Lesser Cleave, Vertical", 1, 4, "Abyssal"));
+		EnemyNameMoveset.SetMove(Move("Lesser Cleave, Horizontal", 6, 1, "Abyssal"));
+    }
+    else if (Class == "Silent") {
+        EnemyNameMoveset.SetMove(Move("Alas", 1, 2, "Physical"));
+		EnemyNameMoveset.SetMove(Move("Mook", 1, 6, "Physical"));
+    }
+    else if (Class == "Asdasda") {
+
+    }
+
+    // Special Classes (bosses, etc)
+    else if (Class == "ColorCleaver") {
+		EnemyNameMoveset.SetMove(Move("Greater Cleave, Vertical", 2, 4, "Abyssal"));
+		EnemyNameMoveset.SetMove(Move("Greater Cleave, Horizontal", 10, 1, "Abyssal"));
+        EnemyNameMoveset.SetMove(Move("Spear", 4, 1, "Physical"));
+    }
+    else if (Class == "DarkSilence") {
+        EnemyNameMoveset.SetMove(Move("Mook Workshop", 2, 6, "Abyssal"));
+        EnemyNameMoveset.SetMove(Move("Crystal Atelier", 3, 2, "Abyssal"));
+        EnemyNameMoveset.SetMove(Move("Furioso", 1, 12, "Abyssal"));
+    }
 }
+
 
 void Moveset::PlayerInit(const std::string Class)
 {
