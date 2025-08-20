@@ -52,7 +52,7 @@ void Events::EventTriggered(Player& MC) {
 
         // Check if it's the suspicious frog event (index 2)
         if (eventIndex == 1) {
-            MC.SetPlayerHP(MC.GetPlayerHP() + 5);
+            int PlayerHP = PlayerHP + 5;
         }
         if (eventIndex == 2) {
             handleSuspiciousFrogEvent(MC);
