@@ -126,15 +126,18 @@
   <ItemGroup>
     <ClCompile Include="Combat.cpp" />
     <ClCompile Include="Events.cpp" />
+    <ClCompile Include="Item.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Moveset.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Shop.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Combat.h" />
     <ClInclude Include="Events.h" />
+    <ClInclude Include="Item.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Moveset.h" />
     <ClInclude Include="Player.h" />
@@ -142,6 +145,7 @@
     <ClCompile Include="divine_intervention.cpp" />
     <ClCompile Include="entity.cpp" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Shop.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConsoleApplication1.h" />
