@@ -14,7 +14,10 @@ enum class God {     //enum = enumerated type, which means the set of datas are 
     CHRYSES,
     FERONIA,
     KERES,
-    PREYSEYE
+    PREYSEYE,
+    SANCTORUM,
+    BOON,
+    MAGNAR
 };
 
 class DivineIntervention {
@@ -32,10 +35,13 @@ private:
     const std::vector<GodProbability> godProbabilities = {
         {God::SAGACITY, 15},
         {God::AURORA, 15},
-        {God::CHRYSES, 20},
-        {God::FERONIA, 20},
-        {God::KERES, 20},
-        {God::PREYSEYE, 10}
+        {God::CHRYSES, 15},
+        {God::FERONIA, 10},
+        {God::KERES, 15},
+        {God::PREYSEYE, 5},
+        {God::SANCTORUM, 10},
+        {God::BOON, 5},
+        {God::MAGNAR, 10}
     };
 
     std::string getRandomDialogue(God god) const;

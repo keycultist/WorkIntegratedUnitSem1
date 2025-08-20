@@ -12,15 +12,17 @@ public:
     int atk;
     int magicAtk;
     int gold;
-    int karma;               // New karma variable (range 0-100)
-    float karmaMultiplier;   // New karma multiplier
+    int karma;
+    float karmaMultiplier;
 
     Entity(std::string n, int h, int a, int ma, int g);
     void applyBuff(const std::string& stat, int value);
-    void applyKarmaEffect(int value, float multiplierChange); // New method for karma
+    void applyKarmaEffect(int value, float multiplierChange);
+    void heal(int amount); 
+    void increaseMaxHP(int amount);
     bool isAlive() const;
     void attack(Entity& target);
     void magicAttack(Entity& target);
 };
 
-#endif // ENTITY_H
+#endif

@@ -9,7 +9,10 @@ DivineIntervention::DivineIntervention() : gen(rd()) {
         {God::CHRYSES, "Chryses the Wherewithal"},
         {God::FERONIA, "Feronia the Fruitfulness"},
         {God::KERES, "Keres the Anathema"},
-        {God::PREYSEYE, "Preyseye the Morality"}
+        {God::PREYSEYE, "Preyseye the Morality"},
+        {God::SANCTORUM, "Sanctorum the Sustentation" },
+        {God::BOON, "Boon the Probability" },
+        {God::MAGNAR, "Magnar the Valour" }
     };
 
     // God-specific dialogues
@@ -42,10 +45,17 @@ DivineIntervention::DivineIntervention() : gen(rd()) {
     };
 
     godDialogues[God::KERES] = {
-        "\"Death shall cleanse us.. absolve us... and destroy us...\"",
+        "\"Death shall cleanse us... absolve us... and destroy us...\"",
         "\"We are all headed for death; one might as well speed up the process.\"",
         "\"Pain... What a necessary evil. Let me bestow it upon you.\"",
         "\"Hush. The Great Beyond awaits.\""
+    };
+
+    godDialogues[God::SANCTORUM] = {
+        "\"I grant a shield of quartz. May your vessels endure the worst of hardships.\"",
+        "\"I grant a screen of diamond. May your bodies be as resilient as stone.\"",
+        "\"I grant a cocoon of sapphire. May your souls never erode for aeons to come.\"",
+        "\"I grant a shell of ruby. May your agony dissipate to but a scratch on skin.\""
     };
 
     godDialogues[God::PREYSEYE] = {
@@ -53,6 +63,20 @@ DivineIntervention::DivineIntervention() : gen(rd()) {
         "\"The forthcoming calibration of your metaphysical essence is about to commence.\"",
         "\"The division of Virtue and Vice. The antithesis of Rectitude and Iniquity. To which path shall one's predilections be inclined?\"",
         "\"The existential balance of moral gravitas, shall it incline in your direction or not? We shall, in due course, behold the veritable outcome.\""
+    };
+   
+    godDialogues[God::BOON] = {
+        "\"lol.\"",
+        "\"ok.\"",
+        "\"girl.\"",
+        "\"ate.\""
+    };
+
+    godDialogues[God::MAGNAR] = {
+        "\"uh.\"",
+        "\"pmo.\"",
+        "\"sybau.\"",
+        "\"lalalala.\""
     };
 }
 
@@ -103,18 +127,23 @@ void DivineIntervention::applyEffect(God god, Entity& player, Entity& enemy) con
         break;
     }
     case God::FERONIA: {
-        int effect = std::uniform_int_distribution<>(-15, 15)(gen);
-        if (effect == 0) effect = 10;
-        std::cout << "Sprouts and blossoms begin to flourish on the ground!\n";
-        primaryTarget.applyBuff("HP", effect);
-        secondaryTarget.applyBuff("HP", effect / 2);
+        int healAmount = std::uniform_int_distribution<>(10, 25)(gen);
+        std::cout << "Flourishing plants and blossoms begin to sprout on the ground!\n";
+        primaryTarget.heal(healAmount);
+        secondaryTarget.heal(healAmount / 2);
         break;
-    }
     case God::KERES: {
         int effect = -std::uniform_int_distribution<>(5, 15)(gen);
         std::cout << "A suffocating dark miasma shrouds the area!\n";
         primaryTarget.applyBuff("HP", effect);
         secondaryTarget.applyBuff("HP", effect / 2);
+        break;
+    }
+    case God::SANCTORUM: {
+        int maxHpIncrease = std::uniform_int_distribution<>(5, 15)(gen);
+        std::cout << "A profound feeling of invigoration descends on the field!\n";
+        primaryTarget.increaseMaxHP(maxHpIncrease);
+        secondaryTarget.increaseMaxHP(maxHpIncrease / 2);
         break;
     }
     case God::PREYSEYE: {
