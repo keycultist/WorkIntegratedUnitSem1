@@ -33,7 +33,7 @@ int Moveset::size() const {
 
 void Moveset::EnemyInit(const std::string Class)
 {
-    Moveset EnemyNameMoveset;
+    Moveset EnemyNameMoveset; //Found out this is not needed, i think.
 
     //Add enemy movesets
     if (Class == "Cleaver") {
@@ -106,6 +106,17 @@ void Moveset::PlayerInit(const std::string Class)
     }
     else if (Class == "Hunter") {
         SetMove(Move("Piercing Arrow", 3, 1, "Physical"));
-        SetMove(Move("Remedy", -10, 1, "Heal"));
+        SetMove(Move("Remedy", 10, 1, "Heal"));
+    }
+    else if (Class == "Assassin") {
+        SetMove(Move("Backstab", 2, 2, "Physical"));
+        SetMove(Move("Knife Throw", 1, 3, "Heal"));
+    }
+    else if (Class == "Assassin") {
+        SetMove(Move("Backstab", 2, 2, "Physical"));
+        SetMove(Move("Knife Throw", 1, 3, "Heal"));
+    }
+    else if (Class == "Summoner") {
+        SetMove(Move("Summon: Fly", 1, 1, "Summon"));
     }
 }

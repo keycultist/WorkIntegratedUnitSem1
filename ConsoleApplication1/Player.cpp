@@ -153,6 +153,7 @@ void Player::InitPlayer()
     std::cout << "(1) Warrior" << std::endl;
     std::cout << "(2) Mage" << std::endl;
     std::cout << "(3) Hunter" << std::endl;
+    std::cout << "(4) Assassin" << std::endl;
     std::cin >> ChosenClass;
     switch (ChosenClass) {
     case 1:
@@ -160,24 +161,42 @@ void Player::InitPlayer()
         SetPlayerMaxHP(100);
         SetPlayerHP(100);
         SetPlayerPower(4);
+        SetPlayerCritChance(5);
         break;
     case 2:
         SetPlayerClass("Mage");
         SetPlayerMaxHP(70);
         SetPlayerHP(70);
         SetPlayerPower(7);
+        SetPlayerCritChance(5);
         break;
     case 3:
         SetPlayerClass("Hunter");
         SetPlayerMaxHP(40);
         SetPlayerHP(40);
         SetPlayerPower(10);
+        SetPlayerCritChance(5);
+        break;
+    case 4:
+        SetPlayerClass("Assassin");
+        SetPlayerMaxHP(50);
+        SetPlayerHP(50);
+        SetPlayerPower(5);
+        SetPlayerCritChance(10);
+        break;
+    case 5:
+        SetPlayerClass("Summoner");
+        SetPlayerMaxHP(70);
+        SetPlayerHP(70);
+        SetPlayerPower(0);
+        SetPlayerCritChance(5);
         break;
     default:
         SetPlayerClass("Warrior");
         SetPlayerMaxHP(100);
         SetPlayerHP(100);
         SetPlayerPower(4);
+        SetPlayerCritChance(5);
         break;
     }
     SetPlayerPosX(0);
@@ -200,6 +219,7 @@ void Player::ShowPlayerStats() const
     std::cout << "Class: " << GetPlayerClass() << std::endl;
     std::cout << "HP: " << GetPlayerHP() << "/" << GetPlayerMaxHP() << std::endl;
     std::cout << "Power: " << GetPlayerPower() << std::endl;
+    std::cout << "Crit Chance: " << GetPlayerCritChance() << "%" << std::endl;
     std::cout << "Level: " << GetPlayerLvl() << std::endl;
     std::cout << "EXP: " << GetPlayerXP() << std::endl;
     std::cout << "Currency: " << GetPlayerCurrency() << std::endl;
@@ -225,6 +245,7 @@ void Player::LevelUpCheck()
 void Player::LevelUp()
 {
     int replaceindex;
+    //Phys-biased
     if (GetPlayerClass() == "Warrior") {
         SetPlayerMaxHP(GetPlayerMaxHP() + 15);
         SetPlayerHP(GetPlayerHP() + 15);
@@ -257,7 +278,7 @@ void Player::LevelUp()
                 ListMovesToReplace();
                 std::cin >> replaceindex;
                 if (replaceindex != 5) {
-                    moveset.ReplaceMove(Moveset::Move("Hallowed Ground", -20, 1, "Heal"), replaceindex);
+                    moveset.ReplaceMove(Moveset::Move("Hallowed Ground", 20, 1, "Heal"), replaceindex);
                 }
             }
             else if (GetPlayerKarma() == 50) {
@@ -312,6 +333,7 @@ void Player::LevelUp()
             }
         }
     }
+    //Mag-biased
     else if (GetPlayerClass() == "Mage") {
         SetPlayerMaxHP(GetPlayerMaxHP() + 11);
         SetPlayerHP(GetPlayerHP() + 11);
@@ -335,7 +357,7 @@ void Player::LevelUp()
             ListMovesToReplace();
             std::cin >> replaceindex;
             if (replaceindex != 5) {
-                moveset.ReplaceMove(Moveset::Move("Aura Farm", -15, 1, "Heal"), replaceindex);
+                moveset.ReplaceMove(Moveset::Move("Aura Farm", 15, 1, "Heal"), replaceindex);
             }
         }
         if (GetPlayerLvl() == 7) {
@@ -399,6 +421,7 @@ void Player::LevelUp()
             }
         }
     }
+    //Glass cannon-ish
     else if (GetPlayerClass() == "Hunter") {
         SetPlayerMaxHP(GetPlayerMaxHP() + 8);
         SetPlayerHP(GetPlayerHP() + 8);
@@ -482,6 +505,177 @@ void Player::LevelUp()
                 std::cin >> replaceindex;
                 if (replaceindex != 5) {
                     moveset.ReplaceMove(Moveset::Move("Styx's Call", 5, 10, "Magical"), replaceindex);
+                }
+            }
+        }
+    }
+    //Crit Bias
+    else if (GetPlayerClass() == "Assassin") {
+        SetPlayerMaxHP(GetPlayerMaxHP() + 9);
+        SetPlayerHP(GetPlayerHP() + 9);
+        SetPlayerPower(GetPlayerPower() + 4);
+        SetPlayerCritChance(GetPlayerCritChance() + 3);
+        if (GetPlayerLvl() == 2) {
+            moveset.SetMove(Moveset::Move("Firestrike", 5, 1, "Magical"));
+        }
+        if (GetPlayerLvl() == 4) {
+            if (GetPlayerKarma() > 50) {
+                moveset.SetMove(Moveset::Move("Divine Sacrifice", 16, 1, "Dark"));
+            }
+            else if (GetPlayerKarma() == 50) {
+                moveset.SetMove(Moveset::Move("Multi-Faced", 4, 5, "Physical"));
+            }
+            else if (GetPlayerKarma() < 50) {
+                moveset.SetMove(Moveset::Move("Under Me", 0, 1, "Control"));
+            }
+        }
+        if (GetPlayerLvl() == 5) {
+            std::cout << "You are trying to learn Quick Refractory, 13 Strength, 1 Hit, Heal." << std::endl;
+            ListMovesToReplace();
+            std::cin >> replaceindex;
+            if (replaceindex != 5) {
+                moveset.ReplaceMove(Moveset::Move("Quick Refractory", 16, 1, "Heal"), replaceindex);
+            }
+        }
+        if (GetPlayerLvl() == 7) {
+            if (GetPlayerKarma() > 50) {
+                std::cout << "You are trying to learn Blinding Daggers, 3 Strength, 5 Hits, Physical." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Blinding Daggers", 3, 5, "Physical"), replaceindex);
+                }
+            }
+            else if (GetPlayerKarma() == 50) {
+                std::cout << "You are trying to learn Puppeteer, 0 Strength, 2 Hits, Control." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Puppeteer", 0, 2, "Control"), replaceindex);
+                }
+            }
+            else if (GetPlayerKarma() < 50) {
+                std::cout << "You are trying to learn Blood for the Blood God, 9 Strength, 2 Hits, Dark." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Blood for the Blood God", 9, 2, "Dark"), replaceindex);
+                }
+            }
+        }
+        if (GetPlayerLvl() == 8) {
+            std::cout << "You are trying to learn Phantom Party, 6 Strength, 4 Hit, Physical." << std::endl;
+            ListMovesToReplace();
+            std::cin >> replaceindex;
+            if (replaceindex != 5) {
+                moveset.ReplaceMove(Moveset::Move("Phantom Party", 6, 4, "Physical"), replaceindex);
+            }
+        }
+        if (GetPlayerLvl() == 10) {
+            if (GetPlayerKarma() > 50) {
+                std::cout << "You are trying to learn Inspiring Control, 0 Strength, 3 Hit, Control." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Inspiring Control", 0, 3, "Control"), replaceindex);
+                }
+            }
+            else if (GetPlayerKarma() == 50) {
+                std::cout << "You are trying to learn In the Dark, for the Light, 15 Strength, 4 Hits, Dark." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("In the Dark, for the Light", 15, 4, "Dark"), replaceindex);
+                }
+            }
+            else if (GetPlayerKarma() < 50) {
+                std::cout << "You are trying to learn Death by a Thousand Cuts, 2 Strength, 15 Hits, Physical." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Death by a Thousand Cuts", 2, 15, "Physical"), replaceindex);
+                }
+            }
+        }
+    }
+    //y=mx+c Graph
+    else if (GetPlayerClass() == "Summoner") {
+        SetPlayerMaxHP(GetPlayerMaxHP() + 10);
+        SetPlayerHP(GetPlayerHP() + 10);
+        if (GetPlayerLvl() == 2) {
+            moveset.SetMove(Moveset::Move("Summon: Rat", 2, 1, "Summon"));
+        }
+        if (GetPlayerLvl() == 4) {
+            if (GetPlayerKarma() > 50) {
+                moveset.SetMove(Moveset::Move("Summon: Deer", 4, 1, "Summon"));
+            }
+            else if (GetPlayerKarma() == 50) {
+                moveset.SetMove(Moveset::Move("Summon: Owl", 5, 1, "Summon"));
+            }
+            else if (GetPlayerKarma() < 50) {
+                moveset.SetMove(Moveset::Move("Summon: Crows", 2, 2, "Summon"));
+            }
+        }
+        if (GetPlayerLvl() == 5) {
+            moveset.SetMove(Moveset::Move("Forestry Knowledge", 10, 1, "Heal"));
+        }
+        if (GetPlayerLvl() == 7) {
+            if (GetPlayerKarma() > 50) {
+                std::cout << "You are trying to learn Protect Command, 0 Strength, 3 Hits, Physical." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Protect Command", 0, 3, "Physical"), replaceindex);
+                }
+            }
+            else if (GetPlayerKarma() == 50) {
+                std::cout << "You are trying to learn Loyal Command, 2 Strength, 2 Hits, Physical." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Loyal Command", 2, 2, "Physical"), replaceindex);
+                }
+            }
+            else if (GetPlayerKarma() < 50) {
+                std::cout << "You are trying to learn Attack Command, 5 Strength, 4 Hits, Dark." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Attack Command", 5, 4, "Dark"), replaceindex);
+                }
+            }
+        }
+        if (GetPlayerLvl() == 8) {
+            std::cout << "You are trying to learn Summon: Bear, 10 Strength, 1 Hit, Summon." << std::endl;
+            ListMovesToReplace();
+            std::cin >> replaceindex;
+            if (replaceindex != 5) {
+                moveset.ReplaceMove(Moveset::Move("Summon: Bear", 10, 1, "Summon"), replaceindex);
+            }
+        }
+        if (GetPlayerLvl() == 10) {
+            if (GetPlayerKarma() > 50) {
+                std::cout << "You are trying to learn Summon: Pheonix, 30 Strength, 1 Hit, Heal." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Summon: Pheonix", 30, 1, "Heal"), replaceindex);
+                }
+            }
+            else if (GetPlayerKarma() == 50) {
+                std::cout << "You are trying to learn Summon: Dragon, 20 Strength, 1 Hits, Summon." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Summon: Dragon", 20, 1, "Summon"), replaceindex);
+                }
+            }
+            else if (GetPlayerKarma() < 50) {
+                std::cout << "You are trying to learn Summon: Demon, 40 Strength, 1 Hits, Dark." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Summon: Demon", 40, 1, "Dark"), replaceindex);
                 }
             }
         }
