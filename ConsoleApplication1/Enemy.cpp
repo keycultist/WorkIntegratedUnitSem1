@@ -88,6 +88,30 @@ Moveset& Enemy::GetMoveSet() {
 	return moveset;
 }
 
+Enemy::Enemy()
+{
+}
+
+Enemy::Enemy(std::string EnemyClass, int EnemyHP, int EnemyPower, int EnemyPosX, int EnemyPosY, int EnemyLvl, std::string EnemyEquippedWeapon, std::string EnemyEquippedArmor)
+{
+}
+
+Enemy::~Enemy()
+{
+}
+
+void Enemy::InitEnemy()
+{
+	SetEnemyClass("Test");
+	SetEnemyHP(20);
+	SetEnemyPower(1);
+	SetEnemyPos(0, 0);;
+	SetEnemyLvl(1);
+	SetEnemyXP(0);
+	SetEnemyEquippedWeapon("None");
+	SetEnemyEquippedArmor("None");
+}
+
 void Enemy::ShowEnemyStats(Enemy& MC) {
 	// Return Enemy Stats Here with STD::COUT!!!! (tedious)
 }

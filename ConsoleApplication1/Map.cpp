@@ -1,41 +1,8 @@
 /*
-                                               @@   @
-                          @@@@@                            @@
-                       @@@     @@                 @@                  @
-                     @@         @@           @@                       @
-                   @@@            @          @
-                  @@               @         @                         @
-                @@                  @@      @                          @
-               @@                    @     @@                           @
-              @                      @@    @        @@@    @            @
-            @@               @@@@  @@     @       @                     @
-           @@             @@@@@  @@       @      @                      @
-          @@            @@ @@@@@ @       @      @                        @          @
-         @@@          @@  @@@  @@        @      @            @@  @       @          @    @
-         @           @   @@@    @ @@@   @      @            @     @      @          @    @
-        @@         @@    @@      @@ @   @      @            @      @@@@       @@         @
-       @@         @@    @@@      @@     @      @@@  @                          @         @@
-       @@         @@    @@       @               @@@                          @@          @
-       @         @@     @@       @   @     @ @          @  @                 @@      @@   @
-       @         @     @@              @@@      @@@@@                    @@      @    @   @
-      @       @@@@@                       @@@@    @@                       @@         @@ @@
-      @     @@                           @@@    @@    @    @                @
-     @@    @@                      @@@@@   @@   @       @@@@                 @
-     @@     @@                      @      @@@@@@@@@@            @@          @
-     @@        @@     @             @@   @@@@@@@@ @@@@@@        @@ @@       @
-     @@        @@   @       @@      @@     @@@@@   @@@@@      @  @     @@@@@@
-     @@@        @  @       @@@@     @@@     @ @@    @@@                     @
-      @         @@@       @ @ @@@   @@@       @                 @           @@
-      @          @@     @   @@@  @@@@        @                               @
-      @          @@  @@@@@@@                @                  @             @
-       @           @@                      @@                                @
-       @@                  @             @@                   @              @
-       @@                               @@                                   @@
-        @@                            @@                      @               @
-        @@                          @@                        @                      @
-         @@                     @@@@                                                 @
-          @@             @@@@@@@                                @@@@@@@@@@@@@        @
-           @@@@@@@@
+okay so this is basically just for the map class, i.e it handles stuff like
+rooms and floors as well as their generation and rendering through the renderer inheritance
+
+theres still stuff to do like actually generating the enemy spawns and etc, but it should be working aside from that
 */
 
 #include "Map.h"
