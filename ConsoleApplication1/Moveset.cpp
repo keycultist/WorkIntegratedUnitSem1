@@ -53,7 +53,7 @@ void Moveset::EnemyInit(const std::string Class)
         EnemyNameMoveset.SetMove(Move("Dust", 1, 4, "Physical"));
     }
 
-    // Special Classes (bosses, etc)
+    // Special Classes (bosses, etc) Fourth move activates thru conditionals
     else if (Class == "ColorCleaver") {
 		EnemyNameMoveset.SetMove(Move("Greater Cleave, Vertical", 2, 4, "Abyssal"));
         EnemyNameMoveset.SetMove(Move("Spear", 4, 1, "Physical"));
