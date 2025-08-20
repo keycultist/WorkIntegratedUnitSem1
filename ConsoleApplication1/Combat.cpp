@@ -12,12 +12,14 @@ void Combat::InitCombat(Player& MC, Enemy& target)
 
 	bool InCombat = true;
 	while (InCombat) {
-		Update(InCombat, MC, target);
+		InCombat = !Update(InCombat, MC, target);
 	}
 }
 
 bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 {
+	std::cout << "You are fighting a: " << target.GetEnemyClass() << std::endl;
+	std::cout << target.GetEnemyHP() << "HP" << std::endl;
 	std::cout << "What will you do?" << std::endl;
 	std::cout << "(1) Attack" << std::endl;
 	std::cout << "(2) Defend" << std::endl;
@@ -37,7 +39,24 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 		std::cout << "(2) " << MC.GetMoveset().GetMove(1).MoveName << " Strength: " << MC.GetMoveset().GetMove(1).MoveStrength << " Hit(s): " << MC.GetMoveset().GetMove(1).Hits << " Type: " << MC.GetMoveset().GetMove(1).MoveType << std::endl;
 		std::cout << "(3) " << MC.GetMoveset().GetMove(2).MoveName << " Strength: " << MC.GetMoveset().GetMove(2).MoveStrength << " Hit(s): " << MC.GetMoveset().GetMove(2).Hits << " Type: " << MC.GetMoveset().GetMove(2).MoveType << std::endl;
 		std::cout << "(4) " << MC.GetMoveset().GetMove(3).MoveName << " Strength: " << MC.GetMoveset().GetMove(3).MoveStrength << " Hit(s): " << MC.GetMoveset().GetMove(3).Hits << " Type: " << MC.GetMoveset().GetMove(3).MoveType << std::endl;
-		std::cin >> ChosenMove;
+		chP = _getch();
+		system("cls");
+		switch (chP) {
+		case '1':
+			ChosenMove = 1;
+			break;
+		case '2':
+			ChosenMove = 2;
+			break;
+		case '3':
+			ChosenMove = 3;
+			break;
+		case '4':
+			ChosenMove = 4;
+			break;
+		default:
+			break;
+		}
 		Combat::PlayerAttack(MC, target, ChosenMove - 1);
 		break;
 	case '2':
@@ -91,6 +110,8 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 			break;
 		}
 		Combat::EnemyAttack(MC, target, EnemyMoveChoice, Defend);
+		chP = _getch();
+		system("cls");
 		return false;
 	}
 }
@@ -114,7 +135,7 @@ void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
 		std::cout << MC.GetPlayerClass() << " used " << MC.GetMoveset().GetMove(ChosenMove).MoveName << std::endl;
 		if (Critted) {
 			target.SetEnemyHP(target.GetEnemyHP() - (MC.GetPlayerPower() + MC.GetMoveset().GetMove(ChosenMove).MoveStrength) * 2);
-			std::cout << "Critical Hit!" << std::endl;
+			std::cout << "Critical Hit! Dealt: " << (MC.GetPlayerPower() + MC.GetMoveset().GetMove(ChosenMove).MoveStrength) * 2 << " damage." << std::endl;
 		}
 		else {
 			target.SetEnemyHP(target.GetEnemyHP() - (MC.GetPlayerPower() + MC.GetMoveset().GetMove(ChosenMove).MoveStrength));

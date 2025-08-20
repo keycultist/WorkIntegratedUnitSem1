@@ -3,14 +3,19 @@
 
 #include <iostream>
 #include "Player.h"
+#include "Combat.h"
+#include "Enemy.h"
 #include "Map.h"
 #include "Renderer.h"
 
 int main()
 {
     Player MC;
+    Enemy Test;
     MC.InitPlayer();
+    Test.InitEnemy();
     MC.ShowPlayerStats();
+    Combat::InitCombat(MC, Test);
 
     Map GMap;
 
