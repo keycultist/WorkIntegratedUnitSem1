@@ -2,6 +2,7 @@
 #define DIVINE_INTERVENTION_H
 
 #include "entity.h"
+#include "Player.h"
 #include <random>
 #include <map>       //<map> is basically a container that stores key words (gods) and value pairs. Keys MUST be unique. Values can have the same key and has to be tied to the key.
 #include <string>    
@@ -33,15 +34,15 @@ private:
     };
 
     const std::vector<GodProbability> godProbabilities = {
-        {God::SAGACITY, 15},
-        {God::AURORA, 15},
-        {God::CHRYSES, 15},
-        {God::FERONIA, 10},
-        {God::KERES, 15},
-        {God::PREYSEYE, 5},
-        {God::SANCTORUM, 10},
-        {God::BOON, 5},
-        {God::MAGNAR, 10}
+        {God::SAGACITY, 15},  //increase magic attacks
+        {God::AURORA, 15},    //increase attack
+        {God::CHRYSES, 10},   //increase/decrease gold earned
+        {God::FERONIA, 10},   //heals
+        {God::KERES, 15},     //decrease max hp
+        {God::PREYSEYE, 5},   //increase/decrease karma
+        {God::SANCTORUM, 10},  //increase max hp
+        {God::BOON, 5},       //increase crit rate
+        {God::MAGNAR, 15}    //increase crit dmg
     };
 
     std::string getRandomDialogue(God god) const;

@@ -41,7 +41,7 @@ DivineIntervention::DivineIntervention() : gen(rd()) {
         "\"My tender sprouts shall cure all of sickness and poison!\"",
         "\"No one has to die for one to see the light!\"",
         "\"It pains me to see that life has been so cruel... Let me heal you all...\"",
-        "\"Fear not, fear not. My mercy shall save all.\""
+        "\"Fear not, fear not. My mercy shall save us all.\""
     };
 
     godDialogues[God::KERES] = {
@@ -66,17 +66,17 @@ DivineIntervention::DivineIntervention() : gen(rd()) {
     };
    
     godDialogues[God::BOON] = {
-        "\"lol.\"",
-        "\"ok.\"",
-        "\"girl.\"",
-        "\"ate.\""
+        "\"How marvellously lucky for you all to encounter me~\"",
+        "\"Just one strum of the threads of fate may tip the tides in your favour~\"",
+        "\"How wondrous; chaos theory in action...!\"",
+        "\"Watch the threads of fate weave into an endless universal fabric of possibility...\""
     };
 
     godDialogues[God::MAGNAR] = {
-        "\"uh.\"",
-        "\"pmo.\"",
-        "\"sybau.\"",
-        "\"lalalala.\""
+        "\"Let the might of a thousand warriors conquer your minds!\"",
+        "\"Their flesh and blood will forge our swords! Their veins will be our bowstrings! And their bones will be our daggers!\"",
+        "\"Our adversaries' bodies shall be relics of the past!\"",
+        "\"Behold, the law of absolute ruin!\""
     };
 }
 
