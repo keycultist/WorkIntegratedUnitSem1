@@ -195,8 +195,10 @@ void Player::InitPlayer()
 
 void Player::ShowPlayerStats() const
 {
+    std::cout << std::endl;
+    std::cout << "Current Stats:" << std::endl;
     std::cout << "Class: " << GetPlayerClass() << std::endl;
-    std::cout << "HP: " << GetPlayerHP() << std::endl;
+    std::cout << "HP: " << GetPlayerHP() << "/" << GetPlayerMaxHP() << std::endl;
     std::cout << "Power: " << GetPlayerPower() << std::endl;
     std::cout << "Level: " << GetPlayerLvl() << std::endl;
     std::cout << "EXP: " << GetPlayerXP() << std::endl;
@@ -490,9 +492,9 @@ void Player::ListMovesToReplace()
 {
     std::cout << "Replace which move?" << std::endl;
     std::cout << "Current Moves" << std::endl;
-    std::cout << "(1) " << GetMoveset().GetMove(0).MoveName << std::endl;
-    std::cout << "(2) " << GetMoveset().GetMove(1).MoveName << std::endl;
-    std::cout << "(3) " << GetMoveset().GetMove(2).MoveName << std::endl;
-    std::cout << "(4) " << GetMoveset().GetMove(3).MoveName << std::endl;
+    std::cout << "(1) [" << GetMoveset().GetMove(0).MoveName << "] Strength: " << GetMoveset().GetMove(0).MoveStrength << " Hit(s): " << GetMoveset().GetMove(0).Hits << " Type: " << GetMoveset().GetMove(0).MoveType << std::endl;
+    std::cout << "(2) [" << GetMoveset().GetMove(1).MoveName << "] Strength: " << GetMoveset().GetMove(1).MoveStrength << " Hit(s): " << GetMoveset().GetMove(1).Hits << " Type: " << GetMoveset().GetMove(1).MoveType << std::endl;
+    std::cout << "(3) [" << GetMoveset().GetMove(2).MoveName << "] Strength: " << GetMoveset().GetMove(2).MoveStrength << " Hit(s): " << GetMoveset().GetMove(2).Hits << " Type: " << GetMoveset().GetMove(2).MoveType << std::endl;
+    std::cout << "(4) [" << GetMoveset().GetMove(3).MoveName << "] Strength: " << GetMoveset().GetMove(3).MoveStrength << " Hit(s): " << GetMoveset().GetMove(3).Hits << " Type: " << GetMoveset().GetMove(3).MoveType << std::endl;
     std::cout << "(5) Don't learn this move" << std::endl;
 }
