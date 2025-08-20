@@ -32,7 +32,7 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 	case '1':
 		//Include Player Moveset
 		std::cout << "Choose a Move" << std::endl;
-		std::cout << "Note: Dark moves cost 15% of your HP" << std::endl;
+		std::cout << "Note: Dark moves cost 15% of your Max HP" << std::endl;
 		std::cout << "(1) " << MC.GetMoveset().GetMove(0).MoveName << " Strength: " << MC.GetMoveset().GetMove(0).MoveStrength << " Hit(s): " << MC.GetMoveset().GetMove(0).Hits << " Type: " << MC.GetMoveset().GetMove(0).MoveType << std::endl;
 		std::cout << "(2) " << MC.GetMoveset().GetMove(1).MoveName << " Strength: " << MC.GetMoveset().GetMove(1).MoveStrength << " Hit(s): " << MC.GetMoveset().GetMove(1).Hits << " Type: " << MC.GetMoveset().GetMove(1).MoveType << std::endl;
 		std::cout << "(3) " << MC.GetMoveset().GetMove(2).MoveName << " Strength: " << MC.GetMoveset().GetMove(2).MoveStrength << " Hit(s): " << MC.GetMoveset().GetMove(2).Hits << " Type: " << MC.GetMoveset().GetMove(2).MoveType << std::endl;
@@ -53,7 +53,7 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 		}
 		else if (RunChance == 1) {
 			std::cout << "Ran Away but Damaged" << std::endl;
-			MC.SetPlayerHP(MC.GetPlayerHP() - 5);
+			MC.SetPlayerHP(MC.GetPlayerHP() * 0.95);
 			return true;
 		}
 		else {
@@ -101,7 +101,7 @@ void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
 	bool Critted = false;
 	if (MC.GetMoveset().GetMove(ChosenMove).MoveType == "Dark") {
 		std::cout << "Dark Move Used! -15%HP" << std::endl;
-		MC.SetPlayerHP(MC.GetPlayerHP() * 0.85);
+		MC.SetPlayerHP(MC.GetPlayerHP() - (MC.GetPlayerMaxHP() * 0.85));
 	}
 	for (int i = 0; i < MC.GetMoveset().GetMove(ChosenMove).Hits; i++) {
 		Critting = rand() % 100 + 1;

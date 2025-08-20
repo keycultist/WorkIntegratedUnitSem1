@@ -19,16 +19,16 @@ private:
 public:
     Events();
     void CombatEventTriggered();
-    void EventTriggered(int& PlayerKarma, int PlayerCurrency);
-    void handleSuspiciousFrogEvent(int& PlayerKarma);
-    void handleFreePrisonerEvent(int& PlayerKarma);
-    void handleMutatedRatEvent(int& PlayerKarma);
-    void handleTalkingChestEvent(int& PlayerKarma);
-    void handleSpectralEntityEvent(int& PlayerKarma);
-    void handleHunchedBackGoblinEvent(int& PlayerCurrency);
-    void handleMageKarmaTestEvent(int& PlayerKarma);
-    void handleGoblinJesterEvent(int& PlayerCurrency);
-    void handleSuspiciousFrog2Event(int& PlayerKarma);
+    void EventTriggered(Player& MC);
+    void handleSuspiciousFrogEvent(Player& MC);
+    void handleFreePrisonerEvent(Player& MC);
+    void handleMutatedRatEvent(Player& MC);
+    void handleTalkingChestEvent(Player& MC);
+    void handleSpectralEntityEvent(Player& MC);
+    void handleHunchedBackGoblinEvent(Player& MC);
+    void handleMageKarmaTestEvent(Player& MC);
+    void handleGoblinJesterEvent(Player& MC);
+    void handleSuspiciousFrog2Event(Player& MC);
 };
 
 #endif // EVENTS_H

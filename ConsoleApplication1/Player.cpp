@@ -9,6 +9,11 @@ void Player::SetPlayerClass(std::string Class) {
     PlayerClass = Class;
 }
 
+void Player::SetPlayerMaxHP(int MaxHP)
+{
+    PlayerMaxHP = MaxHP;
+}
+
 void Player::SetPlayerHP(int HP) {
     PlayerHP = HP;
 }
@@ -64,6 +69,11 @@ void Player::SetCurrentDifficulty(int Difficulty)
 
 std::string Player::GetPlayerClass(void) const {
     return PlayerClass;
+}
+
+int Player::GetPlayerMaxHP(void) const
+{
+    return PlayerMaxHP;
 }
 
 int Player::GetPlayerHP(void) const {
@@ -145,21 +155,25 @@ void Player::InitPlayer()
     switch (ChosenClass) {
     case 1:
         SetPlayerClass("Warrior");
+        SetPlayerMaxHP(100);
         SetPlayerHP(100);
         SetPlayerPower(4);
         break;
     case 2:
         SetPlayerClass("Mage");
+        SetPlayerMaxHP(70);
         SetPlayerHP(70);
         SetPlayerPower(7);
         break;
     case 3:
         SetPlayerClass("Hunter");
+        SetPlayerMaxHP(40);
         SetPlayerHP(40);
         SetPlayerPower(10);
         break;
     default:
         SetPlayerClass("Warrior");
+        SetPlayerMaxHP(100);
         SetPlayerHP(100);
         SetPlayerPower(4);
         break;
@@ -208,6 +222,7 @@ void Player::LevelUp()
 {
     int replaceindex;
     if (GetPlayerClass() == "Warrior") {
+        SetPlayerMaxHP(GetPlayerMaxHP() + 15);
         SetPlayerHP(GetPlayerHP() + 15);
         SetPlayerPower(GetPlayerPower() + 3);
         if (GetPlayerLvl() == 2) {
@@ -294,6 +309,7 @@ void Player::LevelUp()
         }
     }
     else if (GetPlayerClass() == "Mage") {
+        SetPlayerMaxHP(GetPlayerMaxHP() + 11);
         SetPlayerHP(GetPlayerHP() + 11);
         SetPlayerPower(GetPlayerPower() + 4);
         if (GetPlayerLvl() == 2) {
@@ -380,6 +396,7 @@ void Player::LevelUp()
         }
     }
     else if (GetPlayerClass() == "Hunter") {
+        SetPlayerMaxHP(GetPlayerMaxHP() + 8);
         SetPlayerHP(GetPlayerHP() + 8);
         SetPlayerPower(GetPlayerPower() + 5);
         if (GetPlayerLvl() == 2) {
