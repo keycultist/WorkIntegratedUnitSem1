@@ -6,20 +6,21 @@
 #include <time.h> 
 
 void Player::SetPlayerClass(std::string Class) {
-    PlayerClass = Class;
+    SetClass(Class);
 }
 
 void Player::SetPlayerMaxHP(int MaxHP)
 {
-    PlayerMaxHP = MaxHP;
+    SetMaxHP(MaxHP);
 }
 
 void Player::SetPlayerHP(int HP) {
-    PlayerHP = HP;
+    SetHP(HP);
 }
 
 void Player::SetPlayerPower(int Power) {
-    PlayerPower = Power;
+    SetPower(Power);
+    SetmagicPower(Power);
 }
 
 void Player::SetPlayerCritChance(int CritChance)
@@ -52,7 +53,7 @@ void Player::SetPlayerEquippedArmor(std::string Armor) {
 }
 
 void Player::SetPlayerCurrency(int Currency) {
-    PlayerCurrency = Currency;
+    SetCurrency(Currency);
 }
 
 void Player::SetPlayerKarma(int Karma)
@@ -68,20 +69,20 @@ void Player::SetCurrentDifficulty(int Difficulty)
 
 
 std::string Player::GetPlayerClass(void) const {
-    return PlayerClass;
+    return GetClass();
 }
 
 int Player::GetPlayerMaxHP(void) const
 {
-    return PlayerMaxHP;
+    return GetMaxHP();
 }
 
 int Player::GetPlayerHP(void) const {
-    return PlayerHP;
+    return GetHP();
 }
 
 int Player::GetPlayerPower(void) const {
-    return PlayerPower;
+    return GetPower();
 }
 
 int Player::GetPlayerCritChance(void) const
@@ -114,7 +115,7 @@ std::string Player::GetPlayerEquippedArmor(void) const {
 }
 
 int Player::GetPlayerCurrency(void) const {
-    return PlayerCurrency;
+    return GetCurrency();
 }
 
 int Player::GetPlayerKarma(void) const
@@ -132,11 +133,12 @@ Moveset& Player::GetMoveset()
     return moveset;
 }
 
-Player::Player() : PlayerClass("Warrior"), PlayerMaxHP(100), PlayerHP(100), PlayerPower(5), PlayerCritChance(5), PlayerPosX(0), PlayerPosY(0), PlayerLvl(1), PlayerXP(0), PlayerEquippedWeapon("None"), PlayerEquippedArmor("None"), PlayerCurrency(0), PlayerKarma(50), CurrentDifficulty(1)
+Player::Player() : Entity("Warrior", 100, 100, 5, 0, 0), PlayerClass("Warrior"), PlayerMaxHP(100), PlayerHP(100), PlayerPower(5), PlayerCritChance(5), PlayerPosX(0), PlayerPosY(0), PlayerLvl(1), PlayerXP(0), PlayerEquippedWeapon("None"), PlayerEquippedArmor("None"), PlayerCurrency(0), PlayerKarma(50), CurrentDifficulty(1)
 {
 }
 
-Player::Player(std::string PlayerClass, int PlayerMaxHP, int PlayerHP, int PlayerPower, int PlayerCritChance, int PlayerPosX, int PlayerPosY, int PlayerLvl, int PlayerXP, std::string PlayerEquippedWeapon, std::string PlayerEquippedArmor, int PlayerCurrency, int PlayerKarma, int CurrentDifficulty) : PlayerClass(PlayerClass), PlayerMaxHP(PlayerMaxHP), PlayerHP(PlayerHP), PlayerPower(PlayerPower), PlayerCritChance(PlayerCritChance), PlayerPosX(PlayerPosX), PlayerPosY(PlayerPosY), PlayerLvl(PlayerLvl), PlayerXP(PlayerXP), PlayerEquippedWeapon(PlayerEquippedWeapon), PlayerEquippedArmor(PlayerEquippedArmor), PlayerCurrency(PlayerCurrency), PlayerKarma(PlayerKarma), CurrentDifficulty(CurrentDifficulty)
+Player::Player(std::string PlayerClass, int PlayerMaxHP, int PlayerHP, int PlayerPower, int PlayerCritChance, int PlayerPosX, int PlayerPosY, int PlayerLvl, int PlayerXP, std::string PlayerEquippedWeapon, std::string PlayerEquippedArmor, int PlayerCurrency, int PlayerKarma, int CurrentDifficulty)
+    : Entity(PlayerClass, PlayerMaxHP, PlayerHP, PlayerPower, PlayerPower, PlayerCurrency), PlayerCritChance(PlayerCritChance), PlayerPosX(PlayerPosX), PlayerPosY(PlayerPosY), PlayerLvl(PlayerLvl), PlayerXP(PlayerXP), PlayerEquippedWeapon(PlayerEquippedWeapon), PlayerEquippedArmor(PlayerEquippedArmor), PlayerKarma(PlayerKarma), CurrentDifficulty(CurrentDifficulty)
 {
 }
 
@@ -193,8 +195,10 @@ void Player::InitPlayer()
 
 void Player::ShowPlayerStats() const
 {
+    std::cout << std::endl;
+    std::cout << "Current Stats:" << std::endl;
     std::cout << "Class: " << GetPlayerClass() << std::endl;
-    std::cout << "HP: " << GetPlayerHP() << std::endl;
+    std::cout << "HP: " << GetPlayerHP() << "/" << GetPlayerMaxHP() << std::endl;
     std::cout << "Power: " << GetPlayerPower() << std::endl;
     std::cout << "Level: " << GetPlayerLvl() << std::endl;
     std::cout << "EXP: " << GetPlayerXP() << std::endl;
@@ -226,7 +230,7 @@ void Player::LevelUp()
         SetPlayerHP(GetPlayerHP() + 15);
         SetPlayerPower(GetPlayerPower() + 3);
         if (GetPlayerLvl() == 2) {
-            moveset.SetMove(Moveset::Move("Double Slash",3,2,"Physical"));
+            moveset.SetMove(Moveset::Move("Double Slash", 3, 2, "Physical"));
         }
         if (GetPlayerLvl() == 4) {
             if (GetPlayerKarma() > 50) {
@@ -488,9 +492,9 @@ void Player::ListMovesToReplace()
 {
     std::cout << "Replace which move?" << std::endl;
     std::cout << "Current Moves" << std::endl;
-    std::cout << "(1) " << GetMoveset().GetMove(0).MoveName << std::endl;
-    std::cout << "(2) " << GetMoveset().GetMove(1).MoveName << std::endl;
-    std::cout << "(3) " << GetMoveset().GetMove(2).MoveName << std::endl;
-    std::cout << "(4) " << GetMoveset().GetMove(3).MoveName << std::endl;
+    std::cout << "(1) [" << GetMoveset().GetMove(0).MoveName << "] Strength: " << GetMoveset().GetMove(0).MoveStrength << " Hit(s): " << GetMoveset().GetMove(0).Hits << " Type: " << GetMoveset().GetMove(0).MoveType << std::endl;
+    std::cout << "(2) [" << GetMoveset().GetMove(1).MoveName << "] Strength: " << GetMoveset().GetMove(1).MoveStrength << " Hit(s): " << GetMoveset().GetMove(1).Hits << " Type: " << GetMoveset().GetMove(1).MoveType << std::endl;
+    std::cout << "(3) [" << GetMoveset().GetMove(2).MoveName << "] Strength: " << GetMoveset().GetMove(2).MoveStrength << " Hit(s): " << GetMoveset().GetMove(2).Hits << " Type: " << GetMoveset().GetMove(2).MoveType << std::endl;
+    std::cout << "(4) [" << GetMoveset().GetMove(3).MoveName << "] Strength: " << GetMoveset().GetMove(3).MoveStrength << " Hit(s): " << GetMoveset().GetMove(3).Hits << " Type: " << GetMoveset().GetMove(3).MoveType << std::endl;
     std::cout << "(5) Don't learn this move" << std::endl;
 }

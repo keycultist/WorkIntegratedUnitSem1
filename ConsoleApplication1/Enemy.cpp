@@ -102,7 +102,7 @@ Enemy::~Enemy()
 
 void Enemy::InitEnemy()
 {
-	SetEnemyClass("Test");
+	SetEnemyClass("Grunt");
 	SetEnemyHP(20);
 	SetEnemyPower(1);
 	SetEnemyPos(0, 0);;

@@ -71,6 +71,8 @@ void Map::CreateNewFloor(int Difficulty) {
             roomType = RoomType::SMALL;
         }
 
+        // Create Enemies in rooms.
+
         roomPlans.push_back({ allPositions[positionIndex++], roomType });
     }
 
@@ -191,30 +193,32 @@ bool Map::isPlayerInRoom(int playerX, int playerY, const Room& room) {
 
 void Map::renderCurrentRoom(Room* room, char** roomBoard, int boardSize) {
     if (!room) return;
-    
-    // Clear the room board first
+
     fillBoard(roomBoard, boardSize, boardSize);
-    
-    // Calculate room boundaries
-    int halfW = room->width / 2;
-    int halfH = room->height / 2;
-    int startX = room->x - halfW;
-    int startY = room->y - halfH;
-    
-    // Copy room data to the center of roomBoard
-    int centerOffset = boardSize / 2 - room->width / 2;
-    
-    for (int x = 0; x < room->width; ++x) {
-        for (int y = 0; y < room->height; ++y) {
-            int floorX = startX + x;
-            int floorY = startY + y;
-            int roomX = centerOffset + x;
-            int roomY = centerOffset + y;
-            
-            // Bounds checking
-            if (floorX >= 0 && floorX < 128 && floorY >= 0 && floorY < 128 &&
-                roomX >= 0 && roomX < boardSize && roomY >= 0 && roomY < boardSize) {
-                roomBoard[roomX][roomY] = FloorGrid[floorX][floorY];
+
+    int scale = 8;  // Scale factor for detailed view
+    int scaledWidth = room->width * scale;
+    int scaledHeight = room->height * scale;
+    int centerX = boardSize / 2;
+    int centerY = boardSize / 2;
+
+    // Render scaled-up version centered on roomBoard
+    for (int x = 0; x < scaledWidth; ++x) {
+        for (int y = 0; y < scaledHeight; ++y) {
+            int roomBoardX = centerX - scaledWidth / 2 + x;
+            int roomBoardY = centerY - scaledHeight / 2 + y;
+
+            if (roomBoardX >= 0 && roomBoardX < boardSize && roomBoardY >= 0 && roomBoardY < boardSize) {
+                // Determine what this scaled pixel should be
+                int originalX = x / scale;
+                int originalY = y / scale;
+
+                if (originalX == 0 || originalX == room->width - 1 || originalY == 0 || originalY == room->height - 1) {
+                    roomBoard[roomBoardX][roomBoardY] = '#';  // Wall
+                }
+                else {
+                    roomBoard[roomBoardX][roomBoardY] = room->floorChar;  // Floor
+                }
             }
         }
     }
