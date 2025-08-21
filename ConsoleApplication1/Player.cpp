@@ -205,8 +205,8 @@ void Player::InitPlayer()
             break;
         case 6:
             SetPlayerClass("Ritualist");
-            SetPlayerMaxHP(1000);
-            SetPlayerHP(1000);
+            SetPlayerMaxHP(500);
+            SetPlayerHP(500);
             SetPlayerPower(10);
             SetPlayerCritChance(5);
             break;
@@ -808,8 +808,8 @@ void Player::LevelUp()
     }
     //Self-Harmer
     else if (GetPlayerClass() == "Ritualist") {
-        SetPlayerMaxHP(GetPlayerMaxHP() + 50);
-        SetPlayerHP(GetPlayerHP() + 50);
+        SetPlayerMaxHP(GetPlayerMaxHP() + 25);
+        SetPlayerHP(GetPlayerHP() + 25);
         if (GetPlayerLvl() == 2) {
             std::cout << "You learnt Blood Moon Rites, 20 Strength, 2 Hit, Ritual." << std::endl;
             moveset.SetMove(Moveset::Move("Blood Moon Rites", 20, 2, "Ritual"));
