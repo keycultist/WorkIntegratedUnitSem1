@@ -93,28 +93,28 @@ void Moveset::EnemyInit(const std::string Class)
 
     // True Boss movesets, Phase Change moves will be commented.
     else if (Class == "OneWingedAngel") {
-		EnemyNameMoveset.SetMove(Move("Flare.", 1, 8, "Magical"));
-        EnemyNameMoveset.SetMove(Move("Shadow Flare.", 4, 3, "Abyssal"));
-        EnemyNameMoveset.SetMove(Move("Octaslash.", 2, 8, "Physical"));
+		EnemyNameMoveset.SetMove(Move("Flare.", 4, 8, "Magical"));
+        EnemyNameMoveset.SetMove(Move("Shadow Flare.", 15, 3, "Abyssal"));
+        EnemyNameMoveset.SetMove(Move("Octaslash.", 3, 8, "Physical"));
         EnemyNameMoveset.SetMove(Move("Scintilla.", 0, 1, "Counter"));
 
         // Phase Change Only Move, used ONCE per fight.
-		EnemyNameMoveset.SetMove(Move("Supernova.", 1, 30, "Abyssal"));
+		EnemyNameMoveset.SetMove(Move("Supernova.", 1, 150, "BossMove"));
 
 		// if HP <= 1% then use this move.
-        EnemyNameMoveset.SetMove(Move("I refuse to be just a memory.", 1, 50, "Abyssal"));
+        EnemyNameMoveset.SetMove(Move("I refuse to be just a memory.", 1, 225, "DeathMove"));
     }
     else if (Class == "JovialChaos") {
-        EnemyNameMoveset.SetMove(Move("At the ready.", 0, 1, "Buff"));
+        EnemyNameMoveset.SetMove(Move("At the ready.", 5, 1, "Buff"));
         EnemyNameMoveset.SetMove(Move("Curse.", 0, 1, "Debuff"));
-        EnemyNameMoveset.SetMove(Move("Fire.", 10, 1, "Abyssal"));
-        EnemyNameMoveset.SetMove(Move("Focus.", 0, 1, "Buff"));
+        EnemyNameMoveset.SetMove(Move("Fire.", 45, 1, "Abyssal"));
+        EnemyNameMoveset.SetMove(Move("Focus.", 5, 1, "Buff"));
 
 		// Phase Change Only Move, used ONCE per fight.
-		EnemyNameMoveset.SetMove(Move("Deus Ex Machina.", 1, 30, "Abyssal"));
+		EnemyNameMoveset.SetMove(Move("Deus Ex Machina.", 1, 150, "BossMove"));
 
 		// if HP <= 1% then use this move.
-        EnemyNameMoveset.SetMove(Move("Door to the Backyard.", 1, 50, "Abyssal"));
+        EnemyNameMoveset.SetMove(Move("Door to the Backyard.", 1, 200, "DeathMove"));
     }
 }
 
