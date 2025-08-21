@@ -2,6 +2,7 @@
 #include <string>
 #include "Moveset.h"
 #include "entity.h"
+#include "Position.h"
 class Player : public Entity
 {
 private:
@@ -66,6 +67,8 @@ public:
 	void LevelUpCheck();
 	void LevelUp();
 	void ListMovesToReplace();
+	Position entityPosObj;
+	virtual void move(Entity* ptr[6]);
 };
 
 

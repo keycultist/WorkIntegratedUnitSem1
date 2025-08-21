@@ -954,3 +954,58 @@ void Player::ListMovesToReplace()
     std::cout << "(5) Don't learn this move" << std::endl;
     std::cout << std::endl;
 }
+void Player::move(Entity* ptr[6])
+{
+   // checkGhost(ptr);
+    char input;
+    input = _getch();
+
+    int targetx = entityPosObj.x;
+    int targety = entityPosObj.y;
+
+
+
+    switch (input) {
+    case 'W':
+    case 'w':
+        if (entityPosObj.y > 0) {
+            targety = entityPosObj.y--;
+        }
+        else {
+            std::cout << "You are at the edge of the board! \n";
+        }
+        break;
+    case 'A':
+    case 'a':
+        if (entityPosObj.x > 0) {
+            targetx = entityPosObj.x--;
+        }
+        else {
+            std::cout << "You are at the edge of the board! \n";
+        }
+        break;
+    case 'S':
+    case 's':
+        if (entityPosObj.y < 19) {
+            targety = entityPosObj.y++;
+        }
+        else {
+            std::cout << "You are at the edge of the board! \n";
+
+        }
+        break;
+    case 'D':
+    case 'd':
+        if (entityPosObj.x < 19) {
+            targetx = entityPosObj.x++;
+        }
+        else {
+            std::cout << "You are at the edge of the board! \n";
+        }
+        break;
+    default:
+        std::cout << "Invalid input\n";
+    }
+    targetx = entityPosObj.x;
+    targety = entityPosObj.y;
+}
