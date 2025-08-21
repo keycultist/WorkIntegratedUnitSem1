@@ -126,6 +126,7 @@ void Enemy::InitEnemy()
 	SetEnemyPos(0, 0);;
 	SetEnemyLvl(1);
 	SetEnemyXP(0);
+	Phase = false;
 	SetEnemyEquippedWeapon("None");
 	SetEnemyEquippedArmor("None");
 }
@@ -134,18 +135,163 @@ void Enemy::ShowEnemyStats(Enemy& MC) {
 	// Return Enemy Stats Here with STD::COUT!!!! (tedious)
 }
 
-std::string Enemy::DecisionMatrix()
+std::string Enemy::DecisionMatrix(int PlayerHP, bool PlayerBuffed)
 {
-	// HP Check
-	// Based off HP / Enemy Power, decides what to do
-	// If HP < 20% and SpecialClass, use specialClass Move.
-	// if SpecialClass Move requires conditionals, check if conditions are met.
-	// If not, then heal or enter phase change if they have one.
-	// If HP < 50% and not specialClass, use Heal Move if available.
-	// If heal already used, dont use heal again for N turns.
-	// If player is low hp, focus on attacking.
-	// If player is high hp, focus on debuffing or buffing.
-	
-	// For Special Bosses, use a different Decision Matrix.
-	// 
-}
+	// Standard Enemy Decision Matrix
+	// Based off HP, use moves.
+	// If available, use a buff move if max hp or higher hp % than player.
+	// If available, use an attack move if buffed or if player is debuffed
+	// If available, use a buff move if no buffs are currently applied.
+	// If available, use a debuff move if player is buffed.
+	// If all else fails, launch an attack.
+	// Attack Decision Matrix:
+	// On fight start, use weakest move.
+	// If player has low hp, or a higher hp value then use strong move.
+
+	// For Special/True Bosses, use a different Decision Matrix.
+	// Based off HP, use moves.
+	// If available, use a buff move if max hp or higher hp % than player.
+	// If available, use a counter move if player is buffed.
+	// If available, use a damage move if player is debuffed/buff is active.
+	// If available, and counter has been used within the last 3 recent moves, use a debuff
+	// If the boss is under 50%, initiate phase change if they are a true boss, else, use special move.
+	// On Phase Change, use a special move.
+	// Detect boss 1% hp, if 1% hp, use Final Move if they have one.
+
+	// Standard Enemy Decision Matrix, here we go.
+
+	if (usedMoves.size() >= 3) {
+		// If the enemy has used 3 moves, remove the first move from the used moves list.
+		usedMoves.erase(usedMoves.begin());
+	}
+
+	if (EnemyHP <= 0) {
+		return "DEAD";
+	}
+	else {
+		if (EnemyClass != "OneWingedAngel" and EnemyClass != "JovialChaos") {
+			if (EnemyHP <= 0) {
+				return "DEAD";
+			}
+
+			else if (Buffed == false) {
+				for (int i = 0; i < moveset.size(); i++) {
+					if (moveset.GetMove(i).MoveType == "Buff") {
+						std::string moveName = moveset.GetMove(i).MoveName;
+
+						if (std::find(usedMoves.begin(), usedMoves.end(), moveName) == usedMoves.end()) {
+							return moveName;
+						}
+					}
+				}
+			}
+
+			// thank you, next. (ariana grande!!!!) if no buff is available, check if player is buffed.
+			if (PlayerBuffed == true) {
+				for (int i = 0; i < moveset.size(); i++) {
+					if (moveset.GetMove(i).MoveType == "Debuff") {
+						std::string moveName = moveset.GetMove(i).MoveName;
+						if (std::find(usedMoves.begin(), usedMoves.end(), moveName) == usedMoves.end()) {
+							return moveName;
+						}
+					}
+				}
+			}
+
+			// if all else fails, launch an attack. or smth like that
+			for (int i = 0; i < moveset.size(); i++) {
+				if (moveset.GetMove(i).MoveType == "Physical" ||
+					moveset.GetMove(i).MoveType == "Abyssal" ||
+					moveset.GetMove(i).MoveType == "Magical") {
+					return moveset.GetMove(i).MoveName;
+				}
+			}
+
+		}
+		else {
+			// SPECIAL TRUE BOSS DECISION MATRIX WHAT THE WHAT!?!?
+			if (EnemyHP <= 0) {
+				if (Phase == true) {
+					for (int i = 0; i < moveset.size(); i++) {
+						if (moveset.GetMove(i).MoveType == "DeathMove") {
+							return moveset.GetMove(i).MoveName;
+						}
+					}
+
+					EnemyHP = 0;
+					Phase = false;
+				}
+				return "DEAD";
+			}
+
+			else if (Buffed == false) {
+				for (int i = 0; i < moveset.size(); i++) {
+					if (moveset.GetMove(i).MoveType == "Buff") {
+						std::string moveName = moveset.GetMove(i).MoveName;
+
+						if (std::find(usedMoves.begin(), usedMoves.end(), moveName) == usedMoves.end()) {
+							return moveName;
+						}
+					}
+				}
+			}
+
+			// thank you, next. (ariana grande!!!!) if no buff is available, check if player is buffed.
+			if (PlayerBuffed == true) {
+				for (int i = 0; i < moveset.size(); i++) {
+					if (moveset.GetMove(i).MoveType == "Counter") {
+						std::string moveName = moveset.GetMove(i).MoveName;
+						if (std::find(usedMoves.begin(), usedMoves.end(), moveName) == usedMoves.end()) {
+							return moveName;
+						}
+					}
+				}
+			}
+
+			if (Buffed == true) {
+				for (int i = 0; i < moveset.size(); i++) {
+					if (moveset.GetMove(i).MoveType == "Physical" ||
+						moveset.GetMove(i).MoveType == "Abyssal" ||
+						moveset.GetMove(i).MoveType == "Magical") {
+						std::string moveName = moveset.GetMove(i).MoveName;
+						if (std::find(usedMoves.begin(), usedMoves.end(), moveName) == usedMoves.end()) {
+							return moveName;
+						}
+					}
+				}
+			}
+
+			if (EnemyHP <= EnemyMaxHP / 2) {
+				if (Phase == false) {
+					Phase = true; 
+
+					for (int i = 0; i < moveset.size(); i++) {
+						if (moveset.GetMove(i).MoveType == "BossMove") {
+							return moveset.GetMove(i).MoveName;
+						}
+					}
+				}
+			}
+
+			if (EnemyHP <= EnemyMaxHP / 99) {
+				for (int i = 0; i < moveset.size(); i++) {
+					if (moveset.GetMove(i).MoveType == "DeathMove") {
+						EnemyHP = 0;
+						Phase = false; 
+						return moveset.GetMove(i).MoveName;
+					}
+				}
+			}
+
+			// if all else fails, launch an attack. or smth like that
+			for (int i = 0; i < moveset.size(); i++) {
+				if (moveset.GetMove(i).MoveType == "Physical" ||
+					moveset.GetMove(i).MoveType == "Abyssal" ||
+					moveset.GetMove(i).MoveType == "Magical") {
+					return moveset.GetMove(i).MoveName;
+				}
+			}
+
+
+		}
+	}

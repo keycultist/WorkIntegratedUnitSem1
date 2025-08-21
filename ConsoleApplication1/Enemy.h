@@ -15,8 +15,11 @@ private:
 	int EnemyPosX, EnemyPosY;
 	int EnemyLvl;
 	int EnemyXP;
+	bool Phase;
+	bool Buffed;
 	std::string EnemyEquippedWeapon;
 	std::string EnemyEquippedArmor;
+	std::vector<std::string> usedMoves;
 
 	Moveset moveset;
 protected:
@@ -54,5 +57,5 @@ public:
 	void InitEnemy();
 	static void ShowEnemyStats(Enemy& EC);
 
-	std::string DecisionMatrix();
+	std::string DecisionMatrix(int PlayerHP, bool PlayerBuffed);
 };
