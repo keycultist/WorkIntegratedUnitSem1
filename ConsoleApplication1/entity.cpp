@@ -1,4 +1,6 @@
 #include "entity.h"
+#include "Player.h"
+#include <iostream>
 
 Entity::Entity()
 {
@@ -98,15 +100,15 @@ void Entity::applyBuff(const std::string& stat, int value) {
 }
 
 void Entity::applyKarmaEffect(int value, float multiplierChange) {
-    karma += value;
-    if (karma > 100) karma = 100;
-    if (karma < 0) karma = 0;
+    Karma += value;
+    if (Karma > 100) Karma = 100;
+    if (Karma < 0) Karma = 0;
 
     karmaMultiplier += multiplierChange;
     if (karmaMultiplier < 0.1f) karmaMultiplier = 0.1f;
 
     std::cout << Class << "'s karma changed by " << value
-        << " (Now: " << karma << "/100)\n";
+        << " (Now: " << Karma << "/100)\n";
     std::cout << "Karma multiplier changed by " << multiplierChange
         << " (Now: " << karmaMultiplier << "x)\n";
 }
@@ -114,13 +116,13 @@ void Entity::applyKarmaEffect(int value, float multiplierChange) {
 void Entity::heal(int amount) {
     if (amount <= 0) return;
 
-    int oldHp = hp;
-    hp += amount;
-    if (hp > maxHp) hp = maxHp;
+    int oldHp = HP;
+    HP += amount;
+    if (HP > MaxHP) HP = MaxHP;
 
-    int actualHeal = hp - oldHp;
+    int actualHeal = HP - oldHp;
     std::cout << Class << " is healed for " << actualHeal << " HP! ";
-    std::cout << "Current HP: " << hp << "/" << maxHp << std::endl;
+    std::cout << "Current HP: " << HP << "/" << MaxHP << std::endl;
 }
 
 bool Entity::isAlive() const {
@@ -145,9 +147,9 @@ void Entity::increaseMaxHP(int amount) {
         return;
     }
 
-    int oldMaxHp = maxHp;
-    maxHp += amount;
+    int oldMaxHp = MaxHP;
+    MaxHP += amount;
 
     std::cout << Class << "'s maximum HP increased by " << amount << "! ";
-    std::cout << "HP: " << hp << "/" << maxHp << " (+" << amount << ")\n";
+    std::cout << "HP: " << HP << "/" << MaxHP << " (+" << amount << ")\n";
 }
