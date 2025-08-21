@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "Moveset.h"
 #include <iostream>
+#include <conio.h>
 #include <string>
 #include <stdlib.h>
 #include <time.h> 
@@ -21,6 +22,11 @@ void Player::SetPlayerHP(int HP) {
 void Player::SetPlayerPower(int Power) {
     SetPower(Power);
     SetmagicPower(Power);
+}
+
+void Player::SetPlayermagicPower(int Power)
+{
+    SetPower(Power);
 }
 
 void Player::SetPlayerCritChance(int CritChance)
@@ -149,74 +155,89 @@ Player::~Player()
 void Player::InitPlayer()
 {
     int ChosenClass;
-    std::cout << "What Class are You? (Warrior by default)" << std::endl;
-    std::cout << "(1) Warrior" << std::endl;
-    std::cout << "(2) Mage" << std::endl;
-    std::cout << "(3) Hunter" << std::endl;
-    std::cout << "(4) Assassin" << std::endl;
-    std::cin >> ChosenClass;
-    switch (ChosenClass) {
-    case 1:
-        SetPlayerClass("Warrior");
-        SetPlayerMaxHP(100);
-        SetPlayerHP(100);
-        SetPlayerPower(4);
-        SetPlayerCritChance(5);
-        break;
-    case 2:
-        SetPlayerClass("Mage");
-        SetPlayerMaxHP(70);
-        SetPlayerHP(70);
-        SetPlayerPower(7);
-        SetPlayerCritChance(5);
-        break;
-    case 3:
-        SetPlayerClass("Hunter");
-        SetPlayerMaxHP(40);
-        SetPlayerHP(40);
-        SetPlayerPower(10);
-        SetPlayerCritChance(5);
-        break;
-    case 4:
-        SetPlayerClass("Assassin");
-        SetPlayerMaxHP(50);
-        SetPlayerHP(50);
-        SetPlayerPower(5);
-        SetPlayerCritChance(10);
-        break;
-    case 5:
-        SetPlayerClass("Summoner");
-        SetPlayerMaxHP(70);
-        SetPlayerHP(70);
-        SetPlayerPower(0);
-        SetPlayerCritChance(5);
-        break;
-    case 11037:
-        SetPlayerClass("Conduit");
-        SetPlayerMaxHP(200);
-        SetPlayerHP(200);
-        SetPlayerPower(10);
-        SetPlayerCritChance(50);
-        break;
-    default:
-        SetPlayerClass("Warrior");
-        SetPlayerMaxHP(100);
-        SetPlayerHP(100);
-        SetPlayerPower(4);
-        SetPlayerCritChance(5);
-        break;
+    bool ConfirmClass = false;
+    while (!ConfirmClass) {
+        ConfirmClass = false;
+        std::cout << "What Class are You? (Warrior by default)" << std::endl;
+        std::cout << "(1) Warrior" << std::endl;
+        std::cout << "(2) Mage" << std::endl;
+        std::cout << "(3) Hunter" << std::endl;
+        std::cout << "(4) Assassin" << std::endl;
+        std::cin >> ChosenClass;
+        switch (ChosenClass) {
+        case 1:
+            SetPlayerClass("Warrior");
+            SetPlayerMaxHP(100);
+            SetPlayerHP(100);
+            SetPlayerPower(4);
+            SetPlayerCritChance(5);
+            break;
+        case 2:
+            SetPlayerClass("Mage");
+            SetPlayerMaxHP(70);
+            SetPlayerHP(70);
+            SetPlayerPower(7);
+            SetPlayerCritChance(5);
+            break;
+        case 3:
+            SetPlayerClass("Hunter");
+            SetPlayerMaxHP(40);
+            SetPlayerHP(40);
+            SetPlayerPower(10);
+            SetPlayerCritChance(5);
+            break;
+        case 4:
+            SetPlayerClass("Assassin");
+            SetPlayerMaxHP(50);
+            SetPlayerHP(50);
+            SetPlayerPower(5);
+            SetPlayerCritChance(10);
+            break;
+        case 5:
+            SetPlayerClass("Summoner");
+            SetPlayerMaxHP(70);
+            SetPlayerHP(70);
+            SetPlayerPower(0);
+            SetPlayerCritChance(5);
+            break;
+        case 11037:
+            SetPlayerClass("Conduit");
+            SetPlayerMaxHP(200);
+            SetPlayerHP(200);
+            SetPlayerPower(10);
+            SetPlayerCritChance(50);
+            break;
+        default:
+            SetPlayerClass("Warrior");
+            SetPlayerMaxHP(100);
+            SetPlayerHP(100);
+            SetPlayerPower(4);
+            SetPlayerCritChance(5);
+            break;
+        }
+        SetPlayerPosX(0);
+        SetPlayerPosY(0);
+        SetPlayerLvl(1);
+        SetPlayerXP(0);
+        SetPlayerEquippedWeapon("None");
+        SetPlayerEquippedArmor("None");
+        SetPlayerCurrency(0);
+        SetPlayerKarma(50);
+        SetCurrentDifficulty(1);
+        moveset.PlayerInit(GetPlayerClass());
+        ShowPlayerStats();
+        ShowPlayerMoves();
+        std::cout << std::endl;
+        std::cout << "Are you sure? Y/N" << std::endl;
+        int chP = _getch();
+        if (chP == 'y') {
+            ConfirmClass = true;
+        }
+        else {
+            ConfirmClass = false;
+        }
+        system("cls");
     }
-    SetPlayerPosX(0);
-    SetPlayerPosY(0);
-    SetPlayerLvl(1);
-    SetPlayerXP(0);
-    SetPlayerEquippedWeapon("None");
-    SetPlayerEquippedArmor("None");
-    SetPlayerCurrency(0);
-    SetPlayerKarma(50);
-    SetCurrentDifficulty(1);
-    moveset.PlayerInit(GetPlayerClass());
-    std::cout << "You are a " << GetPlayerClass() << ". With " << GetPlayerHP() << " HP and " << GetPlayerPower() << " Power." << std::endl;
 }
 
 void Player::ShowPlayerStats() const
@@ -231,6 +252,17 @@ void Player::ShowPlayerStats() const
     std::cout << "EXP: " << GetPlayerXP() << std::endl;
     std::cout << "Currency: " << GetPlayerCurrency() << std::endl;
     std::cout << "Karma: " << GetPlayerKarma() << std::endl;
+}
+
+void Player::ShowPlayerMoves() const
+{
+    std::cout << std::endl;
+    std::cout << "Current Moves:" << std::endl;
+    std::cout << "Note: Dark moves cost 15% of your Max HP, Heal moves heal by the amount of Strength shown." << std::endl;
+    std::cout << "(1) [" << moveset.GetMove(0).MoveName << "] Strength: " << moveset.GetMove(0).MoveStrength << " Hit(s): " << moveset.GetMove(0).Hits << " Type: " << moveset.GetMove(0).MoveType << std::endl;
+    std::cout << "(2) [" << moveset.GetMove(1).MoveName << "] Strength: " << moveset.GetMove(1).MoveStrength << " Hit(s): " << moveset.GetMove(1).Hits << " Type: " << moveset.GetMove(1).MoveType << std::endl;
+    std::cout << "(3) [" << moveset.GetMove(2).MoveName << "] Strength: " << moveset.GetMove(2).MoveStrength << " Hit(s): " << moveset.GetMove(2).Hits << " Type: " << moveset.GetMove(2).MoveType << std::endl;
+    std::cout << "(4) [" << moveset.GetMove(3).MoveName << "] Strength: " << moveset.GetMove(3).MoveStrength << " Hit(s): " << moveset.GetMove(3).Hits << " Type: " << moveset.GetMove(3).MoveType << std::endl;
 }
 
 void Player::LevelUpCheck()
