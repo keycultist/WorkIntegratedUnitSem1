@@ -110,11 +110,7 @@ void Moveset::PlayerInit(const std::string Class)
     }
     else if (Class == "Assassin") {
         SetMove(Move("Backstab", 2, 2, "Physical"));
-        SetMove(Move("Knife Throw", 1, 3, "Heal"));
-    }
-    else if (Class == "Assassin") {
-        SetMove(Move("Backstab", 2, 2, "Physical"));
-        SetMove(Move("Knife Throw", 1, 3, "Heal"));
+        SetMove(Move("Knife Throw", 1, 3, "Physical"));
     }
     else if (Class == "Summoner") {
         SetMove(Move("Summon: Fly", 1, 1, "Summon"));
