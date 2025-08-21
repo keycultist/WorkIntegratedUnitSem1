@@ -129,26 +129,38 @@ void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
 	else {
 		if (MC.GetMoveset().GetMove(ChosenMove).MoveType == "Dark") {
 			std::cout << "Dark Move Used! -15%HP" << std::endl;
-			MC.SetPlayerHP(MC.GetPlayerHP() - (MC.GetPlayerMaxHP() * 0.85));
+			MC.SetPlayerHP(MC.GetPlayerHP() - (MC.GetPlayerMaxHP() * 0.15));
 		}
 		for (int i = 0; i < MC.GetMoveset().GetMove(ChosenMove).Hits; i++) {
-			Critting = rand() % 100 + 1;
-			if (Critting <= MC.GetPlayerCritChance()) {
-				Critted = true;
+			if (MC.GetMoveset().GetMove(ChosenMove).MoveType == "Summon") {
+				std::cout << MC.GetPlayerClass() << " used " << MC.GetMoveset().GetMove(ChosenMove).MoveName << std::endl;
+				MC.SetPlayerPower(MC.GetPlayerPower() + MC.GetMoveset().GetMove(ChosenMove).MoveStrength);
+				std::cout << "Gained " << MC.GetMoveset().GetMove(ChosenMove).MoveStrength << " Power" << std::endl;
+				target.SetEnemyHP(target.GetEnemyHP() - MC.GetPlayerPower());
+				std::cout << "Dealt: " << (MC.GetPlayerPower()) << " damage." << std::endl;
 			}
 			else {
-				Critted = false;
-			}
-			std::cout << MC.GetPlayerClass() << " used " << MC.GetMoveset().GetMove(ChosenMove).MoveName << std::endl;
-			if (Critted) {
-				target.SetEnemyHP(target.GetEnemyHP() - (MC.GetPlayerPower() + MC.GetMoveset().GetMove(ChosenMove).MoveStrength) * 2);
-				std::cout << "Critical Hit! Dealt: " << (MC.GetPlayerPower() + MC.GetMoveset().GetMove(ChosenMove).MoveStrength) * 2 << " damage." << std::endl;
-			}
-			else {
-				target.SetEnemyHP(target.GetEnemyHP() - (MC.GetPlayerPower() + MC.GetMoveset().GetMove(ChosenMove).MoveStrength));
-				std::cout << "Dealt: " << (MC.GetPlayerPower() + MC.GetMoveset().GetMove(ChosenMove).MoveStrength) << " damage." << std::endl;
+				Critting = rand() % 100 + 1;
+				if (Critting <= MC.GetPlayerCritChance()) {
+					Critted = true;
+				}
+				else {
+					Critted = false;
+				}
+				std::cout << MC.GetPlayerClass() << " used " << MC.GetMoveset().GetMove(ChosenMove).MoveName << std::endl;
+				if (Critted) {
+					target.SetEnemyHP(target.GetEnemyHP() - (MC.GetPlayerPower() + MC.GetMoveset().GetMove(ChosenMove).MoveStrength) * 2);
+					std::cout << "Critical Hit! Dealt: " << (MC.GetPlayerPower() + MC.GetMoveset().GetMove(ChosenMove).MoveStrength) * 2 << " damage." << std::endl;
+				}
+				else {
+					target.SetEnemyHP(target.GetEnemyHP() - (MC.GetPlayerPower() + MC.GetMoveset().GetMove(ChosenMove).MoveStrength));
+					std::cout << "Dealt: " << (MC.GetPlayerPower() + MC.GetMoveset().GetMove(ChosenMove).MoveStrength) << " damage." << std::endl;
+				}
 			}
 			std::cout << target.GetEnemyClass() << " has " << target.GetEnemyHP() << " HP left." << std::endl;
+			if (target.GetEnemyHP() <= 0) {
+				break;
+			}
 		}
 	}
 }

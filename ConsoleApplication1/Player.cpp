@@ -191,6 +191,13 @@ void Player::InitPlayer()
         SetPlayerPower(0);
         SetPlayerCritChance(5);
         break;
+    case 11037:
+        SetPlayerClass("Conduit");
+        SetPlayerMaxHP(200);
+        SetPlayerHP(200);
+        SetPlayerPower(10);
+        SetPlayerCritChance(50);
+        break;
     default:
         SetPlayerClass("Warrior");
         SetPlayerMaxHP(100);
@@ -534,7 +541,7 @@ void Player::LevelUp()
             ListMovesToReplace();
             std::cin >> replaceindex;
             if (replaceindex != 5) {
-                moveset.ReplaceMove(Moveset::Move("Quick Refractory", 16, 1, "Heal"), replaceindex);
+                moveset.ReplaceMove(Moveset::Move("Quick Refractory", 13, 1, "Heal"), replaceindex);
             }
         }
         if (GetPlayerLvl() == 7) {
@@ -676,6 +683,96 @@ void Player::LevelUp()
                 std::cin >> replaceindex;
                 if (replaceindex != 5) {
                     moveset.ReplaceMove(Moveset::Move("Summon: Demon", 40, 1, "Dark"), replaceindex);
+                }
+            }
+        }
+    }
+    
+    //Simplay OP
+    else if (GetPlayerClass() == "Conduit") {
+        SetPlayerMaxHP(GetPlayerMaxHP() + 20);
+        SetPlayerHP(GetPlayerHP() + 20);
+        SetPlayerPower(GetPlayerPower() + 10);
+        SetPlayerCritChance(GetPlayerCritChance() + 2);
+        if (GetPlayerLvl() == 2) {
+            moveset.SetMove(Moveset::Move("Psychokinesis", 20, 1, "Magical"));
+        }
+        if (GetPlayerLvl() == 4) {
+            if (GetPlayerKarma() > 50) {
+                moveset.SetMove(Moveset::Move("All-Out Attack", 10, 4, "Physical"));
+            }
+            else if (GetPlayerKarma() == 50) {
+                moveset.SetMove(Moveset::Move("Ragnarok", 15, 4, "Magical"));
+            }
+            else if (GetPlayerKarma() < 50) {
+                moveset.SetMove(Moveset::Move("God's Hand", 50, 1, "Dark"));
+            }
+        }
+        if (GetPlayerLvl() == 5) {
+            std::cout << "You are trying to learn Sode no Shirayuki, 12 Strength, 4 Hit, Magical." << std::endl;
+            ListMovesToReplace();
+            std::cin >> replaceindex;
+            if (replaceindex != 5) {
+                moveset.ReplaceMove(Moveset::Move("Sode no Shirayuki", 12, 4, "Magical"), replaceindex);
+            }
+        }
+        if (GetPlayerLvl() == 7) {
+            if (GetPlayerKarma() > 50) {
+                std::cout << "You are trying to learn Rasengan, 50 Strength, 1 Hits, Magical." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Rasengan", 50, 1, "Magical"), replaceindex);
+                }
+            }
+            else if (GetPlayerKarma() == 50) {
+                std::cout << "You are trying to learn Serious Punch, 75 Strength, 1 Hits, Physical." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Serious Punch", 75, 1, "Physical"), replaceindex);
+                }
+            }
+            else if (GetPlayerKarma() < 50) {
+                std::cout << "You are trying to learn Masamune, 17 Strength, 3 Hits, Physical." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Masamune", 17, 3, "Physical"), replaceindex);
+                }
+            }
+        }
+        if (GetPlayerLvl() == 8) {
+            std::cout << "You are trying to learn Summon: Panzer, 20 Strength, 1 Hit, Summon." << std::endl;
+            ListMovesToReplace();
+            std::cin >> replaceindex;
+            if (replaceindex != 5) {
+                moveset.ReplaceMove(Moveset::Move("Summon: Panzer", 20, 1, "Summon"), replaceindex);
+            }
+        }
+        if (GetPlayerLvl() == 10) {
+            if (GetPlayerKarma() > 50) {
+                std::cout << "You are trying to learn Kamehameha, 200 Strength, 1 Hit, Magical." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Kamehameha", 200, 1, "Magical"), replaceindex);
+                }
+            }
+            else if (GetPlayerKarma() == 50) {
+                std::cout << "You are trying to learn Unlimited Blade Works, 2 Strength, 100 Hits, Physical." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Unlimited Blade Works", 2, 100, "Physical"), replaceindex);
+                }
+            }
+            else if (GetPlayerKarma() < 50) {
+                std::cout << "You are trying to learn Spirit Whisper, 0 Strength, 5 Hits, Control." << std::endl;
+                ListMovesToReplace();
+                std::cin >> replaceindex;
+                if (replaceindex != 5) {
+                    moveset.ReplaceMove(Moveset::Move("Spirit Whisper", 0, 5, "Control"), replaceindex);
                 }
             }
         }
