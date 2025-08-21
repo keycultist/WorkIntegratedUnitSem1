@@ -116,6 +116,54 @@ void Moveset::EnemyInit(const std::string Class)
 		// if HP <= 1% then use this move.
         EnemyNameMoveset.SetMove(Move("Door to the Backyard.", 1, 200, "DeathMove"));
     }
+    else if (Class == "Bob") {
+        EnemyNameMoveset.SetMove(Move("Bob's Biggest Bang", 45, 1, "Abyssal"));
+        EnemyNameMoveset.SetMove(Move("Bob's Blazar.", 1, 50, "Abyssal"));
+        EnemyNameMoveset.SetMove(Move("Bob's Bazooka", 45, 1, "Physical"));
+		EnemyNameMoveset.SetMove(Move("Bob's Burgers", 5, 1, "Buff"));
+
+		// Phase Change Only Move, used ONCE per fight.
+		EnemyNameMoveset.SetMove(Move("Bob's Black Hole", 1, 150, "BossMove"));
+
+		// if HP <= 1% then use this move.
+        EnemyNameMoveset.SetMove(Move("Bob's Big Black Broad Bounteous Bountiful Black Breach", 1, 200, "DeathMove"));
+    }
+    else if (Class == "DevilGene") {
+		EnemyNameMoveset.SetMove(Move("Electric Wind God Fist.", 45, 1, "Physical"));
+        EnemyNameMoveset.SetMove(Move("Obliteration.", 35, 1, "Physical"));
+        EnemyNameMoveset.SetMove(Move("Devil Gene: Unleashed.", 1, 45, "Physical"));
+		EnemyNameMoveset.SetMove(Move("Linebreaker.", 40, 1, "Physical"));
+
+		// Phase Change Only Move, used ONCE per fight.
+		EnemyNameMoveset.SetMove(Move("Devil Dimension: Twisted Chains.", 1, 150, "BossMove"));
+
+		// if HP <= 1% then use this move.
+		EnemyNameMoveset.SetMove(Move("Demonic Valour.", 1, 200, "DeathMove"));
+    }
+    else if (Class == "Susanoo") {
+        EnemyNameMoveset.SetMove(Move("Ouja Zenrouga", 50, 1, "Abyssal"));
+		EnemyNameMoveset.SetMove(Move("Garengeki", 1, 50, "Abyssal"));
+		EnemyNameMoveset.SetMove(Move("Jabaku Fuueinjin", 10, 3, "Abyssal"));
+        EnemyNameMoveset.SetMove(Move("Jarin Renshouga", 20, 2, "Abyssal"));
+
+		// Phase Change Only Move, used ONCE per fight.
+		EnemyNameMoveset.SetMove(Move("Senkon Meiraku", 1, 150, "BossMove"));
+
+		// if HP <= 1% then use this move.
+        EnemyNameMoveset.SetMove(Move("Kamigaeri: Orochizantou Reppuuga", 50, 4, "DeathMove"));
+    }
+  //  else if (Class == "TheDemonKing") {
+  //      EnemyNameMoveset.SetMove(Move("BRO WHERE'S THE BALL???", 45, 1, "Physical"));
+  //      EnemyNameMoveset.SetMove(Move("Metavision", 5, 1, "Buff"));
+  //      EnemyNameMoveset.SetMove(Move("Two Gun Volley", 20, 2, "Physical"));
+  //      EnemyNameMoveset.SetMove(Move("FOOTBALL IS NOT THAT SERIOUS??", 1, 45, "Abyssal"));
+  //      
+  //      // Phase Change Only Move, used ONCE per fight.
+  //      EnemyNameMoveset.SetMove(Move("MOVE IT.", 150, 1, "BossMove"));
+		//
+  //      // if HP <= 1% then use this move.
+		//EnemyNameMoveset.SetMove(Move("I want to win,,, WITH MY OWN GOAL!!!!", 200, 1, "DeathMove"));
+  //  }
 }
 
 
