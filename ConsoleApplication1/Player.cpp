@@ -7,26 +7,26 @@
 #include <time.h> 
 
 void Player::SetPlayerClass(std::string Class) {
-    SetClass(Class);
+    SetPlayerClass(Class);
 }
 
 void Player::SetPlayerMaxHP(int MaxHP)
 {
-    SetMaxHP(MaxHP);
+    SetPlayerMaxHP(MaxHP);
 }
 
 void Player::SetPlayerHP(int HP) {
-    SetHP(HP);
+    SetPlayerHP(HP);
 }
 
 void Player::SetPlayerPower(int Power) {
-    SetPower(Power);
-    SetmagicPower(Power);
+    SetPlayerPower(Power);
+    SetPlayermagicPower(Power);
 }
 
 void Player::SetPlayermagicPower(int Power)
 {
-    SetPower(Power);
+    SetPlayermagicPower(Power);
 }
 
 void Player::SetPlayerCritChance(int CritChance)
@@ -59,7 +59,7 @@ void Player::SetPlayerEquippedArmor(std::string Armor) {
 }
 
 void Player::SetPlayerCurrency(int Currency) {
-    SetCurrency(Currency);
+    SetPlayerCurrency(Currency);
 }
 
 void Player::SetPlayerKarma(int Karma)
@@ -75,20 +75,20 @@ void Player::SetCurrentDifficulty(int Difficulty)
 
 
 std::string Player::GetPlayerClass(void) const {
-    return GetClass();
+    return GetPlayerClass();
 }
 
 int Player::GetPlayerMaxHP(void) const
 {
-    return GetMaxHP();
+    return GetPlayerMaxHP();
 }
 
 int Player::GetPlayerHP(void) const {
-    return GetHP();
+    return GetPlayerHP();
 }
 
 int Player::GetPlayerPower(void) const {
-    return GetPower();
+    return GetPlayerPower();
 }
 
 int Player::GetPlayerCritChance(void) const
@@ -121,7 +121,7 @@ std::string Player::GetPlayerEquippedArmor(void) const {
 }
 
 int Player::GetPlayerCurrency(void) const {
-    return GetCurrency();
+    return GetPlayerCurrency();
 }
 
 int Player::GetPlayerKarma(void) const

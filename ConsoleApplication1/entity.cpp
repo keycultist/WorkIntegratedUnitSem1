@@ -49,7 +49,7 @@
 //{
 //    return Class;
 //}
-//
+// 
 //int Entity::GetMaxHP(void) const
 //{
 //    return MaxHP;
@@ -77,79 +77,88 @@
 
 void Entity::applyBuff(const std::string& stat, int value) {
     if (stat == "HP") {
-        HP += value;
-        if (HP > MaxHP) HP = MaxHP;
-        if (HP < 0) HP = 0;
-        std::cout << Class << "'s HP changed by " << value << ". Current HP: " << HP << "/" << MaxHP << std::endl;
+        PlayerHP += value;
+        if (PlayerHP > PlayerMaxHP) PlayerHP = PlayerMaxHP;
+        if (PlayerHP < 0) PlayerHP = 0;
+        std::cout << PlayerClass << "'s HP changed by " << value << ". Current HP: " << PlayerHP << "/" << PlayerMaxHP << std::endl;
     }
     else if (stat == "Power") {
-        Power += value;
-        if (Power < 0) Power = 0;
-        std::cout << Class << "'s Power changed by " << value << ". Current Power: " << Power << std::endl;
+        PlayerPower += value;
+        if (PlayerPower < 0) PlayerPower = 0;
+        std::cout << PlayerClass << "'s Power changed by " << value << ". Current Power: " << PlayerPower << std::endl;
     }
     else if (stat == "MAGIC") {
-        magicPower += value;
-        if (magicPower < 0) magicPower = 0;
-        std::cout << Class << "'s MAGIC Power changed by " << value << ". Current MAGIC Power: " << magicPower << std::endl;
+        PlayerPower += value;
+        if (PlayerPower < 0) PlayerPower = 0;
+        std::cout << PlayerClass << "'s MAGIC Power changed by " << value << ". Current MAGIC Power: " << PlayerPower << std::endl;
     }
     else if (stat == "Currency") {
-        Currency += value;
-        if (Currency < 0) Currency = 0;
-        std::cout << Class << "'s Currency changed by " << value << ". Current Currency: " << Currency << std::endl;
+        PlayerCurrency += value;
+        if (PlayerCurrency < 0) PlayerCurrency = 0;
+        std::cout << PlayerClass << "'s Currency changed by " << value << ". Current Currency: " << PlayerCurrency << std::endl;
     }
 }
 
 void Entity::applyKarmaEffect(int value, float multiplierChange) {
-    Karma += value;
-    if (Karma > 100) Karma = 100;
-    if (Karma < 0) Karma = 0;
+    PlayerKarma += value;
+    if (PlayerKarma > 100) PlayerKarma = 100;
+    if (PlayerKarma < 0) PlayerKarma = 0;
 
-    karmaMultiplier += multiplierChange;
-    if (karmaMultiplier < 0.1f) karmaMultiplier = 0.1f;
+    PlayerKarma += multiplierChange;
+    if (PlayerKarma < 0.1f) PlayerKarma = 0.1f;
 
-    std::cout << Class << "'s karma changed by " << value
-        << " (Now: " << Karma << "/100)\n";
+    std::cout << PlayerClass << "'s karma changed by " << value
+        << " (Now: " << PlayerKarma << "/100)\n";
     std::cout << "Karma multiplier changed by " << multiplierChange
-        << " (Now: " << karmaMultiplier << "x)\n";
+        << " (Now: " << PlayerKarma << "x)\n";
 }
 
 void Entity::heal(int amount) {
     if (amount <= 0) return;
 
-    int oldHp = HP;
-    HP += amount;
-    if (HP > MaxHP) HP = MaxHP;
+    int oldHp = PlayerHP;
+    PlayerHP += amount;
+    if (PlayerHP > PlayerMaxHP) PlayerHP = PlayerMaxHP;
 
-    int actualHeal = HP - oldHp;
-    std::cout << Class << " is healed for " << actualHeal << " HP! ";
-    std::cout << "Current HP: " << HP << "/" << MaxHP << std::endl;
+    int actualHeal = PlayerHP - oldHp;
+    std::cout << PlayerClass << " is healed for " << actualHeal << " HP! ";
+    std::cout << "Current HP: " << PlayerHP << "/" << PlayerMaxHP << std::endl;
 }
 
 bool Entity::isAlive() const {
-    return HP > 0;
+    return PlayerHP > 0; 
 }
 
 void Entity::attack(Entity& target) {
-    int damage = Power;
-    std::cout << Class << " attacks " << target.Class << " for " << damage << " damage!" << std::endl;
-    target.HP -= damage;
-    if (target.HP < 0) target.HP = 0;
+    int damage = PlayerPower;
+    std::cout << PlayerClass << " attacks " << target.PlayerClass << " for " << damage << " damage!" << std::endl;
+    target.PlayerHP -= damage;
+    if (target.PlayerHP < 0) target.PlayerHP = 0;
 }
 
 void Entity::magicAttack(Entity& target) {
-    int damage = magicPower;
-    std::cout << Class << " casts a spell on " << target.Class << " for " << damage << " magic damage!" << std::endl;
-    target.HP -= damage;
-    if (target.HP < 0) target.HP = 0;
+    int damage = PlayerPower;
+    std::cout << PlayerClass << " casts a spell on " << target.PlayerClass << " for " << damage << " magic damage!" << std::endl;
+    target.PlayerHP -= damage;
+    if (target.PlayerHP < 0) target.PlayerHP = 0;
 }
 void Entity::increaseMaxHP(int amount) {
     if (amount <= 0) {
         return;
     }
 
-    int oldMaxHp = MaxHP;
-    MaxHP += amount;
+    int oldMaxHp = PlayerMaxHP;
+    PlayerMaxHP += amount;
 
-    std::cout << Class << "'s maximum HP increased by " << amount << "! ";
-    std::cout << "HP: " << HP << "/" << MaxHP << " (+" << amount << ")\n";
+    std::cout << PlayerClass << "'s maximum HP increased by " << amount << "! ";
+    std::cout << "HP: " << PlayerHP << "/" << PlayerMaxHP << " (+" << amount << ")\n";
+}
+void Entity::modifyCritChance(float amount) {
+    PlayerCritChance += amount;
+    // Clamp crit chance between 0% and 100%
+    if (PlayerCritChance < 0.0f) PlayerCritChance = 0.0f;
+    if (PlayerCritChance > 1.0f) PlayerCritChance = 1.0f; {
+    
+    std::cout << PlayerClass << "'s crit chance changed by " << (amount * 100) << "%";
+    std::cout << " (Now: " << (PlayerCritChance * 100) << "%)\n";
 }

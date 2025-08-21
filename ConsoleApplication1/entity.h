@@ -1,19 +1,28 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
+#include "Player.h"
 #include <string>
 #include <iostream>
 
+
 class Entity {
 private:
-    //std::string Class;
-    //int HP;
-    //int MaxHP;
-    //int Power;
-    //int magicPower;
-    //int Currency;
-    //int Karma;               // New karma variable (range 0-100)
-    //float karmaMultiplier;  // New karma multiplier
+    std::string PlayerClass;
+    int PlayerMaxHP;
+    int PlayerHP;
+    int PlayerPower;
+    int PlayerCritChance;
+    int PlayerPosX, PlayerPosY;
+    int PlayerLvl;
+    int PlayerXP;
+    std::string PlayerEquippedWeapon;
+    std::string PlayerEquippedArmor;
+    int PlayerCurrency;
+    int PlayerKarma;
+    int CurrentDifficulty;
+
+    Moveset moveset;
 public:
    /* void SetClass(std::string Class);
     void SetMaxHP(int MaxHP);
@@ -40,6 +49,7 @@ public:
     bool isAlive() const;
     void attack(Entity& target);
     void magicAttack(Entity& target);
+    void modifyCritChance(float amount);
 };
 
 #endif
