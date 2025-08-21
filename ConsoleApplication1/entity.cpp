@@ -2,78 +2,78 @@
 #include "Player.h"
 #include <iostream>
 
-Entity::Entity()
-{
-}
-
-Entity::Entity(std::string Cl, int MH, int H, int P, int mP, int C)
-    : Class(Cl), MaxHP(MH), HP(H), Power(P), magicPower(mP), Currency(C)
-{
-}
-
-Entity::~Entity()
-{
-}
-
-void Entity::SetClass(std::string Class)
-{
-    this->Class = Class;
-}
-
-void Entity::SetMaxHP(int MaxHP)
-{
-    this->MaxHP = MaxHP;
-}
-
-void Entity::SetHP(int HP)
-{
-    this->HP = HP;
-}
-
-void Entity::SetPower(int Power)
-{
-    this->Power = Power;
-}
-
-void Entity::SetmagicPower(int magicPower)
-{
-    this->magicPower = magicPower;
-}
-
-void Entity::SetCurrency(int Currency)
-{
-    this->Currency = Currency;
-}
-
-std::string Entity::GetClass(void) const
-{
-    return Class;
-}
-
-int Entity::GetMaxHP(void) const
-{
-    return MaxHP;
-}
-
-int Entity::GetHP(void) const
-{
-    return HP;
-}
-
-int Entity::GetPower(void) const
-{
-    return Power;
-}
-
-int Entity::GetmagicPower(void) const
-{
-    return magicPower;
-}
-
-int Entity::GetCurrency(void) const
-{
-    return Currency;
-}
+//Entity::Entity()
+//{
+//}
+//
+//Entity::Entity(std::string Cl, int MH, int H, int P, int mP, int C)
+//    : Class(Cl), MaxHP(MH), HP(H), Power(P), magicPower(mP), Currency(C)
+//{
+//}
+//
+//Entity::~Entity()
+//{
+//}
+//
+//void Entity::SetClass(std::string Class)
+//{
+//    this->Class = Class;
+//}
+//
+//void Entity::SetMaxHP(int MaxHP)
+//{
+//    this->MaxHP = MaxHP;
+//}
+//
+//void Entity::SetHP(int HP)
+//{
+//    this->HP = HP;
+//}
+//
+//void Entity::SetPower(int Power)
+//{
+//    this->Power = Power;
+//}
+//
+//void Entity::SetmagicPower(int magicPower)
+//{
+//    this->magicPower = magicPower;
+//}
+//
+//void Entity::SetCurrency(int Currency)
+//{
+//    this->Currency = Currency;
+//}
+//
+//std::string Entity::GetClass(void) const
+//{
+//    return Class;
+//}
+//
+//int Entity::GetMaxHP(void) const
+//{
+//    return MaxHP;
+//}
+//
+//int Entity::GetHP(void) const
+//{
+//    return HP;
+//}
+//
+//int Entity::GetPower(void) const
+//{
+//    return Power;
+//}
+//
+//int Entity::GetmagicPower(void) const
+//{
+//    return magicPower;
+//}
+//
+//int Entity::GetCurrency(void) const
+//{
+//    return Currency;
+//}
 
 void Entity::applyBuff(const std::string& stat, int value) {
     if (stat == "HP") {

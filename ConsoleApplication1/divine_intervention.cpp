@@ -1,4 +1,6 @@
 #include "divine_intervention.h"
+#include "entity.h"
+#include "Player.h"
 #include <iostream>
 
 DivineIntervention::DivineIntervention() : gen(rd()) {  
@@ -10,7 +12,7 @@ DivineIntervention::DivineIntervention() : gen(rd()) {
         {God::FERONIA, "Feronia the Fruitfulness"},
         {God::KERES, "Keres the Anathema"},
         {God::PREYSEYE, "Preyseye the Morality"},
-        {God::SANCTORUM, "Sanctorum the Sustentation" },
+        {God::SANCTORUM, "Sanctorum the Conservation" },
         {God::BOON, "Boon the Probability" },
         {God::MAGNAR, "Magnar the Valour" }
     };
@@ -80,7 +82,7 @@ DivineIntervention::DivineIntervention() : gen(rd()) {
     };
 }
 
-std::string DivineIntervention::getRandomDialogue(God god) const {
+std::string DivineIntervention::getRandomDialogue(God god) const { //this is to get a random dialogue from the godDialogues map, which is a map of vectors
     if (god == God::NONE || godDialogues.find(god) == godDialogues.end()) {
         return "";
     }
@@ -146,6 +148,7 @@ void DivineIntervention::applyEffect(God god, Entity& player, Entity& enemy) con
         secondaryTarget.increaseMaxHP(maxHpIncrease / 2);
         break;
     }
+
     case God::PREYSEYE: {
         int karmaChange = std::uniform_int_distribution<>(1, 20)(gen);
 		if (std::bernoulli_distribution(0.5)(gen)) {                 //bernoulli_distribution is boolean, which is true-false, essentially checking if outcome is success or failure. 0.5 = 50% chance of success

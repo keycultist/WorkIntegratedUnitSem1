@@ -6,16 +6,16 @@
 
 class Entity {
 private:
-    std::string Class;
-    int HP;
-    int MaxHP;
-    int Power;
-    int magicPower;
-    int Currency;
-    int Karma;               // New karma variable (range 0-100)
-    float karmaMultiplier;  // New karma multiplier
+    //std::string Class;
+    //int HP;
+    //int MaxHP;
+    //int Power;
+    //int magicPower;
+    //int Currency;
+    //int Karma;               // New karma variable (range 0-100)
+    //float karmaMultiplier;  // New karma multiplier
 public:
-    void SetClass(std::string Class);
+   /* void SetClass(std::string Class);
     void SetMaxHP(int MaxHP);
     void SetHP(int HP);
     void SetPower(int Power);
@@ -27,7 +27,7 @@ public:
     int GetHP(void) const;
     int GetPower(void) const;
     int GetmagicPower(void) const;
-    int GetCurrency(void) const;
+    int GetCurrency(void) const;*/
 
     Entity();
     Entity(std::string Cl, int MH, int H, int P, int mP, int C);
