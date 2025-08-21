@@ -105,7 +105,7 @@ void DivineIntervention::applyEffect(God god, Entity& player, Entity& enemy) con
 
     switch (god) {
     case God::SAGACITY: {
-		int effect = std::uniform_int_distribution<>(-3, 3)(gen);     //uniform_int_distribution makes it so that every number in the range has an equal chance of being picked and returned
+        int effect = std::uniform_int_distribution<>(-3, 3)(gen);     //uniform_int_distribution makes it so that every number in the range has an equal chance of being picked and returned
         if (effect == 0) effect = 1;
         std::cout << "The scent of books and arcane energies swirl around the battlefield!\n";
         primaryTarget.applyBuff("MAGIC", effect);
@@ -151,7 +151,7 @@ void DivineIntervention::applyEffect(God god, Entity& player, Entity& enemy) con
 
     case God::PREYSEYE: {
         int karmaChange = std::uniform_int_distribution<>(1, 20)(gen);
-		if (std::bernoulli_distribution(0.5)(gen)) {                 //bernoulli_distribution is boolean, which is true-false, essentially checking if outcome is success or failure. 0.5 = 50% chance of success
+        if (std::bernoulli_distribution(0.5)(gen)) {                 //bernoulli_distribution is boolean, which is true-false, essentially checking if outcome is success or failure. 0.5 = 50% chance of success
             karmaChange = -karmaChange;                              //if bernoulli_distribution is successful, then dialogue will run
         }
         float multiplierChange = std::uniform_real_distribution<float>(0.1f, 0.3f)(gen);
@@ -166,5 +166,6 @@ void DivineIntervention::applyEffect(God god, Entity& player, Entity& enemy) con
     default:
         break;
     }
-    std::cout << "==========================\n\n";
+                     std::cout << "==========================\n\n";
+    }
 }
