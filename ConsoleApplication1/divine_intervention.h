@@ -24,7 +24,7 @@ enum class God {     //enum = enumerated type, which means the set of datas are 
 class DivineIntervention {
 private:
 	std::map<God, std::string> godNames; //map that stores the names of the gods into god names
-    std::map<God, std::vector<std::string>> godDialogues;      
+	std::map<God, std::vector<std::string>> godDialogues;    //create a map that stores the dialogues of each god, where the key is the god and the value is a vector of strings (dialogues).  
 	std::random_device rd;        //random_device is used to seed the random number generator that is non-determistic.   
 	std::mt19937 gen;            //should be a random number generator
 
@@ -42,7 +42,7 @@ private:
         {God::PREYSEYE, 5},   //increase/decrease karma
         {God::SANCTORUM, 10},  //increase max hp
         {God::BOON, 5},       //increase crit rate
-        {God::MAGNAR, 15}    //increase crit dmg
+        {God::MAGNAR, 15}    //TBA
     };
 
     std::string getRandomDialogue(God god) const;

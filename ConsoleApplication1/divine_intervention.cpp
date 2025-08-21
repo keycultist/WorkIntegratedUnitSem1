@@ -103,7 +103,7 @@ void DivineIntervention::applyEffect(God god, Entity& player, Entity& enemy) con
     Entity& primaryTarget = affectsPlayer ? player : enemy;      // ? is an if statement
     Entity& secondaryTarget = affectsPlayer ? enemy : player;
 
-    switch (god) {
+    switch (god) {                 //assigns each god with its effect
     case God::SAGACITY: {
         int effect = std::uniform_int_distribution<>(-3, 3)(gen);     //uniform_int_distribution makes it so that every number in the range has an equal chance of being picked and returned
         if (effect == 0) effect = 1;

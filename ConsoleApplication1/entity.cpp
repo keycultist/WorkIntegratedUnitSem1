@@ -129,19 +129,19 @@ bool Entity::isAlive() const {
     return PlayerHP > 0; 
 }
 
-void Entity::attack(Entity& target) {
-    int damage = PlayerPower;
-    std::cout << PlayerClass << " attacks " << target.PlayerClass << " for " << damage << " damage!" << std::endl;
-    target.PlayerHP -= damage;
-    if (target.PlayerHP < 0) target.PlayerHP = 0;
-}
-
-void Entity::magicAttack(Entity& target) {
-    int damage = PlayerPower;
-    std::cout << PlayerClass << " casts a spell on " << target.PlayerClass << " for " << damage << " magic damage!" << std::endl;
-    target.PlayerHP -= damage;
-    if (target.PlayerHP < 0) target.PlayerHP = 0;
-}
+//void Entity::attack(Entity& target) {
+//    int damage = PlayerPower;
+//    std::cout << PlayerClass << " attacks " << target.PlayerClass << " for " << damage << " damage!" << std::endl;
+//    target.PlayerHP -= damage;
+//    if (target.PlayerHP < 0) target.PlayerHP = 0;
+//}
+//
+//void Entity::magicAttack(Entity& target) {
+//    int damage = PlayerPower;
+//    std::cout << PlayerClass << " casts a spell on " << target.PlayerClass << " for " << damage << " magic damage!" << std::endl;
+//    target.PlayerHP -= damage;
+//    if (target.PlayerHP < 0) target.PlayerHP = 0;
+//}
 void Entity::increaseMaxHP(int amount) {
     if (amount <= 0) {
         return;
