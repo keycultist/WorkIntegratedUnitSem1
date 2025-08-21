@@ -24,8 +24,16 @@ void Enemy::SetEnemyHP(int HP) {
 	EnemyHP = HP;
 }
 
+void Enemy::SetEnemyMaxHP(int MaxHP) {
+	EnemyMaxHP = MaxHP;
+}
+
 void Enemy::SetEnemyPower(int Power) {
 	EnemyPower = Power;
+}
+
+void Enemy::SetEnemyCritChance(int CritChance) {
+	EnemyCritChance = CritChance;
 }
 
 void Enemy::SetEnemyPos(int X, int Y) {
@@ -56,8 +64,16 @@ int Enemy::GetEnemyHP(void) const {
 	return EnemyHP;
 }
 
+int Enemy::GetEnemyMaxHP(void) const {
+	return EnemyMaxHP;
+}
+
 int Enemy::GetEnemyPower(void) const {
 	return EnemyPower;
+}
+
+int Enemy::GetEnemyCritChance(void) const {
+	return EnemyCritChance;
 }
 
 int Enemy::GetEnemyPosX(void) const {
@@ -103,8 +119,10 @@ Enemy::~Enemy()
 void Enemy::InitEnemy()
 {
 	SetEnemyClass("Grunt");
+	SetEnemyMaxHP(20);
 	SetEnemyHP(20);
 	SetEnemyPower(1);
+	SetEnemyCritChance(5);
 	SetEnemyPos(0, 0);;
 	SetEnemyLvl(1);
 	SetEnemyXP(0);
@@ -114,4 +132,20 @@ void Enemy::InitEnemy()
 
 void Enemy::ShowEnemyStats(Enemy& MC) {
 	// Return Enemy Stats Here with STD::COUT!!!! (tedious)
+}
+
+std::string Enemy::DecisionMatrix()
+{
+	// HP Check
+	// Based off HP / Enemy Power, decides what to do
+	// If HP < 20% and SpecialClass, use specialClass Move.
+	// if SpecialClass Move requires conditionals, check if conditions are met.
+	// If not, then heal or enter phase change if they have one.
+	// If HP < 50% and not specialClass, use Heal Move if available.
+	// If heal already used, dont use heal again for N turns.
+	// If player is low hp, focus on attacking.
+	// If player is high hp, focus on debuffing or buffing.
+	
+	// For Special Bosses, use a different Decision Matrix.
+	// 
 }
