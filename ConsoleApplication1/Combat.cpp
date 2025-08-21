@@ -56,6 +56,7 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 		Combat::PlayerAttack(MC, target, ChosenMove - 1);
 		break;
 	case '2':
+		std::cout << "Prepaired to Defend" << std::endl;
 		Defend = true;
 		break;
 	case '3':

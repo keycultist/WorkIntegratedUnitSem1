@@ -12,8 +12,8 @@ private:
     int Power;
     int magicPower;
     int Currency;
-    //int Karma;               // New karma variable (range 0-100)
-    //float karmaMultiplier;  // New karma multiplier
+    int Karma;               // New karma variable (range 0-100)
+    float karmaMultiplier;  // New karma multiplier
 public:
     void SetClass(std::string Class);
     void SetMaxHP(int MaxHP);
@@ -33,7 +33,7 @@ public:
     Entity(std::string Cl, int MH, int H, int P, int mP, int C);
     ~Entity();
 
-    void applyBuff(const std::string& stat, int value);
+    void applyBuff(const std::string& stat, int value); 
     void applyKarmaEffect(int value, float multiplierChange);
     void heal(int amount);
     void increaseMaxHP(int amount);

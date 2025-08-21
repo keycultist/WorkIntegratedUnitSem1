@@ -59,7 +59,7 @@ DivineIntervention::DivineIntervention() : gen(rd()) {
     };
 
     godDialogues[God::PREYSEYE] = {
-        "\"Morality's dichotomy is a conundrum best left to the omniscient, a distinction reserved for one of superior insight, namely myself.\"",
+        "\"Morality'as dichotomy is a conundrum best left to the omniscient, a distinction reserved for one of superior insight, namely myself.\"",
         "\"The forthcoming calibration of your metaphysical essence is about to commence.\"",
         "\"The division of Virtue and Vice. The antithesis of Rectitude and Iniquity. To which path shall one's predilections be inclined?\"",
         "\"The existential balance of moral gravitas, shall it incline in your direction or not? We shall, in due course, behold the veritable outcome.\""
@@ -68,7 +68,7 @@ DivineIntervention::DivineIntervention() : gen(rd()) {
     godDialogues[God::BOON] = {
         "\"How marvellously lucky for you all to encounter me~\"",
         "\"Just one strum of the threads of fate may tip the tides in your favour~\"",
-        "\"How wondrous; chaos theory in action...!\"",
+        "\"Observe! This is chaos theory in action!\"",
         "\"Watch the threads of fate weave into an endless universal fabric of possibility...\""
     };
 
