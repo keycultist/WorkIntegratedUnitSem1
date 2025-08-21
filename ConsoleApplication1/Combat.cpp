@@ -34,12 +34,7 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 	switch (chP) {
 	case '1':
 		//Include Player Moveset
-		std::cout << "Choose a Move" << std::endl;
-		std::cout << "Note: Dark moves cost 15% of your Max HP, Heal moves heal by the amount of Strength shown." << std::endl;
-		std::cout << "(1) [" << MC.GetMoveset().GetMove(0).MoveName << "] Strength: " << MC.GetMoveset().GetMove(0).MoveStrength << " Hit(s): " << MC.GetMoveset().GetMove(0).Hits << " Type: " << MC.GetMoveset().GetMove(0).MoveType << std::endl;
-		std::cout << "(2) [" << MC.GetMoveset().GetMove(1).MoveName << "] Strength: " << MC.GetMoveset().GetMove(1).MoveStrength << " Hit(s): " << MC.GetMoveset().GetMove(1).Hits << " Type: " << MC.GetMoveset().GetMove(1).MoveType << std::endl;
-		std::cout << "(3) [" << MC.GetMoveset().GetMove(2).MoveName << "] Strength: " << MC.GetMoveset().GetMove(2).MoveStrength << " Hit(s): " << MC.GetMoveset().GetMove(2).Hits << " Type: " << MC.GetMoveset().GetMove(2).MoveType << std::endl;
-		std::cout << "(4) [" << MC.GetMoveset().GetMove(3).MoveName << "] Strength: " << MC.GetMoveset().GetMove(3).MoveStrength << " Hit(s): " << MC.GetMoveset().GetMove(3).Hits << " Type: " << MC.GetMoveset().GetMove(3).MoveType << std::endl;
+		MC.ShowPlayerMoves();
 		chP = _getch();
 		system("cls");
 		switch (chP) {
@@ -132,6 +127,7 @@ void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
 			MC.SetPlayerHP(MC.GetPlayerHP() - (MC.GetPlayerMaxHP() * 0.15));
 		}
 		for (int i = 0; i < MC.GetMoveset().GetMove(ChosenMove).Hits; i++) {
+			std::cout << std::endl;
 			if (MC.GetMoveset().GetMove(ChosenMove).MoveType == "Summon") {
 				std::cout << MC.GetPlayerClass() << " used " << MC.GetMoveset().GetMove(ChosenMove).MoveName << std::endl;
 				MC.SetPlayerPower(MC.GetPlayerPower() + MC.GetMoveset().GetMove(ChosenMove).MoveStrength);
@@ -170,6 +166,7 @@ void Combat::EnemyAttack(Player& MC, Enemy& target, int ChosenMove, bool Defend)
 	int Critting = rand() % 100 + 1;
 	bool Critted = false;
 	for (int i = 0; i < target.GetMoveSet().GetMove(ChosenMove).Hits; i++) {
+		std::cout << std::endl;
 		Critting = rand() % 100 + 1;
 		if (Critting <= MC.GetPlayerCritChance()) {
 			Critted = true;

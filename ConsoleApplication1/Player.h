@@ -28,6 +28,7 @@ public:
 	void SetPlayerMaxHP(int MaxHP);
 	void SetPlayerHP(int HP);
 	void SetPlayerPower(int Power);
+	void SetPlayermagicPower(int Power);
 	void SetPlayerCritChance(int CritChance);
 	void SetPlayerPosX(int X);
 	void SetPlayerPosY(int Y);
@@ -61,6 +62,7 @@ public:
 
 	void InitPlayer();
 	void ShowPlayerStats() const;
+	void ShowPlayerMoves() const;
 	void LevelUpCheck();
 	void LevelUp();
 	void ListMovesToReplace();
