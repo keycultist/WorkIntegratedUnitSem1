@@ -141,6 +141,12 @@ void Moveset::PlayerInit(const std::string Class)
     else if (Class == "Summoner") {
         SetMove(Move("Summon: Fly", 1, 1, "Summon"));
     }
+    else if (Class == "Ritualist") {
+        SetMove(Move("Fillet", 4, 3, "Physical"));
+    }
+    else if (Class == "Berserker") {
+        SetMove(Move("Ravenge", 0, 1, "Physical"));
+    }
     else if (Class == "Conduit") {
         SetMove(Move("Omnislash", 3, 7, "Physical"));
         SetMove(Move("Armiger", 7, 3, "Magical"));
