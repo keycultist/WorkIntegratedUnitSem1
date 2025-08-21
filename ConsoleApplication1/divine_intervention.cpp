@@ -163,9 +163,20 @@ void DivineIntervention::applyEffect(God god, Entity& player, Entity& enemy) con
         secondaryTarget.applyKarmaEffect(karmaChange / 2, multiplierChange / 2);
         break;
     }
+    case God::BOON: {
+        float critChanceChange = std::uniform_real_distribution<float>(0.05f, 0.15f)(gen);
+        if (std::bernoulli_distribution(0.3)(gen)) {
+            critChanceChange = -critChanceChange; // 30% chance for negative effect
+        }
+        std::cout << "The threads of fate begin to wave and warp!\n";
+        primaryTarget.modifyCritChance(critChanceChange);
+        secondaryTarget.modifyCritChance(critChanceChange / 2);
+        break;
+    }
+
     default:
         break;
     }
-                     std::cout << "==========================\n\n";
+    std::cout << "==========================\n\n";
     }
 }
