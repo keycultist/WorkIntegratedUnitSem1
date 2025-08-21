@@ -82,13 +82,13 @@ void Moveset::EnemyInit(const std::string Class)
         EnemyNameMoveset.SetMove(Move("Tatsumaki", 2, 6, "Physical"));
         EnemyNameMoveset.SetMove(Move("Goshoryu", 3, 4, "Physical"));
         EnemyNameMoveset.SetMove(Move("Demon Flip", 1, 5, "Physical"));
-        EnemyNameMoveset.SetMove(Move("Shun Goku Satsu", 1, 25, "Physical"));
+        EnemyNameMoveset.SetMove(Move("Shun Goku Satsu", 1, 25, "Abyssal"));
     }
     else if (Class == "AzureResonance") {
         EnemyNameMoveset.SetMove(Move("Trails of Blue", 3, 2, "Physical"));
         EnemyNameMoveset.SetMove(Move("Tempestuous Danza", 5, 2, "Physical"));
-        EnemyNameMoveset.SetMove(Move("Final Impromptu", 6, 2, "Physical"));
-        EnemyNameMoveset.SetMove(Move("Grand Finale", 1, 25, "Physical"));
+        EnemyNameMoveset.SetMove(Move("Final Impromptu", 6, 2, "Magical"));
+        EnemyNameMoveset.SetMove(Move("Grand Finale", 1, 25, "Abyssal"));
     }
 }
 
