@@ -82,7 +82,13 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 	}
 	if (target.GetEnemyHP() <= 0) {
 		std::cout << "Enemy Defeated! Gained XP!" << std::endl;
-		MC.SetPlayerXP(MC.GetPlayerXP() + target.GetEnemyXP());
+		if (MC.GetPlayerClass() == "Berserker") {
+			MC.SetPlayerPower(MC.GetPlayerPower() + target.GetEnemyXP());
+			std::cout << "Gained XP converted to Power! You have: " << MC.GetPlayerPower() << " Power" << std::endl;
+		}
+		else {
+			MC.SetPlayerXP(MC.GetPlayerXP() + target.GetEnemyXP());
+		}
 		MC.LevelUpCheck();
 		int chP = _getch();
 		system("cls");
@@ -127,6 +133,7 @@ void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
 			std::cout << "Dark Move Used! -15%HP" << std::endl;
 			MC.SetPlayerHP(MC.GetPlayerHP() - (MC.GetPlayerMaxHP() * 0.15));
 		}
+
 		for (int i = 0; i < MC.GetMoveset().GetMove(ChosenMove).Hits; i++) {
 			std::cout << std::endl;
 			if (MC.GetMoveset().GetMove(ChosenMove).MoveType == "Summon") {
@@ -134,6 +141,16 @@ void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
 				MC.SetPlayerPower(MC.GetPlayerPower() + MC.GetMoveset().GetMove(ChosenMove).MoveStrength);
 				std::cout << "Gained " << MC.GetMoveset().GetMove(ChosenMove).MoveStrength << " Power" << std::endl;
 				target.SetEnemyHP(target.GetEnemyHP() - MC.GetPlayerPower());
+				std::cout << "Dealt: " << (MC.GetPlayerPower()) << " damage." << std::endl;
+			}
+			else if (MC.GetMoveset().GetMove(ChosenMove).MoveType == "Ritual") {
+				std::cout << MC.GetPlayerClass() << " used " << MC.GetMoveset().GetMove(ChosenMove).MoveName << std::endl;
+				MC.SetPlayerMaxHP(MC.GetPlayerMaxHP() - MC.GetMoveset().GetMove(ChosenMove).MoveStrength);
+				if (MC.GetPlayerHP() > MC.GetPlayerMaxHP()) {
+					MC.SetPlayerHP(MC.GetPlayerMaxHP());
+				}
+				std::cout << "Consumed " << MC.GetMoveset().GetMove(ChosenMove).MoveStrength << " Max HP" << std::endl;
+				target.SetEnemyHP(target.GetEnemyHP() - MC.GetMoveset().GetMove(ChosenMove).MoveStrength);
 				std::cout << "Dealt: " << (MC.GetPlayerPower()) << " damage." << std::endl;
 			}
 			else {
