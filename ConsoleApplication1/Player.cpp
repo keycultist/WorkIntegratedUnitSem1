@@ -205,8 +205,8 @@ void Player::InitPlayer()
             break;
         case 6:
             SetPlayerClass("Ritualist");
-            SetPlayerMaxHP(500);
-            SetPlayerHP(500);
+            SetPlayerMaxHP(250);
+            SetPlayerHP(250);
             SetPlayerPower(10);
             SetPlayerCritChance(5);
             break;
@@ -819,15 +819,15 @@ void Player::LevelUp()
             moveset.SetMove(Moveset::Move("Meta-Aura", 0, 1, "Control"));
         }
         else if (GetPlayerLvl() == 7) {
-            std::cout << "You learnt Ancient Awakening, 50 Strength, 2 Hit, Ritual." << std::endl;
-            moveset.SetMove(Moveset::Move("Ancient Awakening", 50, 2, "Ritual"));
+            std::cout << "You learnt Ancient Awakening, 20 Strength, 2 Hit, Ritual." << std::endl;
+            moveset.SetMove(Moveset::Move("Ancient Awakening", 20, 2, "Ritual"));
         }
         else if (GetPlayerLvl() == 10) {
-            std::cout << "You are trying to learn Ritual of The Last Morning, 80 Strength, 3 Hits, Ritual." << std::endl;
+            std::cout << "You are trying to learn Ritual of The Last Morning, 40 Strength, 3 Hits, Ritual." << std::endl;
             ListMovesToReplace();
             std::cin >> replaceindex;
             if (replaceindex != 5) {
-                moveset.ReplaceMove(Moveset::Move("Ritual of The Last Morning", 80, 3, "Ritual"), replaceindex - 1);
+                moveset.ReplaceMove(Moveset::Move("Ritual of The Last Morning", 40, 3, "Ritual"), replaceindex - 1);
             }
         }
         else {
