@@ -126,6 +126,7 @@
   <ItemGroup>
     <ClCompile Include="Combat.cpp" />
     <ClCompile Include="Events.cpp" />
+    <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
@@ -137,6 +138,7 @@
   <ItemGroup>
     <ClInclude Include="Combat.h" />
     <ClInclude Include="Events.h" />
+    <ClInclude Include="Inventory.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Moveset.h" />

@@ -24,12 +24,15 @@ protected:
 
 	int ShopFloor;
 
-	std::string ShopWarriorWeaponList[7];
-	std::string ShopMageWeaponList[7];
-	std::string ShopHunterWeaponList[7];
+	std::string ShopWeaponList[7];
 	int ShopWeaponPowerList[7];
 	int ShopArmorHPList[5];
 	std::string ShopBoughtConsumablesList[3];
+
+	std::string ShopPlayerEquippedWeapon;
+	std::string ShopPlayerEquippedArmor;
+
+	std::string InventoryConsumableList[10];
 
 public:
 	Shop();
@@ -46,11 +49,11 @@ public:
 	void SetPlayerIsShopping();
 	void SetShopPlayerNewHP(int hp);
 	void SetShopPlayerNewPower(int power);
-	void SetShopWarriorWeaponListIndex(std::string name, int index);
-	void SetShopMageWeaponListIndex(std::string name, int index);
-	void SetShopHunterWeaponListIndex(std::string name, int index);
+	void SetShopWeaponListIndex(std::string name, int index);
 	void SetShopWeaponPowerList();
 	void SetShopArmorHPList();
+	void SetConsumablesListIndex(std::string name, int index);
+	void SetInventoryConsumableListIndex(std::string name, int index);
 
 	// getter
 	int GetPlayerCurrency();
@@ -58,6 +61,10 @@ public:
 	bool GetPlayerIsShopping();
 	int GetShopPlayerNewHP();
 	int GetShopPlayerNewPower();
+	std::string GetShopPlayerEquippedWeapon();
+	std::string GetShopPlayerEquippedArmor();
+	int GetShopFloor();
+	std::string GetConsumablesListIndex(int index);
 
 	// methods
 	std::string DrawShopUI();

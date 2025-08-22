@@ -24,10 +24,11 @@ Shop::Shop() {
 	ShopPlayerClass = "";
 
 	for (int i = 0; i < 7; i++) {
-		ShopWarriorWeaponList[i];
-		ShopMageWeaponList[i];
-		ShopHunterWeaponList[i];
+		ShopWeaponList[i];
 	}
+
+	ShopPlayerEquippedWeapon = "Splintered Wood Sword";
+	ShopPlayerEquippedArmor = "Ragged Clothing";
 }
 
 
@@ -334,22 +335,10 @@ int Shop::GetShopPlayerNewPower() {
 
 
 
-void Shop::SetShopWarriorWeaponListIndex(std::string name, int index) {
-	ShopWarriorWeaponList[index] = name;
+void Shop::SetShopWeaponListIndex(std::string name, int index) {
+	ShopWeaponList[index] = name;
 }
 
-
-
-void Shop::SetShopMageWeaponListIndex(std::string name, int index) {
-	ShopMageWeaponList[index] = name;
-}
-
-
-
-
-void Shop::SetShopHunterWeaponListIndex(std::string name, int index) {
-	ShopHunterWeaponList[index] = name;
-}
 
 
 
@@ -370,6 +359,104 @@ void Shop::SetShopArmorHPList() {
 	ShopArmorHPList[3] = 150;
 	ShopArmorHPList[4] = 250;
 }
+
+
+
+
+
+
+
+std::string Shop::GetShopPlayerEquippedWeapon() {
+	return ShopPlayerEquippedWeapon;
+}
+
+
+
+std::string Shop::GetShopPlayerEquippedArmor() {
+	return ShopPlayerEquippedArmor;
+}
+
+
+
+int Shop::GetShopFloor() {
+	return ShopFloor;
+}
+
+
+
+void Shop::SetConsumablesListIndex(std::string name, int index) {
+	ShopBoughtConsumablesList[index] = name;
+}
+
+
+std::string Shop::GetConsumablesListIndex(int index) {
+	return ShopBoughtConsumablesList[index];
+}
+
+
+
+
+void Shop::SetInventoryConsumableListIndex(std::string name, int index) {
+	InventoryConsumableList[index] = name;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -437,12 +524,16 @@ void Shop::EquipBoughtWeapon(int slot) {
 		//std::cout << "shop slot item name : " << ShopSlotItemName[slot] << std::endl;
 		//std::cout << "warrior weapon name : " << ShopWarriorWeaponList[i] << std::endl;
 
-		if (ShopSlotItemName[slot] == ShopWarriorWeaponList[i]) {
+		if (ShopSlotItemName[slot] == ShopWeaponList[i]) {
 			ShopPlayerNewPower = ShopWeaponPowerList[i];
+			ShopPlayerEquippedWeapon = ShopWeaponList[i];
 		}
 
-		std::cout << "player new power: " << ShopPlayerNewPower << std::endl;
 	}
+
+
+	std::cout << "player new power: " << ShopPlayerNewPower << std::endl;
+
 }
 
 
@@ -454,6 +545,7 @@ void Shop::EquipBoughtArmor(int slot) {
 
 		if (ShopSlotItemName[slot] == ShopItemList[5 * i + 1]) {
 			ShopPlayerNewHP = ShopArmorHPList[i];
+			ShopPlayerEquippedArmor = ShopItemList[5 * i + 1];
 		}
 
 		std::cout << "player new hp: " << ShopPlayerNewHP << std::endl;
@@ -508,151 +600,77 @@ int Shop::PromptPlayerShopInteraction() {
 	std::cout << "(4) Exit Shop" << std::endl;
 
 	std::cin >> PlayerShopChoice;
+	// consumable inv space check
+	bool PlayerHasInventorySpace = false;
 
-	switch (PlayerShopChoice) {
-	case 1:
-		if (ShopPlayerCurrency >= ShopSlotItemCost[0] && ItemIsInStock[0]) {
-			std::cout << ShopSlotItemName[0] << " Purchased!\n" << std::endl;
-
-			ShopPlayerCurrency -= ShopSlotItemCost[0];
-			ItemIsInStock[0] = false;
-
-
-			// equip
-
-			//std::cout << "shop slot weapon type: " << ShopSlotItemType[0] << std::endl;
-			if (ShopSlotItemType[0] == "Weapon") {
-				EquipBoughtWeapon(0);
-			}
-
-			if (ShopSlotItemType[0] == "Armor") {
-				EquipBoughtArmor(0);
-			}
-
-
-			if (ShopSlotItemType[0] == "Consumable") {
-				BoughtConsumables(0);
-			}
-
-
-
-
-
+	for (int i = 0; i < 10; i++) {
+		if (InventoryConsumableList[i] == "-") {
+			PlayerHasInventorySpace = true;
 		}
-
-		else {
-			if (ItemIsInStock[0] == false) {
-				std::cout << "Item Is Not In Stock\n" << std::endl;
-			}
-			else {
-				std::cout << "Insufficient Funds\n" << std::endl;
-			}
-		}
-
-		break;
+	}
 
 
 
+	if (std::cin.fail() || PlayerShopChoice < 1 || PlayerShopChoice > 4) {
+		std::cout << "Invalid Input\n" << std::endl;
+		std::cin.clear();
+		std::cin.ignore();
+	}
 
-	case 2:
-		if (ShopPlayerCurrency >= ShopSlotItemCost[1] && ItemIsInStock[1]) {
-			std::cout << ShopSlotItemName[1] << " Purchased!\n" << std::endl;
-
-			ShopPlayerCurrency -= ShopSlotItemCost[1];
-			ItemIsInStock[1] = false;
-
-
-
-			// equip
-
-			//std::cout << "shop slot weapon type: " << ShopSlotItemType[0] << std::endl;
-			if (ShopSlotItemType[1] == "Weapon") {
-				EquipBoughtWeapon(1);
-			}
-
-			if (ShopSlotItemType[1] == "Armor") {
-				EquipBoughtArmor(1);
-			}
-
-
-			if (ShopSlotItemType[1] == "Consumable") {
-				BoughtConsumables(1);
-			}
-
-
-
-
-
-		}
-
-		else {
-			if (ItemIsInStock[1] == false) {
-				std::cout << "Item Is Not In Stock\n" << std::endl;
-			}
-			else {
-				std::cout << "Insufficient Funds\n" << std::endl;
-			}
-		}
-
-		break;
-
-
-
-
-	case 3:
-		if (ShopPlayerCurrency >= ShopSlotItemCost[2] && ItemIsInStock[2]) {
-			std::cout << ShopSlotItemName[2] << " Purchased!\n" << std::endl;
-
-			ShopPlayerCurrency -= ShopSlotItemCost[2];
-			ItemIsInStock[2] = false;
-
-
-
-			// equip
-
-			//std::cout << "shop slot weapon type: " << ShopSlotItemType[0] << std::endl;
-			if (ShopSlotItemType[2] == "Weapon") {
-				EquipBoughtWeapon(2);
-			}
-
-			if (ShopSlotItemType[2] == "Armor") {
-				EquipBoughtArmor(2);
-			}
-
-
-			if (ShopSlotItemType[2] == "Consumable") {
-				BoughtConsumables(2);
-			}
-
-
-
-
-
-		}
-
-		else {
-			if (ItemIsInStock[2] == false) {
-				std::cout << "Item Is Not In Stock\n" << std::endl;
-			}
-			else {
-				std::cout << "Insufficient Funds\n" << std::endl;
-			}
-		}
-
-		break;
-
-
-
-
-	case 4:
+	// if leave shop
+	else if (PlayerShopChoice == 4) {
 		PlayerIsShopping = false;
+	}
 
-		break;
 
-	default:
-		std::cout << "Invalid Option\n" << std::endl;
+
+	else if (ShopSlotItemType[PlayerShopChoice - 1] == "Consumable" && PlayerHasInventorySpace == false) {
+		std::cout << "Insufficient Inventory Space" << std::endl;
+	}
+
+
+
+	// if purchasable, check for purchase
+	else if (ShopPlayerCurrency >= ShopSlotItemCost[PlayerShopChoice - 1] && ItemIsInStock[PlayerShopChoice - 1]) {
+		std::cout << ShopSlotItemName[PlayerShopChoice - 1] << " Purchased!\n" << std::endl;
+
+		ShopPlayerCurrency -= ShopSlotItemCost[PlayerShopChoice - 1];
+		ItemIsInStock[PlayerShopChoice - 1] = false;
+
+
+		// equip
+
+		//std::cout << "shop slot weapon type: " << ShopSlotItemType[0] << std::endl;
+		if (ShopSlotItemType[PlayerShopChoice - 1] == "Weapon") {
+			EquipBoughtWeapon(PlayerShopChoice - 1);
+		}
+
+		if (ShopSlotItemType[PlayerShopChoice - 1] == "Armor") {
+			EquipBoughtArmor(PlayerShopChoice - 1);
+		}
+
+
+		if (ShopSlotItemType[PlayerShopChoice - 1] == "Consumable") {
+			BoughtConsumables(PlayerShopChoice - 1);
+		}
 
 	}
+
+
+
+	// if out of stock
+	else if (ItemIsInStock[PlayerShopChoice - 1] == false) {
+		std::cout << "Item Is Not In Stock\n" << std::endl;
+	}
+
+	// if not enough money
+	else if (ShopPlayerCurrency < ShopSlotItemCost[PlayerShopChoice - 1]) {
+		std::cout << "Insufficient Funds\n" << std::endl;
+	}
+
+
+
+
 
 
 	return 0;
