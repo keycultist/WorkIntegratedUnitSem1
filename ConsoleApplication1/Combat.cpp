@@ -28,7 +28,7 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 	MC.ShowPlayerStats();
 	int ChosenMove = 0;
 	bool Defend = false;
-	int RunChance = rand() % 3;
+	int RunChance = rand() % 10;
 	int chP = _getch();
 	system("cls");
 	switch (chP) { //select action
@@ -63,11 +63,11 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 		//Input inventory system
 		break;
 	case '4':
-		if (RunChance == 2) {
+		if (RunChance >= 8) {
 			std::cout << "Successfuly Ran Away" << std::endl;
 			return true;
 		}
-		else if (RunChance == 1) {
+		else if (RunChance >= 4 && RunChance < 8) {
 			std::cout << "Ran Away but Damaged" << std::endl;
 			MC.SetPlayerHP(MC.GetPlayerHP() * 0.95);
 			return true;

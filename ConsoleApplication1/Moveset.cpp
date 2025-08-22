@@ -35,6 +35,8 @@ void Moveset::EnemyInit(const std::string Class)
 {
     Moveset EnemyNameMoveset; //Found out this is not needed, i think.
 
+    //SetMove(Move("MOVE NAME", STRENGTH, HITS, "TYPE"));
+
     //Add enemy movesets
     if (Class == "Cleaver") {
         EnemyNameMoveset.SetMove(Move("Lesser Cleave, Vertical", 1, 5, "Abyssal"));
