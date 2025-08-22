@@ -129,11 +129,11 @@ Moveset& Player::GetMoveset()
     return moveset;
 }
 
-Player::Player() : Entity("Warrior", 100, 100, 5, 5, 0, 0, 0, 1, 0), PlayerEquippedWeapon("None"), PlayerEquippedArmor("None"), PlayerCurrency(0), PlayerKarma(50), CurrentDifficulty(1)
+Player::Player() : Entity("Warrior", 100, 100, 5, 5, 0, 0, 0, 1, 0), PlayerEquippedWeapon("None"), PlayerEquippedArmor("None"), PlayerKarma(50), CurrentDifficulty(1)
 {
 }
 
-Player::Player(std::string PlayerClass, int PlayerMaxHP, int PlayerHP, int PlayerPower, int PlayerCritChance, int PlayerPosX, int PlayerPosY, int PlayerLvl, int PlayerXP, std::string PlayerEquippedWeapon, std::string PlayerEquippedArmor, int PlayerCurrency, int PlayerKarma, int CurrentDifficulty)
+Player::Player(std::string PlayerClass, int PlayerMaxHP, int PlayerHP, int PlayerPower, int PlayerCritChance, int PlayerCurrency, int PlayerPosX, int PlayerPosY, int PlayerLvl, int PlayerXP, std::string PlayerEquippedWeapon, std::string PlayerEquippedArmor, int PlayerKarma, int CurrentDifficulty)
     : Entity(PlayerClass, PlayerMaxHP, PlayerHP, PlayerPower, PlayerCritChance, PlayerCurrency, PlayerPosX, PlayerPosY, PlayerLvl, PlayerXP), PlayerEquippedWeapon(PlayerEquippedWeapon), PlayerEquippedArmor(PlayerEquippedArmor), PlayerKarma(PlayerKarma), CurrentDifficulty(CurrentDifficulty)
 {
 }
