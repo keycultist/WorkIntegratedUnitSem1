@@ -1,45 +1,55 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include "Player.h"
+#include "Position.h"
 #include <string>
 #include <iostream>
 
 
 class Entity {
 private:
-    std::string PlayerClass;
-    int PlayerMaxHP;
-    int PlayerHP;
-    int PlayerPower;
-    int PlayerCritChance;
-    int PlayerPosX, PlayerPosY;
-    int PlayerLvl;
-    int PlayerXP;
-    std::string PlayerEquippedWeapon;
-    std::string PlayerEquippedArmor;
-    int PlayerCurrency;
-    int PlayerKarma;
+    std::string Class;
+    int MaxHP;
+    int HP;
+    int Power;
+    int CritChance;
+    //int PosX, PosY;
+    int Lvl;
+    int XP;
+
+    std::string EquippedWeapon;
+    std::string EquippedArmor;
+    int Currency;
+    int Karma;
     int CurrentDifficulty;
 
-    Moveset moveset;
+    Position entityPosObj;
+
+    //Moveset moveset;
 public:
-   /* void SetClass(std::string Class);
+    void SetClass(std::string Class);
     void SetMaxHP(int MaxHP);
     void SetHP(int HP);
     void SetPower(int Power);
-    void SetmagicPower(int magicPower);
+    void SetCritChance(int CritChance);
     void SetCurrency(int Currency);
+    void SetPos(int PosX, int PosY);
+    void SetLvl(int Lvl);
+    void SetXP(int XP);
 
     std::string GetClass(void) const;
     int GetMaxHP(void) const;
     int GetHP(void) const;
     int GetPower(void) const;
-    int GetmagicPower(void) const;
-    int GetCurrency(void) const;*/
+    int GetCritChance(void) const;
+    int GetCurrency(void) const;
+    int GetPosX(void) const;
+    int GetPosY(void) const;
+    int GetLvl(void) const;
+    int GetXP(void) const;
 
     Entity();
-    Entity(std::string Cl, int MH, int H, int P, int mP, int C);
+    Entity(std::string Cl, int MH, int H, int P, int CC, int C, int PX, int PY, int L, int XP);
     ~Entity();
 
     void applyBuff(const std::string& stat, int value); 

@@ -6,16 +6,14 @@
 class Player : public Entity
 {
 private:
-	//
-	std::string PlayerClass;
+	/*std::string PlayerClass;
 	int PlayerMaxHP;
 	int PlayerHP;
 	int PlayerPower;
-	//
 	int PlayerCritChance;
 	int PlayerPosX, PlayerPosY;
 	int PlayerLvl;
-	int PlayerXP;
+	int PlayerXP;*/
 	std::string PlayerEquippedWeapon;
 	std::string PlayerEquippedArmor;
 	int PlayerCurrency;
@@ -31,10 +29,8 @@ public:
 	void SetPlayerMaxHP(int MaxHP);
 	void SetPlayerHP(int HP);
 	void SetPlayerPower(int Power);
-	void SetPlayermagicPower(int Power);
 	void SetPlayerCritChance(int CritChance);
-	void SetPlayerPosX(int X);
-	void SetPlayerPosY(int Y);
+	void SetPlayerPos(int X, int Y);
 	void SetPlayerLvl(int Lvl);
 	void SetPlayerXP(int XP);
 	void SetPlayerEquippedWeapon(std::string Weapon);
@@ -69,7 +65,7 @@ public:
 	void LevelUpCheck();
 	void LevelUp();
 	void ListMovesToReplace();
-	Position entityPosObj;
+	//Position entityPosObj;
 	virtual void move(Entity* ptr[6]);
 };
 
