@@ -76,7 +76,7 @@ void Map::CreateNewFloor(int Difficulty) {
         roomPlans.push_back({ allPositions[positionIndex++], roomType });
     }
 
-    // GUARANTEE: The last room is always a shop
+    // The last room is always a shop
     roomPlans.push_back({ allPositions[positionIndex], RoomType::SHOP });
 
     // Generate all planned rooms
@@ -85,7 +85,7 @@ void Map::CreateNewFloor(int Difficulty) {
         rooms.push_back(newRoom);
         roomLookup[newRoom.id] = &rooms.back();
 
-        // Use InnerRoom for large rooms, FloorGrid for others
+        // Use InnerRoom for large rooms, FloorGrid for others. (self explanatory)
         if (newRoom.type == RoomType::LARGE) {
             generateLargeRoom(newRoom);
         }
@@ -96,12 +96,17 @@ void Map::CreateNewFloor(int Difficulty) {
 
     std::cout << "Generated " << numRooms << " rooms (last room is shop)" << std::endl;
 
-    // Verify the last room is a shop
+    // Verify the last room is a shop so we can be capitalist pigs
     Room* lastRoom = getLastRoom();
     if (lastRoom && lastRoom->type == RoomType::SHOP) {
         std::cout << "Final shop is room #" << lastRoom->id << " at ("
             << lastRoom->x << "," << lastRoom->y << ")" << std::endl;
     }
+
+    // Cleanup!! JANITOR ON AISLE 108 AND 109!!!
+
+	delete[] floorPtrs;  
+    delete[] innerPtrs;
 }
 
 void Map::RequestFloorUpdate() {
@@ -111,6 +116,8 @@ void Map::RequestFloorUpdate() {
     }
 
     drawBoard(floorPointers, 128, 128);
+
+	delete[] floorPointers;
 }
 
 void Map::fillBoard(char** Board, int sizeX, int sizeY)
@@ -168,6 +175,8 @@ void Map::generateLargeRoom(const Room& room) {
     scaledRoom.y *= 2;
 
     generateRoom(scaledRoom, innerPtrs, 256, 256);
+
+	delete[] innerPtrs;
 }
 
 Room* Map::detectPlayerRoom(int playerX, int playerY) {
@@ -236,9 +245,11 @@ void Map::switchToRoomView(int playerX, int playerY) {
         
         std::cout << "Entered " << getRoomTypeName(playerRoom->type) << " room!" << std::endl;
         drawBoard(innerPtrs, 256, 256);  // Show just this room
+        delete[] innerPtrs;
     } else {
         std::cout << "Player is in a corridor or empty space." << std::endl;
     }
+
 }
 
 // Helper function to get room type names

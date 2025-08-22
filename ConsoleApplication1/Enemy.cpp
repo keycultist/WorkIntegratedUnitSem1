@@ -137,31 +137,9 @@ void Enemy::ShowEnemyStats(Enemy& MC) {
 
 std::string Enemy::DecisionMatrix(int PlayerHP, bool PlayerBuffed)
 {
-	// Standard Enemy Decision Matrix
-	// Based off HP, use moves.
-	// If available, use a buff move if max hp or higher hp % than player.
-	// If available, use an attack move if buffed or if player is debuffed
-	// If available, use a buff move if no buffs are currently applied.
-	// If available, use a debuff move if player is buffed.
-	// If all else fails, launch an attack.
-	// Attack Decision Matrix:
-	// On fight start, use weakest move.
-	// If player has low hp, or a higher hp value then use strong move.
-
-	// For Special/True Bosses, use a different Decision Matrix.
-	// Based off HP, use moves.
-	// If available, use a buff move if max hp or higher hp % than player.
-	// If available, use a counter move if player is buffed.
-	// If available, use a damage move if player is debuffed/buff is active.
-	// If available, and counter has been used within the last 3 recent moves, use a debuff
-	// If the boss is under 50%, initiate phase change if they are a true boss, else, use special move.
-	// On Phase Change, use a special move.
-	// Detect boss 1% hp, if 1% hp, use Final Move if they have one.
-
 	// Standard Enemy Decision Matrix, here we go.
 
 	if (usedMoves.size() >= 3) {
-		// If the enemy has used 3 moves, remove the first move from the used moves list.
 		usedMoves.erase(usedMoves.begin());
 	}
 
