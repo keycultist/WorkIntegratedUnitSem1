@@ -230,6 +230,7 @@ void Player::InitPlayer()
         SetPlayerCurrency(0);
         SetPlayerKarma(50);
         SetCurrentDifficulty(1);
+        system("cls");
         moveset.PlayerInit(GetPlayerClass());
         ShowPlayerStats();
         ShowPlayerMoves();
