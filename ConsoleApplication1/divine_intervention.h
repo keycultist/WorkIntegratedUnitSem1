@@ -36,7 +36,7 @@ private:
     const std::vector<GodProbability> godProbabilities = {
         {God::SAGACITY, 15},  //increase magic attacks
         {God::AURORA, 15},    //increase attack
-        {God::CHRYSES, 10},   //increase/decrease gold earned
+        {God::CHRYSES, 15},   //increase/decrease gold earned
         {God::FERONIA, 10},   //heals
         {God::KERES, 15},     //decrease max hp
         {God::PREYSEYE, 5},   //increase/decrease karma
