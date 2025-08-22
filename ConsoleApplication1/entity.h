@@ -52,7 +52,7 @@ public:
     ~Entity();
 
     void applyBuff(const std::string& stat, int value); 
-    void applyKarmaEffect(int value, float multiplierChange);
+    void applyKarmaEffect(int value, int PlayerKarma, float multiplierChange);
     void heal(int amount);
     void increaseMaxHP(int amount);
     bool isAlive() const;

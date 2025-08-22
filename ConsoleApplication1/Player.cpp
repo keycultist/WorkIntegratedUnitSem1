@@ -943,6 +943,7 @@ void Player::ListMovesToReplace()
     std::cout << "(5) Don't learn this move" << std::endl;
     std::cout << std::endl;
 }
+
 void Player::move(Entity* ptr[6]) //Not really sure if the changes affected anything
 {
    // checkGhost(ptr);

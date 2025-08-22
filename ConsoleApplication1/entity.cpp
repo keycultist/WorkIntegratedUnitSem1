@@ -1,4 +1,5 @@
 #include "entity.h"
+#include "Player.h"
 //#include ".h"
 #include <iostream>
 void Entity::SetClass(std::string Class)
@@ -134,18 +135,18 @@ void Entity::applyBuff(const std::string& stat, int value) {
     }
 }
 
-void Entity::applyKarmaEffect(int value, float multiplierChange) {
-    Karma += value;
-    if (Karma > 100) Karma = 100;
-    if (Karma < 0) Karma = 0;
+void Entity::applyKarmaEffect(int value, int PlayerKarma, float multiplierChange) {
+    PlayerKarma += value;
+    if (PlayerKarma > 100) PlayerKarma = 100;
+    if (PlayerKarma < 0) PlayerKarma = 0;
 
-    Karma += multiplierChange;
-    if (Karma < 0.1f) Karma = 0.1f;
+    PlayerKarma += multiplierChange;
+    if (PlayerKarma < 0.1f) PlayerKarma = 0.1f;
 
     std::cout << Class << "'s karma changed by " << value
-        << " (Now: " << Karma << "/100)\n";
+        << " (Now: " << PlayerKarma << "/100)\n";
     std::cout << "Karma multiplier changed by " << multiplierChange
-        << " (Now: " << Karma << "x)\n";
+        << " (Now: " << PlayerKarma << "x)\n";
 }
 
 void Entity::heal(int amount) {
