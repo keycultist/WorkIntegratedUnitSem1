@@ -11,12 +11,13 @@ private:
 	int PlayerHP;
 	int PlayerPower;
 	int PlayerCritChance;
+	int PlayerCurrency;
 	int PlayerPosX, PlayerPosY;
 	int PlayerLvl;
 	int PlayerXP;*/
+	//Commented out bc of Entity class integration
 	std::string PlayerEquippedWeapon;
 	std::string PlayerEquippedArmor;
-	//int PlayerCurrency;
 	int PlayerKarma;
 	int CurrentDifficulty;
 
@@ -65,7 +66,6 @@ public:
 	void LevelUpCheck();
 	void LevelUp();
 	void ListMovesToReplace();
-	//Position entityPosObj;
 	virtual void move(Entity* ptr[6]);
 };
 
