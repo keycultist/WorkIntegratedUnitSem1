@@ -129,12 +129,14 @@ void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
 		MC.SetPlayerHP(MC.GetPlayerHP() + (MC.GetMoveset().GetMove(ChosenMove).MoveStrength));
 		std::cout << "Healed " << MC.GetMoveset().GetMove(ChosenMove).MoveStrength << " HP." << std::endl;
 		std::cout << "Current HP: " << MC.GetPlayerHP() << "/" << MC.GetPlayerMaxHP() << std::endl;
-	} //Heal Type, based on move strength
+	} 
+	//Heal Type, based on move strength
 	else {
 		if (MC.GetMoveset().GetMove(ChosenMove).MoveType == "Dark") {
 			std::cout << "Dark Move Used! -15%HP" << std::endl;
 			MC.SetPlayerHP(MC.GetPlayerHP() - (MC.GetPlayerMaxHP() * 0.15));
-		} //Dark Type, -15% maxHP
+		} 
+		//Dark Type, -15% maxHP
 
 		for (int i = 0; i < MC.GetMoveset().GetMove(ChosenMove).Hits; i++) {
 			std::cout << std::endl;
@@ -144,7 +146,8 @@ void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
 				std::cout << "Gained " << MC.GetMoveset().GetMove(ChosenMove).MoveStrength << " Power" << std::endl;
 				target.SetEnemyHP(target.GetEnemyHP() - MC.GetPlayerPower());
 				std::cout << "Dealt: " << (MC.GetPlayerPower()) << " damage." << std::endl;
-			} // Summon Type, adds move power to total power
+			} 
+			// Summon Type, adds move power to total power
 			else if (MC.GetMoveset().GetMove(ChosenMove).MoveType == "Ritual") {
 				std::cout << MC.GetPlayerClass() << " used " << MC.GetMoveset().GetMove(ChosenMove).MoveName << std::endl;
 				MC.SetPlayerMaxHP(MC.GetPlayerMaxHP() - MC.GetMoveset().GetMove(ChosenMove).MoveStrength);
@@ -154,7 +157,8 @@ void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
 				std::cout << "Consumed " << MC.GetMoveset().GetMove(ChosenMove).MoveStrength << " Max HP" << std::endl;
 				target.SetEnemyHP(target.GetEnemyHP() - MC.GetMoveset().GetMove(ChosenMove).MoveStrength);
 				std::cout << "Dealt: " << (MC.GetPlayerPower()) << " damage." << std::endl;
-			} //Ritual Type, consumes MaxHP to use
+			} 
+			//Ritual Type, consumes MaxHP to use
 			else {
 				Critting = rand() % 100 + 1;
 				if (Critting <= MC.GetPlayerCritChance()) {
@@ -173,7 +177,8 @@ void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
 						target.SetEnemyHP(target.GetEnemyHP() - (MC.GetPlayerPower() + MC.GetMoveset().GetMove(ChosenMove).MoveStrength));
 						std::cout << "Dealt: " << (MC.GetPlayerPower() + MC.GetMoveset().GetMove(ChosenMove).MoveStrength) << " damage." << std::endl;
 					}
-				} //Physical, scales power
+				} 
+				//Physical, scales power
 				else if (MC.GetMoveset().GetMove(ChosenMove).MoveType == "Magical") {
 					if (Critted) {
 						target.SetEnemyHP(target.GetEnemyHP() - ((MC.GetPlayerMaxHP() / 10) + MC.GetMoveset().GetMove(ChosenMove).MoveStrength) * 2);
@@ -183,7 +188,8 @@ void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
 						target.SetEnemyHP(target.GetEnemyHP() - ((MC.GetPlayerMaxHP() / 10) + MC.GetMoveset().GetMove(ChosenMove).MoveStrength));
 						std::cout << "Dealt: " << ((MC.GetPlayerMaxHP() / 10) + MC.GetMoveset().GetMove(ChosenMove).MoveStrength) << " damage." << std::endl;
 					}
-				} //Magical, scales MaxHP
+				} 
+				//Magical, scales MaxHP
 			}
 			std::cout << target.GetEnemyClass() << " has " << target.GetEnemyHP() << " HP left." << std::endl;
 			if (target.GetEnemyHP() <= 0) {
