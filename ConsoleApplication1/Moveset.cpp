@@ -6,13 +6,13 @@ Moveset::Move::Move(const std::string& N, int P, int H, const std::string& T) : 
 
 void Moveset::SetMove(const Move& Move)
 {
-    Moves.push_back(Move);
+    Moves.push_back(Move); //Adds a move, move at index 0 becomes 1, new one becomes 0...etc. etc.
 }
 
 void Moveset::ReplaceMove(const Move& newmove, int index)
 {
     if (index >= 0 && index < Moves.size()) {
-        Moves[index] = newmove; // replace existing move
+        Moves[index] = newmove; // replace existing move, retains index
     }
     else {
         std::cout << "Error!";
@@ -22,13 +22,13 @@ void Moveset::ReplaceMove(const Move& newmove, int index)
 Moveset::Move Moveset::GetMove(int index) const
 {
     if (index >= 0 && index < Moves.size()) {
-        return Moves[index];
+        return Moves[index]; // Gets the move obj at the index
     }
     return Move("Empty", 0, 0);
 }
 
 int Moveset::size() const {
-    return Moves.size();
+    return Moves.size(); // Gets the size of the move array
 }
 
 void Moveset::EnemyInit(const std::string Class)
