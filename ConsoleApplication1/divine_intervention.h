@@ -18,7 +18,7 @@ enum class God {     //enum = enumerated type, which means the set of datas are 
     PREYSEYE,
     SANCTORUM,
     BOON,
-    MAGNAR
+   /* MAGNAR*/
 };
 
 class DivineIntervention {
@@ -42,7 +42,7 @@ private:
         {God::PREYSEYE, 5},   //increase/decrease karma
         {God::SANCTORUM, 10},  //increase max hp
         {God::BOON, 5},       //increase crit rate
-        {God::MAGNAR, 15}    //TBA
+        //{God::MAGNAR, 15}    //TBA
     };
 
     std::string getRandomDialogue(God god) const;

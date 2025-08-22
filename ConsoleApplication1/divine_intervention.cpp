@@ -14,7 +14,7 @@ DivineIntervention::DivineIntervention() : gen(rd()) {
         {God::PREYSEYE, "Preyseye the Morality"},
         {God::SANCTORUM, "Sanctorum the Conservation" },
         {God::BOON, "Boon the Probability" },
-        {God::MAGNAR, "Magnar the Valour" }
+        /*{God::MAGNAR, "Magnar the Valour" }*/
     };
 
     // God-specific dialogues
@@ -74,12 +74,12 @@ DivineIntervention::DivineIntervention() : gen(rd()) {
         "\"Watch the threads of fate weave into an endless universal fabric of possibility...\""
     };
 
-    godDialogues[God::MAGNAR] = {
+    /*godDialogues[God::MAGNAR] = {
         "\"Let the might of a thousand warriors conquer your minds!\"",
         "\"Their flesh and blood will forge our swords! Their veins will be our bowstrings! And their bones will be our daggers!\"",
         "\"Our adversaries' bodies shall be relics of the past!\"",
         "\"Behold, the law of absolute ruin!\""
-    };
+    };*/
 }
 
 std::string DivineIntervention::getRandomDialogue(God god) const { //this is to get a random dialogue from the godDialogues map, which is a map of vectors
