@@ -6,10 +6,12 @@
 class Player : public Entity
 {
 private:
+	//
 	std::string PlayerClass;
 	int PlayerMaxHP;
 	int PlayerHP;
 	int PlayerPower;
+	//
 	int PlayerCritChance;
 	int PlayerPosX, PlayerPosY;
 	int PlayerLvl;
