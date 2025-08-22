@@ -80,6 +80,8 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 	default:
 		break;
 	}
+	chP = _getch();
+	system("cls");
 	if (target.GetEnemyHP() <= 0) { //Enemy death check
 		std::cout << "Enemy Defeated! Gained XP!" << std::endl;
 		if (MC.GetPlayerClass() == "Berserker") {
