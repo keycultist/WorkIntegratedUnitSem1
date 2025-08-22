@@ -241,7 +241,7 @@ std::string Enemy::DecisionMatrix(int PlayerHP, bool PlayerBuffed)
 
 			if (EnemyHP <= EnemyMaxHP / 2) {
 				if (Phase == false) {
-					Phase = true; 
+					Phase = true;
 
 					for (int i = 0; i < moveset.size(); i++) {
 						if (moveset.GetMove(i).MoveType == "BossMove") {
@@ -255,7 +255,7 @@ std::string Enemy::DecisionMatrix(int PlayerHP, bool PlayerBuffed)
 				for (int i = 0; i < moveset.size(); i++) {
 					if (moveset.GetMove(i).MoveType == "DeathMove") {
 						EnemyHP = 0;
-						Phase = false; 
+						Phase = false;
 						return moveset.GetMove(i).MoveName;
 					}
 				}
@@ -273,3 +273,4 @@ std::string Enemy::DecisionMatrix(int PlayerHP, bool PlayerBuffed)
 
 		}
 	}
+}

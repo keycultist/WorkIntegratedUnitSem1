@@ -11,15 +11,27 @@
 int main()
 {
     Player MC;
-    Enemy Test;
     MC.InitPlayer();
-    Test.InitEnemy();
+    Enemy* Enemies[10]{};
+    for (int i = 0; i < 10; i++) {
+        Enemies[i] = nullptr;
+    }
+    Enemies[1] = new Enemy;
+    Enemies[1]->InitEnemy();
     MC.ShowPlayerStats();
-    Combat::InitCombat(MC, Test);
 
     Map GMap;
 
     GMap.CreateNewFloor(2);
+
+    //...
+
+    //When init combat
+    Combat::InitCombat(MC, *Enemies[1]);
+
+    //...
+
+    //Print map again
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

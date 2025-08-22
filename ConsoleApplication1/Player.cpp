@@ -7,47 +7,37 @@
 #include <time.h> 
 
 void Player::SetPlayerClass(std::string Class) {
-    SetPlayerClass(Class);
+    SetClass(Class);
 }
 
 void Player::SetPlayerMaxHP(int MaxHP)
 {
-    SetPlayerMaxHP(MaxHP);
+    SetMaxHP(MaxHP);
 }
 
 void Player::SetPlayerHP(int HP) {
-    SetPlayerHP(HP);
+    SetHP(HP);
 }
 
 void Player::SetPlayerPower(int Power) {
-    SetPlayerPower(Power);
-    SetPlayermagicPower(Power);
-}
-
-void Player::SetPlayermagicPower(int Power)
-{
-    SetPlayermagicPower(Power);
+    SetPower(Power);
 }
 
 void Player::SetPlayerCritChance(int CritChance)
 {
-    PlayerCritChance = CritChance;
+    SetCritChance(CritChance);
 }
 
-void Player::SetPlayerPosX(int X) {
-    PlayerPosX = X;
-}
-
-void Player::SetPlayerPosY(int Y) {
-    PlayerPosY = Y;
+void Player::SetPlayerPos(int X, int Y) {
+    SetPos(X, Y);
 }
 
 void Player::SetPlayerLvl(int Lvl) {
-    PlayerLvl = Lvl;
+    SetLvl(Lvl);
 }
 
 void Player::SetPlayerXP(int XP) {
-    PlayerXP = XP;
+    SetXP(XP);
 }
 
 void Player::SetPlayerEquippedWeapon(std::string Weapon) {
@@ -59,7 +49,7 @@ void Player::SetPlayerEquippedArmor(std::string Armor) {
 }
 
 void Player::SetPlayerCurrency(int Currency) {
-    SetPlayerCurrency(Currency);
+    SetCurrency(Currency);
 }
 
 void Player::SetPlayerKarma(int Karma)
@@ -75,41 +65,41 @@ void Player::SetCurrentDifficulty(int Difficulty)
 
 
 std::string Player::GetPlayerClass(void) const {
-    return GetPlayerClass();
+    return GetClass();
 }
 
 int Player::GetPlayerMaxHP(void) const
 {
-    return GetPlayerMaxHP();
+    return GetMaxHP();
 }
 
 int Player::GetPlayerHP(void) const {
-    return GetPlayerHP();
+    return GetHP();
 }
 
 int Player::GetPlayerPower(void) const {
-    return GetPlayerPower();
+    return GetPower();
 }
 
 int Player::GetPlayerCritChance(void) const
 {
-    return PlayerCritChance;
+    return GetCritChance();
 }
 
 int Player::GetPlayerPosX(void) const {
-    return PlayerPosX;
+    return GetPosX();
 }
 
 int Player::GetPlayerPosY(void) const {
-    return PlayerPosY;
+    return GetPosY();
 }
 
 int Player::GetPlayerLvl(void) const {
-    return PlayerLvl;
+    return GetLvl();
 }
 
 int Player::GetPlayerXP(void) const {
-    return PlayerXP;
+    return GetXP();
 }
 
 std::string Player::GetPlayerEquippedWeapon(void) const {
@@ -121,7 +111,7 @@ std::string Player::GetPlayerEquippedArmor(void) const {
 }
 
 int Player::GetPlayerCurrency(void) const {
-    return GetPlayerCurrency();
+    return GetCurrency();
 }
 
 int Player::GetPlayerKarma(void) const
@@ -139,12 +129,12 @@ Moveset& Player::GetMoveset()
     return moveset;
 }
 
-Player::Player() : Entity("Warrior", 100, 100, 5, 0, 0), PlayerClass("Warrior"), PlayerMaxHP(100), PlayerHP(100), PlayerPower(5), PlayerCritChance(5), PlayerPosX(0), PlayerPosY(0), PlayerLvl(1), PlayerXP(0), PlayerEquippedWeapon("None"), PlayerEquippedArmor("None"), PlayerCurrency(0), PlayerKarma(50), CurrentDifficulty(1)
+Player::Player() : Entity("Warrior", 100, 100, 5, 5, 0, 0, 0, 1, 0), PlayerEquippedWeapon("None"), PlayerEquippedArmor("None"), PlayerCurrency(0), PlayerKarma(50), CurrentDifficulty(1)
 {
 }
 
 Player::Player(std::string PlayerClass, int PlayerMaxHP, int PlayerHP, int PlayerPower, int PlayerCritChance, int PlayerPosX, int PlayerPosY, int PlayerLvl, int PlayerXP, std::string PlayerEquippedWeapon, std::string PlayerEquippedArmor, int PlayerCurrency, int PlayerKarma, int CurrentDifficulty)
-    : Entity(PlayerClass, PlayerMaxHP, PlayerHP, PlayerPower, PlayerPower, PlayerCurrency), PlayerCritChance(PlayerCritChance), PlayerPosX(PlayerPosX), PlayerPosY(PlayerPosY), PlayerLvl(PlayerLvl), PlayerXP(PlayerXP), PlayerEquippedWeapon(PlayerEquippedWeapon), PlayerEquippedArmor(PlayerEquippedArmor), PlayerKarma(PlayerKarma), CurrentDifficulty(CurrentDifficulty)
+    : Entity(PlayerClass, PlayerMaxHP, PlayerHP, PlayerPower, PlayerCritChance, PlayerCurrency, PlayerPosX, PlayerPosY, PlayerLvl, PlayerXP), PlayerEquippedWeapon(PlayerEquippedWeapon), PlayerEquippedArmor(PlayerEquippedArmor), PlayerKarma(PlayerKarma), CurrentDifficulty(CurrentDifficulty)
 {
 }
 
@@ -232,8 +222,7 @@ void Player::InitPlayer()
             SetPlayerCritChance(5);
             break;
         }
-        SetPlayerPosX(0);
-        SetPlayerPosY(0);
+        SetPlayerPos(0, 0);
         SetPlayerLvl(1);
         SetPlayerXP(0);
         SetPlayerEquippedWeapon("None");
@@ -241,6 +230,7 @@ void Player::InitPlayer()
         SetPlayerCurrency(0);
         SetPlayerKarma(50);
         SetCurrentDifficulty(1);
+        system("cls");
         moveset.PlayerInit(GetPlayerClass());
         ShowPlayerStats();
         ShowPlayerMoves();
@@ -954,22 +944,23 @@ void Player::ListMovesToReplace()
     std::cout << "(5) Don't learn this move" << std::endl;
     std::cout << std::endl;
 }
-void Player::move(Entity* ptr[6])
+
+void Player::move(Entity* ptr[6]) //Not really sure if the changes affected anything
 {
    // checkGhost(ptr);
     char input;
     input = _getch();
 
-    int targetx = entityPosObj.x;
-    int targety = entityPosObj.y;
+    int targetx = GetPlayerPosX();
+    int targety = GetPlayerPosY();
 
 
 
     switch (input) {
     case 'W':
     case 'w':
-        if (entityPosObj.y > 0) {
-            targety = entityPosObj.y--;
+        if (GetPlayerPosY() > 0) {
+            targety = GetPlayerPosY() - 1;
         }
         else {
             std::cout << "You are at the edge of the board! \n";
@@ -977,8 +968,8 @@ void Player::move(Entity* ptr[6])
         break;
     case 'A':
     case 'a':
-        if (entityPosObj.x > 0) {
-            targetx = entityPosObj.x--;
+        if (GetPlayerPosX() > 0) {
+            targetx = GetPlayerPosX() - 1;
         }
         else {
             std::cout << "You are at the edge of the board! \n";
@@ -986,8 +977,8 @@ void Player::move(Entity* ptr[6])
         break;
     case 'S':
     case 's':
-        if (entityPosObj.y < 19) {
-            targety = entityPosObj.y++;
+        if (GetPlayerPosY() < 19) {
+            targety = GetPlayerPosY() + 1;
         }
         else {
             std::cout << "You are at the edge of the board! \n";
@@ -996,8 +987,8 @@ void Player::move(Entity* ptr[6])
         break;
     case 'D':
     case 'd':
-        if (entityPosObj.x < 19) {
-            targetx = entityPosObj.x++;
+        if (GetPlayerPosX() < 19) {
+            targetx = GetPlayerPosX() + 1;
         }
         else {
             std::cout << "You are at the edge of the board! \n";
@@ -1006,6 +997,6 @@ void Player::move(Entity* ptr[6])
     default:
         std::cout << "Invalid input\n";
     }
-    targetx = entityPosObj.x;
-    targety = entityPosObj.y;
+    targetx = GetPlayerPosX();
+    targety = GetPlayerPosY();
 }
