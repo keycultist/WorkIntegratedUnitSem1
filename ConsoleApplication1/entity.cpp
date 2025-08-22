@@ -188,11 +188,11 @@ void Entity::increaseMaxHP(int amount) {
     std::cout << Class << "'s maximum HP increased by " << amount << "! ";
     std::cout << "HP: " << HP << "/" << MaxHP << " (+" << amount << ")\n";
 }
-void Entity::modifyCritChance(float amount) {
-    CritChance += amount;
+void Entity::modifyCritChance(int amount) {
+    SetCritChance(GetCritChance() + amount);
     // Clamp crit chance between 0% and 100%
-    if (CritChance < 0.0f) CritChance = 0.0f;
-    if (CritChance > 1.0f) CritChance = 1.0f; {
+    if (GetCritChance() < 0.0f) CritChance = 0.0f;
+    if (GetCritChance() > 1.0f) CritChance = 1.0f; {
 
         std::cout << Class << "'s crit chance changed by " << (amount * 100) << "%";
         std::cout << " (Now: " << (CritChance * 100) << "%)\n";

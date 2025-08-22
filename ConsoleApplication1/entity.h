@@ -13,15 +13,14 @@ private:
     int HP;
     int Power;
     int CritChance;
-    //int PosX, PosY;
+    int Currency;
     int Lvl;
     int XP;
 
-    std::string EquippedWeapon;
+    /*std::string EquippedWeapon;
     std::string EquippedArmor;
-    int Currency;
     int Karma;
-    int CurrentDifficulty;
+    int CurrentDifficulty;*/
 
     Position entityPosObj;
 
@@ -57,9 +56,9 @@ public:
     void heal(int amount);
     void increaseMaxHP(int amount);
     bool isAlive() const;
-    void attack(Entity& target);
-    void magicAttack(Entity& target);
-    void modifyCritChance(float amount);
+    /*void attack(Entity& target);
+    void magicAttack(Entity& target);*/
+    void modifyCritChance(int amount);
 };
 
 #endif
