@@ -1,4 +1,4 @@
-#ifndef DIVINE_INTERVENTION_H
+#ifndef DIVINE_INTERVENTION_H  
 #define DIVINE_INTERVENTION_H
 
 #include "entity.h"
@@ -18,8 +18,40 @@ enum class God {     //enum = enumerated type, which means the set of datas are 
     PREYSEYE,
     SANCTORUM,
     BOON,
-   /* MAGNAR*/
+    /* MAGNAR*/
 };
+
+class DivineIntervention {
+private:
+    std::map<God, std::string> godNames;
+    std::map<God, std::vector<std::string>> godDialogues;
+    std::random_device rd;
+    std::mt19937 gen;
+
+    struct GodProbability {
+        God god;
+        int probability;
+    };
+
+    const std::vector<GodProbability> godProbabilities = {
+        {God::SAGACITY, 15},
+        {God::AURORA, 15},
+        {God::CHRYSES, 15},
+        {God::FERONIA, 10},
+        {God::KERES, 15},
+        {God::PREYSEYE, 5},
+        {God::SANCTORUM, 10},
+        {God::BOON, 5},
+        //{God::MAGNAR, 15}
+    };
+
+    std::string getRandomDialogue(God god) const;
+
+public:
+    DivineIntervention();
+    God getRandomGod() const;
+    void applyEffect(God god, Entity& player, Entity& enemy) const;
+}; 
 
 class DivineIntervention {
 private:

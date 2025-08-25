@@ -2,6 +2,10 @@
 #include "entity.h"
 #include "Player.h"
 #include <iostream>
+#include <random>
+#include <map>
+#include <string>
+#include <vector>
 
 DivineIntervention::DivineIntervention() : gen(rd()) {  
     // God names
@@ -83,7 +87,7 @@ DivineIntervention::DivineIntervention() : gen(rd()) {
 }
 
 std::string DivineIntervention::getRandomDialogue(God god) const { //this is to get a random dialogue from the godDialogues map, which is a map of vectors
-    if (god == God::NONE || godDialogues.find(god) == godDialogues.end()) {
+	if (god == God::NONE || godDialogues.find(god) == godDialogues.end()) {  //this checks if the god is NONE or if the god is not found in the godDialogues map and returns an empty string if true
         return "";
     }
     const auto& dialogues = godDialogues.at(god);
@@ -128,12 +132,14 @@ void DivineIntervention::applyEffect(God god, Entity& player, Entity& enemy) con
         secondaryTarget.applyBuff("GOLD", effect / 2);
         break;
     }
+
     case God::FERONIA: {
         int healAmount = std::uniform_int_distribution<>(10, 25)(gen);
         std::cout << "Flourishing plants and blossoms begin to sprout on the ground!\n";
         primaryTarget.heal(healAmount);
         secondaryTarget.heal(healAmount / 2);
         break;
+    }
     case God::KERES: {
         int effect = -std::uniform_int_distribution<>(5, 15)(gen);
         std::cout << "A suffocating dark miasma shrouds the area!\n";
@@ -159,10 +165,11 @@ void DivineIntervention::applyEffect(God god, Entity& player, Entity& enemy) con
             multiplierChange = -multiplierChange;
         }
         std::cout << "The very fabric of morality bends around you!\n";
-        primaryTarget.applyKarmaEffect(karmaChange, multiplierChange);
-        secondaryTarget.applyKarmaEffect(karmaChange / 2, multiplierChange / 2);
+        primaryTarget.applyKarmaEffect(karmaChange, 0, multiplierChange);
+        secondaryTarget.applyKarmaEffect(karmaChange / 2, 0, multiplierChange / 2);
         break;
     }
+
     case God::BOON: {
         float critChanceChange = std::uniform_real_distribution<float>(0.05f, 0.15f)(gen);
         if (std::bernoulli_distribution(0.3)(gen)) {
@@ -178,5 +185,4 @@ void DivineIntervention::applyEffect(God god, Entity& player, Entity& enemy) con
         break;
     }
     std::cout << "==========================\n\n";
-    }
 }
