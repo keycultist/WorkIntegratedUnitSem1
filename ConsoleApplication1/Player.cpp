@@ -124,7 +124,7 @@ int Player::GetCurrentDifficulty(void) const
     return CurrentDifficulty;
 }
 
-Moveset& Player::GetMoveset()
+Moveset& Player::GetMoveSet()
 {
     return moveset;
 }
@@ -937,10 +937,10 @@ void Player::ListMovesToReplace()
 {
     std::cout << "Replace which move?" << std::endl;
     std::cout << "Current Moves" << std::endl;
-    std::cout << "(1) [" << GetMoveset().GetMove(0).MoveName << "] Strength: " << GetMoveset().GetMove(0).MoveStrength << " Hit(s): " << GetMoveset().GetMove(0).Hits << " Type: " << GetMoveset().GetMove(0).MoveType << std::endl;
-    std::cout << "(2) [" << GetMoveset().GetMove(1).MoveName << "] Strength: " << GetMoveset().GetMove(1).MoveStrength << " Hit(s): " << GetMoveset().GetMove(1).Hits << " Type: " << GetMoveset().GetMove(1).MoveType << std::endl;
-    std::cout << "(3) [" << GetMoveset().GetMove(2).MoveName << "] Strength: " << GetMoveset().GetMove(2).MoveStrength << " Hit(s): " << GetMoveset().GetMove(2).Hits << " Type: " << GetMoveset().GetMove(2).MoveType << std::endl;
-    std::cout << "(4) [" << GetMoveset().GetMove(3).MoveName << "] Strength: " << GetMoveset().GetMove(3).MoveStrength << " Hit(s): " << GetMoveset().GetMove(3).Hits << " Type: " << GetMoveset().GetMove(3).MoveType << std::endl;
+    std::cout << "(1) [" << GetMoveSet().GetMove(0).MoveName << "] Strength: " << GetMoveSet().GetMove(0).MoveStrength << " Hit(s): " << GetMoveSet().GetMove(0).Hits << " Type: " << GetMoveSet().GetMove(0).MoveType << std::endl;
+    std::cout << "(2) [" << GetMoveSet().GetMove(1).MoveName << "] Strength: " << GetMoveSet().GetMove(1).MoveStrength << " Hit(s): " << GetMoveSet().GetMove(1).Hits << " Type: " << GetMoveSet().GetMove(1).MoveType << std::endl;
+    std::cout << "(3) [" << GetMoveSet().GetMove(2).MoveName << "] Strength: " << GetMoveSet().GetMove(2).MoveStrength << " Hit(s): " << GetMoveSet().GetMove(2).Hits << " Type: " << GetMoveSet().GetMove(2).MoveType << std::endl;
+    std::cout << "(4) [" << GetMoveSet().GetMove(3).MoveName << "] Strength: " << GetMoveSet().GetMove(3).MoveStrength << " Hit(s): " << GetMoveSet().GetMove(3).Hits << " Type: " << GetMoveSet().GetMove(3).MoveType << std::endl;
     std::cout << "(5) Don't learn this move" << std::endl;
     std::cout << std::endl;
 }

@@ -54,7 +54,7 @@ public:
 	int GetPlayerCurrency(void) const;
 	int GetPlayerKarma(void) const;
 	int GetCurrentDifficulty(void) const;
-	Moveset& GetMoveset();
+	Moveset& GetMoveSet();
 
 	Player();
 	Player(std::string PlayerClass, int PlayerMaxHP, int PlayerHP, int PlayerPower, int PlayerCritChance, int PlayerCurrency, int PlayerPosX, int PlayerPosY, int PlayerLvl, int PlayerXP, std::string PlayerEquippedWeapon, std::string PlayerEquippedArmor, int PlayerKarma, int CurrentDifficulty);
