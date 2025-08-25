@@ -3,12 +3,13 @@
 
 #include "entity.h"
 #include "Player.h"
-//#include <random>
-#include <map>       //<map> is basically a container that stores key words (gods) and value pairs. Keys MUST be unique. Values can have the same key and has to be tied to the key.
+#include <map>
 #include <string>    
 #include <vector>
+#include <cstdlib>  // Added for rand() and srand()
+#include <ctime>    // Added for time()
 
-enum class God {     //enum = enumerated type, which means the set of datas are numbered and ordered (basically a list)
+enum class God {
     NONE,
     SAGACITY,
     AURORA,
@@ -25,8 +26,11 @@ class DivineIntervention {
 private:
     std::map<God, std::string> godNames;
     std::map<God, std::vector<std::string>> godDialogues;
-    std::random_device rd;
-    std::mt19937 gen;
+
+    // Helper functions for random number generation
+    int randomInt(int min, int max) const;
+    float randomFloat(float min, float max) const;
+    bool randomBool(float probability = 0.5f) const;
 
     struct GodProbability {
         God god;
@@ -51,8 +55,9 @@ public:
     DivineIntervention();
     God getRandomGod() const;
     void applyEffect(God god, Entity& player, Entity& enemy) const;
-}; 
+};
 
+#endif
 //class DivineIntervention {
 //private:
 //	std::map<God, std::string> godNames; //map that stores the names of the gods into god names
@@ -85,4 +90,4 @@ public:
 //    void applyEffect(God god, Entity& player, Entity& enemy) const;
 //};
 
-#endif // DIVINE_INTERVENTION_H
+//#endif // DIVINE_INTERVENTION_H
