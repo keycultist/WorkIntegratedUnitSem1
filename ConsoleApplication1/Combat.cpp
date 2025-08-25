@@ -215,8 +215,8 @@ void Combat::EnemyAttack(Player& MC, Enemy& target, int ChosenMove, bool Defend)
 	//WIP
 	int Critting = rand() % 100 + 1;
 	bool Critted = false;
-	int DamageTaken = 0;
 	for (int i = 0; i < target.GetMoveSet().GetMove(ChosenMove).Hits; i++) {
+		int DamageTaken = 0;
 		std::cout << std::endl;
 		Critting = rand() % 100 + 1;
 		if (Critting <= target.GetEnemyCritChance()) {
@@ -234,17 +234,27 @@ void Combat::EnemyAttack(Player& MC, Enemy& target, int ChosenMove, bool Defend)
 				DamageTaken += ((target.GetEnemyPower() + target.GetMoveSet().GetMove(ChosenMove).MoveStrength));
 			}
 		}
-		//Physical/Dark, scales power
-		else if (MC.GetMoveSet().GetMove(ChosenMove).MoveType == "Magical") {
+		//Physical, scales power
+		else if (target.GetMoveSet().GetMove(ChosenMove).MoveType == "Magical") {
 			if (Critted) {
 				DamageTaken += (((target.GetEnemyMaxHP() / 10) + target.GetMoveSet().GetMove(ChosenMove).MoveStrength) * 2);
 			}
 			else {
-				DamageTaken += (((target.GetEnemyMaxHP() / 10) + target.GetMoveSet().GetMove(ChosenMove).MoveStrength) * 2);
+				DamageTaken += (((target.GetEnemyMaxHP() / 10) + target.GetMoveSet().GetMove(ChosenMove).MoveStrength));
 
 			}
 		}
 		//Magical, scales MaxHP
+		else if (target.GetMoveSet().GetMove(ChosenMove).MoveType == "Abyssal") {
+			if (Critted) {
+				DamageTaken += (((target.GetEnemyMaxHP() / 8) + target.GetMoveSet().GetMove(ChosenMove).MoveStrength) * 2);
+			}
+			else {
+				DamageTaken += (((target.GetEnemyMaxHP() / 8) + target.GetMoveSet().GetMove(ChosenMove).MoveStrength));
+
+			}
+		}
+		//Abyssal, scales MaxHP but better
 
 		//...
 
