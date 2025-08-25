@@ -16,9 +16,11 @@ int main()
     for (int i = 0; i < 10; i++) {
         Enemies[i] = nullptr;
     }
-    Enemies[1] = new Enemy;
-    Enemies[1]->InitEnemy();
+    Enemies[0] = new Enemy;
+    Enemies[0]->InitEnemy();
     MC.ShowPlayerStats();
+
+    //82308 bytes of stack!!
 
     Map GMap;
 
@@ -27,7 +29,7 @@ int main()
     //...
 
     //When init combat
-    Combat::InitCombat(MC, *Enemies[1]);
+    Combat::InitCombat(MC, *Enemies[0]);
 
     //...
 
