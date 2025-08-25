@@ -10,6 +10,7 @@
 
 int main()
 {
+    srand(time(0));
     Player MC;
     MC.InitPlayer();
     Enemy* Enemies[10]{};

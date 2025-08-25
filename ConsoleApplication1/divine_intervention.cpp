@@ -2,12 +2,15 @@
 #include "entity.h"
 #include "Player.h"
 #include <iostream>
-#include <random>
+//#include <random>
 #include <map>
 #include <string>
 #include <vector>
 
-DivineIntervention::DivineIntervention() : gen(rd()) {  
+DivineIntervention::DivineIntervention() {
+    // Initialize random seed (if not already done elsewhere in your application)
+    srand(static_cast<unsigned int>(time(nullptr)));
+
     // God names
     godNames = {
         {God::SAGACITY, "Sagacity the Renaissance"},
@@ -16,13 +19,13 @@ DivineIntervention::DivineIntervention() : gen(rd()) {
         {God::FERONIA, "Feronia the Fruitfulness"},
         {God::KERES, "Keres the Anathema"},
         {God::PREYSEYE, "Preyseye the Morality"},
-        {God::SANCTORUM, "Sanctorum the Conservation" },
-        {God::BOON, "Boon the Probability" },
-        /*{God::MAGNAR, "Magnar the Valour" }*/
+        {God::SANCTORUM, "Sanctorum the Conservation"},
+        {God::BOON, "Boon the Probability"},
+        /*{God::MAGNAR, "Magnar the Valour"}*/
     };
 
     // God-specific dialogues
-    godDialogues[God::SAGACITY] = {          //std::cout not used because god dialogue is a vector
+    godDialogues[God::SAGACITY] = {
         "\"All shalt beest elighten'd!\"",
         "\"Illusions and enigmas, they crumble because of me!\"",
         "\"Knowledge is pow'r, and pow'r bows bef're me!\"",
@@ -70,7 +73,7 @@ DivineIntervention::DivineIntervention() : gen(rd()) {
         "\"The division of Virtue and Vice. The antithesis of Rectitude and Iniquity. To which path shall one's predilections be inclined?\"",
         "\"The existential balance of moral gravitas, shall it incline in your direction or not? We shall, in due course, behold the veritable outcome.\""
     };
-   
+
     godDialogues[God::BOON] = {
         "\"How marvellously lucky for you all to encounter me~\"",
         "\"Just one strum of the threads of fate may tip the tides in your favour~\"",
@@ -86,103 +89,129 @@ DivineIntervention::DivineIntervention() : gen(rd()) {
     };*/
 }
 
-std::string DivineIntervention::getRandomDialogue(God god) const { //this is to get a random dialogue from the godDialogues map, which is a map of vectors
-	if (god == God::NONE || godDialogues.find(god) == godDialogues.end()) {  //this checks if the god is NONE or if the god is not found in the godDialogues map and returns an empty string if true
-        return "";
-    }
-    const auto& dialogues = godDialogues.at(god);
-    std::uniform_int_distribution<> dist(0, dialogues.size() - 1);
-    return dialogues[dist(gen)];
-}
 
-void DivineIntervention::applyEffect(God god, Entity& player, Entity& enemy) const {
-    if (god == God::NONE) return;
+class DivineIntervention {
+private:
+    std::map<God, std::vector<std::string>> godDialogues;
+    std::map<God, std::string> godNames;
 
-    std::cout << "\n=== DIVINE INTERVENTION ===\n";
-    std::cout << "A sudden presence fills the air...\n";
-    std::cout << godNames.at(god) << " manifests before you!\n";
-    std::cout << getRandomDialogue(god) << "\n\n";
-
-    bool affectsPlayer = std::bernoulli_distribution(0.5)(gen);    //bernoulli_distribution is boolean, which is true-false, essentially checking if outcome is success or failure. 0.5 = 50% chance of success
-    Entity& primaryTarget = affectsPlayer ? player : enemy;      // ? is an if statement
-    Entity& secondaryTarget = affectsPlayer ? enemy : player;
-
-    switch (god) {                 //assigns each god with its effect
-    case God::SAGACITY: {
-        int effect = std::uniform_int_distribution<>(-3, 3)(gen);     //uniform_int_distribution makes it so that every number in the range has an equal chance of being picked and returned
-        if (effect == 0) effect = 1;
-        std::cout << "The scent of books and arcane energies swirl around the battlefield!\n";
-        primaryTarget.applyBuff("MAGIC", effect);
-        secondaryTarget.applyBuff("MAGIC", effect / 2);
-        break;
-    }
-    case God::AURORA: {
-        int effect = std::uniform_int_distribution<>(-4, 4)(gen);
-        if (effect == 0) effect = 1;
-        std::cout << "A luminous beam of light and song washes over the combatants!\n";
-        primaryTarget.applyBuff("ATK", effect);
-        secondaryTarget.applyBuff("ATK", effect / 2);
-        break;
-    }
-    case God::CHRYSES: {
-        int effect = std::uniform_int_distribution<>(-10, 10)(gen);
-        if (effect == 0) effect = 5;
-        std::cout << "The sound of clinking coins and gems fills the air!\n";
-        primaryTarget.applyBuff("GOLD", effect);
-        secondaryTarget.applyBuff("GOLD", effect / 2);
-        break;
+    // Helper function to generate random integers
+    int randomInt(int min, int max) const {
+        return min + (rand() % (max - min + 1));
     }
 
-    case God::FERONIA: {
-        int healAmount = std::uniform_int_distribution<>(10, 25)(gen);
-        std::cout << "Flourishing plants and blossoms begin to sprout on the ground!\n";
-        primaryTarget.heal(healAmount);
-        secondaryTarget.heal(healAmount / 2);
-        break;
-    }
-    case God::KERES: {
-        int effect = -std::uniform_int_distribution<>(5, 15)(gen);
-        std::cout << "A suffocating dark miasma shrouds the area!\n";
-        primaryTarget.applyBuff("HP", effect);
-        secondaryTarget.applyBuff("HP", effect / 2);
-        break;
-    }
-    case God::SANCTORUM: {
-        int maxHpIncrease = std::uniform_int_distribution<>(5, 15)(gen);
-        std::cout << "A profound feeling of invigoration descends on the field!\n";
-        primaryTarget.increaseMaxHP(maxHpIncrease);
-        secondaryTarget.increaseMaxHP(maxHpIncrease / 2);
-        break;
+    // Helper function to generate random floats
+    float randomFloat(float min, float max) const {
+        return min + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (max - min)));
     }
 
-    case God::PREYSEYE: {
-        int karmaChange = std::uniform_int_distribution<>(1, 20)(gen);
-        if (std::bernoulli_distribution(0.5)(gen)) {                 //bernoulli_distribution is boolean, which is true-false, essentially checking if outcome is success or failure. 0.5 = 50% chance of success
-            karmaChange = -karmaChange;                              //if bernoulli_distribution is successful, then dialogue will run
+    // Helper function for boolean distribution
+    bool randomBool(float probability = 0.5f) const {
+        return (static_cast<float>(rand()) / RAND_MAX) < probability;
+    }
+
+public:
+    DivineIntervention() {
+        // Initialize random seed (should be called once in your application)
+        srand(static_cast<unsigned int>(time(nullptr)));
+
+        // Initialize your godDialogues and godNames maps here
+    }
+
+    std::string getRandomDialogue(God god) const {
+        if (god == God::NONE || godDialogues.find(god) == godDialogues.end()) {
+            return "";
         }
-        float multiplierChange = std::uniform_real_distribution<float>(0.1f, 0.3f)(gen);
-        if (karmaChange < 0) {
-            multiplierChange = -multiplierChange;
-        }
-        std::cout << "The very fabric of morality bends around you!\n";
-        primaryTarget.applyKarmaEffect(karmaChange, 0, multiplierChange);
-        secondaryTarget.applyKarmaEffect(karmaChange / 2, 0, multiplierChange / 2);
-        break;
+        const auto& dialogues = godDialogues.at(god);
+        int randomIndex = randomInt(0, dialogues.size() - 1);
+        return dialogues[randomIndex];
     }
 
-    case God::BOON: {
-        float critChanceChange = std::uniform_real_distribution<float>(0.05f, 0.15f)(gen);
-        if (std::bernoulli_distribution(0.3)(gen)) {
-            critChanceChange = -critChanceChange; // 30% chance for negative effect
-        }
-        std::cout << "The threads of fate begin to wave and warp!\n";
-        primaryTarget.modifyCritChance(critChanceChange);
-        secondaryTarget.modifyCritChance(critChanceChange / 2);
-        break;
-    }
+    void applyEffect(God god, Entity& player, Entity& enemy) const {
+        if (god == God::NONE) return;
 
-    default:
-        break;
+        std::cout << "\n=== DIVINE INTERVENTION ===\n";
+        std::cout << "A sudden presence fills the air...\n";
+        std::cout << godNames.at(god) << " manifests before you!\n";
+        std::cout << getRandomDialogue(god) << "\n\n";
+
+        bool affectsPlayer = randomBool(0.5f);
+        Entity& primaryTarget = affectsPlayer ? player : enemy;
+        Entity& secondaryTarget = affectsPlayer ? enemy : player;
+
+        switch (god) {
+        case God::SAGACITY: {
+            int effect = randomInt(-3, 3);
+            if (effect == 0) effect = 1;
+            std::cout << "The scent of books and arcane energies swirl around the battlefield!\n";
+            primaryTarget.applyBuff("MAGIC", effect);
+            secondaryTarget.applyBuff("MAGIC", effect / 2);
+            break;
+        }
+        case God::AURORA: {
+            int effect = randomInt(-4, 4);
+            if (effect == 0) effect = 1;
+            std::cout << "A luminous beam of light and song washes over the combatants!\n";
+            primaryTarget.applyBuff("ATK", effect);
+            secondaryTarget.applyBuff("ATK", effect / 2);
+            break;
+        }
+        case God::CHRYSES: {
+            int effect = randomInt(-10, 10);
+            if (effect == 0) effect = 5;
+            std::cout << "The sound of clinking coins and gems fills the air!\n";
+            primaryTarget.applyBuff("GOLD", effect);
+            secondaryTarget.applyBuff("GOLD", effect / 2);
+            break;
+        }
+        case God::FERONIA: {
+            int healAmount = randomInt(10, 25);
+            std::cout << "Flourishing plants and blossoms begin to sprout on the ground!\n";
+            primaryTarget.heal(healAmount);
+            secondaryTarget.heal(healAmount / 2);
+            break;
+        }
+        case God::KERES: {
+            int effect = -randomInt(5, 15);
+            std::cout << "A suffocating dark miasma shrouds the area!\n";
+            primaryTarget.applyBuff("HP", effect);
+            secondaryTarget.applyBuff("HP", effect / 2);
+            break;
+        }
+        case God::SANCTORUM: {
+            int maxHpIncrease = randomInt(5, 15);
+            std::cout << "A profound feeling of invigoration descends on the field!\n";
+            primaryTarget.increaseMaxHP(maxHpIncrease);
+            secondaryTarget.increaseMaxHP(maxHpIncrease / 2);
+            break;
+        }
+        case God::PREYSEYE: {
+            int karmaChange = randomInt(1, 20);
+            if (randomBool(0.5f)) {
+                karmaChange = -karmaChange;
+            }
+            float multiplierChange = randomFloat(0.1f, 0.3f);
+            if (karmaChange < 0) {
+                multiplierChange = -multiplierChange;
+            }
+            std::cout << "The very fabric of morality bends around you!\n";
+            primaryTarget.applyKarmaEffect(karmaChange, 0, multiplierChange);
+            secondaryTarget.applyKarmaEffect(karmaChange / 2, 0, multiplierChange / 2);
+            break;
+        }
+        case God::BOON: {
+            float critChanceChange = randomFloat(0.05f, 0.15f);
+            if (randomBool(0.3f)) {
+                critChanceChange = -critChanceChange;
+            }
+            std::cout << "The threads of fate begin to wave and warp!\n";
+            primaryTarget.modifyCritChance(critChanceChange);
+            secondaryTarget.modifyCritChance(critChanceChange / 2);
+            break;
+        }
+        default:
+            break;
+        }
+        std::cout << "==========================\n\n";
     }
-    std::cout << "==========================\n\n";
-}
+};
