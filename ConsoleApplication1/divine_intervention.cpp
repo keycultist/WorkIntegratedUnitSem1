@@ -135,6 +135,7 @@ void DivineIntervention::applyEffect(God god, Entity& player, Entity& enemy) con
         primaryTarget.heal(healAmount);
         secondaryTarget.heal(healAmount / 2);
         break;
+    }
     case God::KERES: {
         int effect = -std::uniform_int_distribution<>(5, 15)(gen);
         std::cout << "A suffocating dark miasma shrouds the area!\n";
@@ -179,5 +180,4 @@ void DivineIntervention::applyEffect(God god, Entity& player, Entity& enemy) con
         break;
     }
     std::cout << "==========================\n\n";
-    }
 }
