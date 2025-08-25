@@ -99,6 +99,7 @@ void DivineIntervention::applyEffect(God god, Entity& player, Entity& enemy) con
     std::cout << godNames.at(god) << " manifests before you!\n";
     std::cout << getRandomDialogue(god) << "\n\n";
 
+    int healAmount;
     bool affectsPlayer = std::bernoulli_distribution(0.5)(gen);    //bernoulli_distribution is boolean, which is true-false, essentially checking if outcome is success or failure. 0.5 = 50% chance of success
     Entity& primaryTarget = affectsPlayer ? player : enemy;      // ? is an if statement
     Entity& secondaryTarget = affectsPlayer ? enemy : player;
@@ -129,7 +130,7 @@ void DivineIntervention::applyEffect(God god, Entity& player, Entity& enemy) con
         break;
     }
     case God::FERONIA: {
-        int healAmount = std::uniform_int_distribution<>(10, 25)(gen);
+        healAmount = std::uniform_int_distribution<>(10, 25)(gen);
         std::cout << "Flourishing plants and blossoms begin to sprout on the ground!\n";
         primaryTarget.heal(healAmount);
         secondaryTarget.heal(healAmount / 2);
@@ -159,8 +160,8 @@ void DivineIntervention::applyEffect(God god, Entity& player, Entity& enemy) con
             multiplierChange = -multiplierChange;
         }
         std::cout << "The very fabric of morality bends around you!\n";
-        primaryTarget.applyKarmaEffect(karmaChange, multiplierChange);
-        secondaryTarget.applyKarmaEffect(karmaChange / 2, multiplierChange / 2);
+        primaryTarget.applyKarmaEffect(karmaChange, multiplierChange, 0);
+        secondaryTarget.applyKarmaEffect(karmaChange / 2, multiplierChange / 2, 0);
         break;
     }
     case God::BOON: {
