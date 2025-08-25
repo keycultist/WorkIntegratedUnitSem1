@@ -168,7 +168,7 @@ void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
 					Critted = false;
 				}
 				std::cout << MC.GetPlayerClass() << " used " << MC.GetMoveset().GetMove(ChosenMove).MoveName << std::endl;
-				if (MC.GetMoveset().GetMove(ChosenMove).MoveType == "Physical") {
+				if (MC.GetMoveset().GetMove(ChosenMove).MoveType == "Physical" || MC.GetMoveset().GetMove(ChosenMove).MoveType == "Dark") {
 					if (Critted) {
 						target.SetEnemyHP(target.GetEnemyHP() - (MC.GetPlayerPower() + MC.GetMoveset().GetMove(ChosenMove).MoveStrength) * 2);
 						std::cout << "Critical Hit! Dealt: " << (MC.GetPlayerPower() + MC.GetMoveset().GetMove(ChosenMove).MoveStrength) * 2 << " damage." << std::endl;
@@ -178,7 +178,7 @@ void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
 						std::cout << "Dealt: " << (MC.GetPlayerPower() + MC.GetMoveset().GetMove(ChosenMove).MoveStrength) << " damage." << std::endl;
 					}
 				} 
-				//Physical, scales power
+				//Physical/Dark, scales power
 				else if (MC.GetMoveset().GetMove(ChosenMove).MoveType == "Magical") {
 					if (Critted) {
 						target.SetEnemyHP(target.GetEnemyHP() - ((MC.GetPlayerMaxHP() / 10) + MC.GetMoveset().GetMove(ChosenMove).MoveStrength) * 2);
