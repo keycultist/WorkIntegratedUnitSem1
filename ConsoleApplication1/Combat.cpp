@@ -215,21 +215,46 @@ void Combat::EnemyAttack(Player& MC, Enemy& target, int ChosenMove, bool Defend)
 	//WIP
 	int Critting = rand() % 100 + 1;
 	bool Critted = false;
+	int DamageTaken = 0;
 	for (int i = 0; i < target.GetMoveSet().GetMove(ChosenMove).Hits; i++) {
 		std::cout << std::endl;
 		Critting = rand() % 100 + 1;
-		if (Critting <= MC.GetPlayerCritChance()) {
+		if (Critting <= target.GetEnemyCritChance()) {
 			Critted = true;
 		}
 		else {
 			Critted = false;
 		}
-		std::cout << target.GetEnemyClass() << " used " << target.GetMoveSet().GetMove(ChosenMove).MoveName << std::endl;
-		if (!Defend) {
-			MC.SetPlayerHP(MC.GetPlayerHP() - target.GetEnemyPower());
+
+		if (target.GetMoveSet().GetMove(ChosenMove).MoveType == "Physical") {
+			if (Critted) {
+				DamageTaken += ((target.GetEnemyPower() + target.GetMoveSet().GetMove(ChosenMove).MoveStrength) * 2);
+			}
+			else {
+				DamageTaken += ((target.GetEnemyPower() + target.GetMoveSet().GetMove(ChosenMove).MoveStrength));
+			}
 		}
-		else if (Defend) {
-			MC.SetPlayerHP(MC.GetPlayerHP() - (target.GetEnemyPower() * 0.40));
+		//Physical/Dark, scales power
+		else if (MC.GetMoveSet().GetMove(ChosenMove).MoveType == "Magical") {
+			if (Critted) {
+				DamageTaken += (((target.GetEnemyMaxHP() / 10) + target.GetMoveSet().GetMove(ChosenMove).MoveStrength) * 2);
+			}
+			else {
+				DamageTaken += (((target.GetEnemyMaxHP() / 10) + target.GetMoveSet().GetMove(ChosenMove).MoveStrength) * 2);
+
+			}
+		}
+		//Magical, scales MaxHP
+
+		//...
+
+
+		std::cout << target.GetEnemyClass() << " used " << target.GetMoveSet().GetMove(ChosenMove).MoveName << std::endl;
+		if (Defend) {
+			MC.SetPlayerHP(MC.GetPlayerHP() - DamageTaken / 2);
+		}
+		else if (!Defend) {
+			MC.SetPlayerHP(MC.GetPlayerHP() - DamageTaken);
 		}
 		std::cout << MC.GetPlayerClass() << " has " << MC.GetPlayerHP() << " HP left." << std::endl;
 	}
