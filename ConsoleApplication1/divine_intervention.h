@@ -26,7 +26,7 @@ private:
 	std::map<God, std::string> godNames; //map that stores the names of the gods into god names
 	std::map<God, std::vector<std::string>> godDialogues;    //create a map that stores the dialogues of each god, where the key is the god and the value is a vector of strings (dialogues).  
 	std::random_device rd;        //random_device is used to seed the random number generator that is non-determistic.   
-	std::mt19937 gen;            //should be a random number generator
+	mutable std::mt19937 gen;            //should be a random number generator
 
 	struct GodProbability {            //struct is a type of user defined data structure that groups keys & values together. In this case, it groups the god and its probability.
         God god;
