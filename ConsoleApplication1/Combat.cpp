@@ -226,7 +226,7 @@ void Combat::EnemyAttack(Player& MC, Enemy& target, int ChosenMove, bool Defend)
 			Critted = false;
 		}
 
-		if (target.GetMoveSet().GetMove(ChosenMove).MoveType == "Physical") {
+		if (target.GetMoveSet().GetMove(ChosenMove).MoveType == "Physical" || target.GetMoveSet().GetMove(ChosenMove).MoveType == "BossMove" || target.GetMoveSet().GetMove(ChosenMove).MoveType == "DeathMove") {
 			if (Critted) {
 				DamageTaken += ((target.GetEnemyPower() + target.GetMoveSet().GetMove(ChosenMove).MoveStrength) * 2);
 			}
@@ -234,7 +234,7 @@ void Combat::EnemyAttack(Player& MC, Enemy& target, int ChosenMove, bool Defend)
 				DamageTaken += ((target.GetEnemyPower() + target.GetMoveSet().GetMove(ChosenMove).MoveStrength));
 			}
 		}
-		//Physical, scales power
+		//Physical/BossMove/DeathMove, scales power
 		else if (target.GetMoveSet().GetMove(ChosenMove).MoveType == "Magical") {
 			if (Critted) {
 				DamageTaken += (((target.GetEnemyMaxHP() / 10) + target.GetMoveSet().GetMove(ChosenMove).MoveStrength) * 2);
@@ -255,6 +255,11 @@ void Combat::EnemyAttack(Player& MC, Enemy& target, int ChosenMove, bool Defend)
 			}
 		}
 		//Abyssal, scales MaxHP but better
+		else if (target.GetMoveSet().GetMove(ChosenMove).MoveType == "Buff") {
+			target.SetEnemyMaxHP(target.GetEnemyMaxHP() + target.GetMoveSet().GetMove(ChosenMove).MoveStrength);
+			target.SetEnemyHP(target.GetEnemyHP() + target.GetMoveSet().GetMove(ChosenMove).MoveStrength);
+		}
+		//Buff, like Summon, adds move str to a stat
 
 		//...
 
@@ -266,6 +271,11 @@ void Combat::EnemyAttack(Player& MC, Enemy& target, int ChosenMove, bool Defend)
 		else if (!Defend) {
 			MC.SetPlayerHP(MC.GetPlayerHP() - DamageTaken);
 		}
-		std::cout << MC.GetPlayerClass() << " has " << MC.GetPlayerHP() << " HP left." << std::endl;
+		if (target.GetMoveSet().GetMove(ChosenMove).MoveType != "Buff") {
+			std::cout << MC.GetPlayerClass() << " has " << MC.GetPlayerHP() << " HP left." << std::endl;
+		}
+		else if (target.GetMoveSet().GetMove(ChosenMove).MoveType == "Buff") {
+			std::cout << target.GetEnemyClass() << " gained " << target.GetMoveSet().GetMove(ChosenMove).MoveStrength << " HP." << std::endl;
+		}
 	}
 }
