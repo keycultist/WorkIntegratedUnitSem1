@@ -41,5 +41,9 @@ public:
 	std::string GetWarriorWeaponListIndex(int index);
 	std::string GetMageWeaponListIndex(int index);
 	std::string GetHunterWeaponListIndex(int index);
+	std::string GetAssassinWeaponListIndex(int index);
+	std::string GetBerserkerWeaponListIndex(int index);
+	std::string GetSummonerWeaponListIndex(int index);
+	std::string GetRitualistWeaponListIndex(int index);
 };
 

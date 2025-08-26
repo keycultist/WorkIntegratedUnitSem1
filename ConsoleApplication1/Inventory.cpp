@@ -146,6 +146,46 @@ void Inventory::SetInventoryConsumablesItemEffectList() {
 	InventoryConsumablesItemEffectList[11] = 50;
 }
 
+std::string Inventory::GetInventoryWeaponEquipped()
+{
+	return InventoryWeaponEquipped;
+}
+
+std::string Inventory::GetInventoryArmorEquipped()
+{
+	return InventoryArmorEquipped;
+}
+
+int Inventory::GetInventoryPlayerHP()
+{
+	return InventoryPlayerHP;
+}
+
+int Inventory::GetInventoryPlayerMaxHP()
+{
+	return InventoryPlayerMaxHP;
+}
+
+int Inventory::GetInventoryPlayerPower()
+{
+	return InventoryPlayerPower;
+}
+
+int Inventory::GetInventoryPlayerDefence()
+{
+	return InventoryPlayerDefence;
+}
+
+int Inventory::GetInventoryPlayerCritChance()
+{
+	return InventoryPlayerCritChance;
+}
+
+Item& Inventory::GetItem()
+{
+	return item;
+}
+
 
 
 

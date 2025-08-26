@@ -7,11 +7,16 @@
 #include "Enemy.h"
 #include "Map.h"
 #include "Renderer.h"
+#include "Item.h"
 
 int main()
 {
     Player MC;
+    Item items;
     MC.InitPlayer();
+    items.SetItemPlayerClass(MC.GetPlayerClass()); 
+    items.SetItemList();
+    // init player's inventory
     Enemy* Enemies[10]{};
     for (int i = 0; i < 10; i++) {
         Enemies[i] = nullptr;
@@ -25,11 +30,14 @@ int main()
     Map GMap;
 
     GMap.CreateNewFloor(2);
+    GMap.RequestFloorUpdate();
 
     //...
-
-    //When init combat
     Combat::InitCombat(MC, *Enemies[0]);
+    //When init combat
+    /*if (Collide) {
+        Combat::InitCombat(MC, CollidedEnemy);
+    }*/
 
     //...
 

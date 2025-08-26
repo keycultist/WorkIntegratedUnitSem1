@@ -1,7 +1,7 @@
 #pragma once
 #include "Item.h"
 #include <string>
-#include "Player.h"
+//#include "Player.h"
 
 class Inventory
 {
@@ -69,6 +69,15 @@ public:
 	void SetInventoryConsumablesItemEffectList();
 
 	// getter
+	std::string GetInventoryWeaponEquipped();
+	std::string GetInventoryArmorEquipped();
+	int GetInventoryPlayerHP();
+	int GetInventoryPlayerMaxHP();
+	int GetInventoryPlayerPower();
+	int GetInventoryPlayerDefence();
+	int GetInventoryPlayerCritChance();
+	Item& GetItem();
+
 	std::string GetInventoryConsumablesIndex(int index);
 	int GetConsumableIndex();
 
@@ -87,4 +96,3 @@ public:
 
 
 };
-

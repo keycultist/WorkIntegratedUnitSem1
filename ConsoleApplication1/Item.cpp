@@ -526,3 +526,23 @@ std::string Item::GetMageWeaponListIndex(int index) {
 std::string Item::GetHunterWeaponListIndex(int index) {
 	return HunterWeaponList[index];
 }
+
+std::string Item::GetAssassinWeaponListIndex(int index)
+{
+	return AssassinWeaponList[index];
+}
+
+std::string Item::GetBerserkerWeaponListIndex(int index)
+{
+	return BerserkerWeaponList[index];
+}
+
+std::string Item::GetSummonerWeaponListIndex(int index)
+{
+	return SummonerWeaponList[index];
+}
+
+std::string Item::GetRitualistWeaponListIndex(int index)
+{
+	return RitualistWeaponList[index];
+}
