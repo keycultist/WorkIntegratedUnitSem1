@@ -162,12 +162,14 @@ void Map::drawBoard(char** Board, int sizeX, int sizeY)
         std::cout << "-";
     }   
     std::cout << "+" << endl;
+    std::string buffer;
     for (int h = 0; h < sizeX; ++h) {
         for (int v = 0; v < sizeY; ++v) {
-            std::cout << Board[h][v];
+            buffer += Board[h][v];
         }
-        std::cout << endl;
+        buffer += '\n';
     }
+    std::cout << buffer << std::endl;
     std::cout << "+";
     for (int i = 0; i < 128; i++) {
         std::cout << "-";
