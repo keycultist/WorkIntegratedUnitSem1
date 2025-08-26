@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Combat.h"
 #include "Enemy.h"
+#include "Events.h"
 #include "Map.h"
 #include "Renderer.h"
 #include "Item.h"
@@ -44,6 +45,41 @@ int main()
 
     //Print map again
 }
+
+static void CheckEnemyPlayerCollision(Player& MC, Enemy& target)
+{
+    int EnemyX, EnemyY;
+    EnemyX == target.GetEnemyPosX();
+    EnemyY == target.GetEnemyPosY();
+
+    // Check if player touches enemy (collision)
+    if (EnemyX == MC.GetPlayerPosX() && EnemyY == MC.GetPlayerPosY()) {
+        // Enter combat with this enemy
+        Combat::InitCombat(MC, target);           //suspects that it can be solved by enemy inheiriting from entity class. checkenemy func not being called
+    }
+}
+
+//Event Collsion check, what does player have to collide with?
+//static void CheckEventPlayerCollision(Player& MC, ???)
+//{
+//    int EventX, EventY;
+//    // Check events
+//    for (int b = 1; b <= 3; b++) {
+//        // Skip if this event doesn't exist
+//        if (events[b] != nullptr) {
+//            // Get event's position
+//            EventX == events[b]->GetPosX();
+//            EventY == events[b]->GetPosY();
+//
+//            // Check if player touches event (collision)
+//            if (EventX == GetPosX() && EventY == GetPosY()) {
+//                // Enter the event
+//                EventTriggered(events[b]);
+//                break;  // Stop checking after first event
+//            }
+//        }
+//    }
+//}
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu

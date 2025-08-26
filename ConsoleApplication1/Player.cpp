@@ -1122,47 +1122,47 @@ void Player::AddPlayerEquipmentStats()
 
 //////////I think this shd be in a "Game" class
 
-    void Player::checkEnemy(Enemy enemies[6])
-    {
-        int EnemyX, EnemyY;
-        // Check enemies
-        for (int i = 1; i <= 3; i++) {
-            // Skip if this enemy doesn't exist
-            //if (enemies[i]) {
-                // Get enemy's position
-            EnemyX == enemies[i].GetEnemyPosX();
-            EnemyY == enemies[i].GetEnemyPosY();
+    //void Player::checkEnemy(Enemy enemies[6])
+    //{
+    //    int EnemyX, EnemyY;
+    //    // Check enemies
+    //    for (int i = 1; i <= 3; i++) {
+    //        // Skip if this enemy doesn't exist
+    //        //if (enemies[i]) {
+    //            // Get enemy's position
+    //        EnemyX == enemies[i].GetEnemyPosX();
+    //        EnemyY == enemies[i].GetEnemyPosY();
 
-            // Check if player touches enemy (collision)
-            if (EnemyX == GetPosX() && EnemyY == GetPosY()) {
-                // Enter combat with this enemy
-                Combat::InitCombat(*this, enemies[i]);           //suspects that it can be solved by enemy inheiriting from entity class. checkenemy func not being called
-                break;  // Stop checking after first combat
-            }
-            //}
-        }
-    }
+    //        // Check if player touches enemy (collision)
+    //        if (EnemyX == GetPosX() && EnemyY == GetPosY()) {
+    //            // Enter combat with this enemy
+    //            Combat::InitCombat(*this, enemies[i]);           //suspects that it can be solved by enemy inheiriting from entity class. checkenemy func not being called
+    //            break;  // Stop checking after first combat
+    //        }
+    //        //}
+    //    }
+    //}
 
-    void Player::checkEvent(Entity * events[6])
-    {
-        int EventX, EventY;
-        // Check events
-        for (int b = 1; b <= 3; b++) {
-            // Skip if this event doesn't exist
-            if (events[b] != nullptr) {
-                // Get event's position
-                EventX == events[b]->GetPosX();
-                EventY == events[b]->GetPosY();
+    //void Player::checkEvent(Entity * events[6])
+    //{
+    //    int EventX, EventY;
+    //    // Check events
+    //    for (int b = 1; b <= 3; b++) {
+    //        // Skip if this event doesn't exist
+    //        if (events[b] != nullptr) {
+    //            // Get event's position
+    //            EventX == events[b]->GetPosX();
+    //            EventY == events[b]->GetPosY();
 
-                // Check if player touches event (collision)
-                if (EventX == GetPosX() && EventY == GetPosY()) {
-                    // Enter the event
-                    EventTriggered(events[b]);
-                    break;  // Stop checking after first event
-                }
-            }
-        }
-    }
+    //            // Check if player touches event (collision)
+    //            if (EventX == GetPosX() && EventY == GetPosY()) {
+    //                // Enter the event
+    //                EventTriggered(events[b]);
+    //                break;  // Stop checking after first event
+    //            }
+    //        }
+    //    }
+    //}
 
 //////////
 
