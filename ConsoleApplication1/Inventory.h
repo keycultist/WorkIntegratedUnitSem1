@@ -1,6 +1,7 @@
 #pragma once
 #include "Item.h"
 #include <string>
+#include "Player.h"
 
 class Inventory
 {
@@ -72,7 +73,7 @@ public:
 	int GetConsumableIndex();
 
 	// methods
-	std::string DrawInventroyUI();
+	std::string DrawInventoryUI();
 	void PromptPlayerUseItem();
 	void ItemEffectCheck();
 	void UpdateConsumablesInventory();

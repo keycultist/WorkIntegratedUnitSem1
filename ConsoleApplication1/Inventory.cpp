@@ -191,7 +191,7 @@ void Inventory::SetInventoryConsumablesItemEffectList() {
 
 
 
-std::string Inventory::DrawInventroyUI() {
+std::string Inventory::DrawInventoryUI() {
 	int SpaceAmount;
 
 	//for (int i = 0; i < 10; i++) {
