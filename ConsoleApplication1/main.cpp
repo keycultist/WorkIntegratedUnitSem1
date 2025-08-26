@@ -25,6 +25,7 @@ int main()
     Map GMap;
 
     GMap.CreateNewFloor(2);
+    GMap.RequestFloorUpdate();
 
     //...
 
