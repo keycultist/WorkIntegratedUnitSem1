@@ -1166,9 +1166,8 @@ void Player::AddPlayerEquipmentStats()
 
 //////////
 
-void Player::move(Entity* ptr[6]) //Not really sure if the changes affected anything
+void Player::move() //Not really sure if the changes affected anything
 {
-    // checkGhost(ptr);
     char input;
     input = _getch();
 
@@ -1218,7 +1217,6 @@ void Player::move(Entity* ptr[6]) //Not really sure if the changes affected anyt
     default:
         std::cout << "Invalid input\n";
     }
-    targetx = GetPlayerPosX();
-    targety = GetPlayerPosY();
+    SetPlayerPos(targetx, targety);
 }
 

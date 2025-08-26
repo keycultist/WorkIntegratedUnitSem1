@@ -2,6 +2,7 @@
 //
 
 #include <iostream>
+#include <conio.h>
 #include "Player.h"
 #include "Combat.h"
 #include "Enemy.h"
@@ -10,53 +11,27 @@
 #include "Renderer.h"
 #include "Item.h"
 
-int main()
-{
-    srand(time(0));
-    Player MC;
-    Item items;
-    MC.InitPlayer();
-    items.SetItemPlayerClass(MC.GetPlayerClass()); 
-    items.SetItemList();
-    // init player's inventory
-    Enemy* Enemies[10]{};
-    for (int i = 0; i < 10; i++) {
-        Enemies[i] = nullptr;
-    }
-    Enemies[0] = new Enemy;
-    Enemies[0]->InitEnemy();
-    MC.ShowPlayerStats();
-
-    //82308 bytes of stack!!
-
-    Map GMap;
-
-    GMap.CreateNewFloor(0);
-    GMap.RequestFloorUpdate();
-
-    //...
-    Combat::InitCombat(MC, *Enemies[0]);
-    //When init combat
-    /*if (Collide) {
-        Combat::InitCombat(MC, CollidedEnemy);
-    }*/
-
-    //...
-
-    //Print map again
-}
-
 static void CheckEnemyPlayerCollision(Player& MC, Enemy& target)
 {
-    int EnemyX, EnemyY;
-    EnemyX == target.GetEnemyPosX();
-    EnemyY == target.GetEnemyPosY();
+    int EnemyX = 0;
+    int EnemyY = 0;
+    EnemyX = target.GetEnemyPosX();
+    EnemyY = target.GetEnemyPosY();
 
     // Check if player touches enemy (collision)
     if (EnemyX == MC.GetPlayerPosX() && EnemyY == MC.GetPlayerPosY()) {
         // Enter combat with this enemy
         Combat::InitCombat(MC, target);           //suspects that it can be solved by enemy inheiriting from entity class. checkenemy func not being called
     }
+}
+
+bool GameRunning(Player& MC, Enemy& Enemies, Map& GMap) {
+    MC.move();
+    system("cls");
+
+    GMap.RequestFloorUpdate(MC);
+    std::cout << "X: " << MC.GetPlayerPosX() << "    Y: " << MC.GetPlayerPosY() << std::endl;
+    return true;
 }
 
 //Event Collsion check, what does player have to collide with?
@@ -80,6 +55,48 @@ static void CheckEnemyPlayerCollision(Player& MC, Enemy& target)
 //        }
 //    }
 //}
+
+
+int main()
+{
+    srand(time(0));
+    Player MC;
+    Item items;
+    MC.InitPlayer();
+    items.SetItemPlayerClass(MC.GetPlayerClass());
+    items.SetItemList();
+    // init player's inventory
+    Enemy* Enemies[10]{};
+    for (int i = 0; i < 10; i++) {
+        Enemies[i] = nullptr;
+    }
+    Enemies[0] = new Enemy;
+    Enemies[0]->InitEnemy();
+    MC.ShowPlayerStats();
+
+    //82308 bytes of stack!!
+
+    Map GMap;
+
+    GMap.CreateNewFloor(6, MC);
+    GMap.RequestFloorUpdate(MC);
+
+    bool RUNNINGHORSE = true;
+    while (RUNNINGHORSE) {
+        RUNNINGHORSE = GameRunning(MC, *Enemies[0], GMap);
+    }
+
+    //...
+    //Combat::InitCombat(MC, *Enemies[0]);
+    //When init combat
+    /*if (Collide) {
+        Combat::InitCombat(MC, CollidedEnemy);
+    }*/
+
+    //...
+
+    //Print map again
+}
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu

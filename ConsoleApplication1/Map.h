@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include "Renderer.h"
+#include "Player.h"
 #include <map>
 
 enum class RoomType {
@@ -51,24 +52,26 @@ protected:
 
 public:
 
-    void CreateNewFloor(int Difficulty);
+    void CreateNewFloor(int Difficulty, Player& MC);
 
-    void RequestFloorUpdate();
+    void RequestFloorUpdate(Player& MC);
 
     void RequestRoomUpdate();
         
-    void fillBoard(char** Board, int sizeX, int sizeY) override;
+    void fillBoard(char** Board, int sizeX, int sizeY, Player& MC);
 
-    void drawBoard(char** Board, int sizeX, int sizeY) override;
+    void fillBoardPlayer(char** Board, int sizeX, int sizeY, Player& MC);
+
+    void drawBoard(char** Board, int sizeX, int sizeY);
 
     void generateRoom(const Room& room, char** board, int boardSizeX, int boardSizeY);
     void generateLargeRoom(const Room& room);  // Uses InnerRoom for big rooms
 
 
     Room* detectPlayerRoom(int playerX, int playerY);
-    void renderCurrentRoom(Room* room, char** roomBoard, int boardSize);
+    void renderCurrentRoom(Room* room, char** roomBoard, int boardSize, Player& MC);
     bool isPlayerInRoom(int playerX, int playerY, const Room& room);
-    void switchToRoomView(int playerX, int playerY);
+    void switchToRoomView(int playerX, int playerY, Player& MC);
 
     Room* getRoomById(int roomId);
     Room* getRoomByIndex(int index);

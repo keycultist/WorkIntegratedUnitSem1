@@ -7,10 +7,11 @@ theres still stuff to do like actually generating the enemy spawns and etc, but 
 
 #include "Map.h"
 #include "Renderer.h"
+#include "Player.h"
 
 using namespace std;
 
-void Map::CreateNewFloor(int Difficulty) {
+void Map::CreateNewFloor(int Difficulty, Player& MC) {
     // Setup pointer arrays
     char* floorPtrs[128];
     char* innerPtrs[256];
@@ -18,8 +19,8 @@ void Map::CreateNewFloor(int Difficulty) {
     for (int i = 0; i < 256; ++i) innerPtrs[i] = InnerRoom[i];
 
     // Clear both boards
-    fillBoard(floorPtrs, 128, 128);
-    fillBoard(innerPtrs, 256, 256);
+    fillBoard(floorPtrs, 128, 128, MC);
+    fillBoard(innerPtrs, 256, 256, MC);
 
     // Clear previous room data
     rooms.clear();
@@ -103,12 +104,21 @@ void Map::CreateNewFloor(int Difficulty) {
             << lastRoom->x << "," << lastRoom->y << ")" << std::endl;
     }
 
+
 }
 
-void Map::RequestFloorUpdate() {
+void Map::RequestFloorUpdate(Player& MC) {
     char* floorPointers[128];
     for (int i = 0; i < 128; ++i) {
         floorPointers[i] = FloorGrid[i];
+    }
+
+    fillBoardPlayer(floorPointers, 128, 128, MC);
+
+    for (int i = 0; i < 128; ++i) {
+        for (int j = 0; j < 128; ++j) {
+            FloorGrid[i][j] = floorPointers[i][j];
+        }
     }
 
     drawBoard(floorPointers, 128, 128);
@@ -124,13 +134,25 @@ void Map::RequestRoomUpdate() {
 }
 
 
-void Map::fillBoard(char** Board, int sizeX, int sizeY)
+void Map::fillBoard(char** Board, int sizeX, int sizeY, Player& MC)
 {
     for (int h = 0; h < sizeX; ++h) {
         for (int v = 0; v < sizeY; ++v) {
             Board[h][v] = ' ';
         }
     }
+    fillBoardPlayer(Board, sizeX, sizeY, MC);
+}
+
+void Map::fillBoardPlayer(char** Board, int sizeX, int sizeY, Player& MC)
+{
+    for (int h = 0; h < sizeX; ++h) {
+        for (int v = 0; v < sizeY; ++v) {
+            if (Board[h][v] == 'P')
+                Board[h][v] = ' ';
+        }
+    }
+    Board[MC.GetPlayerPosY()][MC.GetPlayerPosX()] = 'P';
 }
 
 void Map::drawBoard(char** Board, int sizeX, int sizeY)
@@ -211,10 +233,10 @@ bool Map::isPlayerInRoom(int playerX, int playerY, const Room& room) {
             FloorGrid[playerX][playerY] != '#');  // Make sure it's not a wall
 }
 
-void Map::renderCurrentRoom(Room* room, char** roomBoard, int boardSize) {
+void Map::renderCurrentRoom(Room* room, char** roomBoard, int boardSize, Player& MC) {
     if (!room) return;
 
-    fillBoard(roomBoard, boardSize, boardSize);
+    fillBoard(roomBoard, boardSize, boardSize, MC);
 
     int scale = 8;  // Scale factor for detailed view
     int scaledWidth = room->width * scale;
@@ -244,7 +266,7 @@ void Map::renderCurrentRoom(Room* room, char** roomBoard, int boardSize) {
     }
 }
 
-void Map::switchToRoomView(int playerX, int playerY) {
+void Map::switchToRoomView(int playerX, int playerY, Player& MC) {
     Room* playerRoom = detectPlayerRoom(playerX, playerY);
     
     if (playerRoom) {
@@ -252,7 +274,7 @@ void Map::switchToRoomView(int playerX, int playerY) {
         char* innerPtrs[256];
         for (int i = 0; i < 256; ++i) innerPtrs[i] = InnerRoom[i];
         
-        renderCurrentRoom(playerRoom, innerPtrs, 256);
+        renderCurrentRoom(playerRoom, innerPtrs, 256, MC);
         
         std::cout << "Entered " << getRoomTypeName(playerRoom->type) << " room!" << std::endl;
         drawBoard(innerPtrs, 256, 256);  // Show just this room
