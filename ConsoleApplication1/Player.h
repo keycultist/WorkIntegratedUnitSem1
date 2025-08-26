@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "Moveset.h"
+#include "Inventory.h"
 #include "entity.h"
 #include "Position.h"
 class Player : public Entity
@@ -22,6 +23,7 @@ private:
 	int CurrentDifficulty;
 
 	Moveset moveset;
+	Inventory inventory;
 
 protected:
 
@@ -55,6 +57,7 @@ public:
 	int GetPlayerKarma(void) const;
 	int GetCurrentDifficulty(void) const;
 	Moveset& GetMoveSet();
+	Inventory& GetInventory();
 
 	Player();
 	Player(std::string PlayerClass, int PlayerMaxHP, int PlayerHP, int PlayerPower, int PlayerCritChance, int PlayerCurrency, int PlayerPosX, int PlayerPosY, int PlayerLvl, int PlayerXP, std::string PlayerEquippedWeapon, std::string PlayerEquippedArmor, int PlayerKarma, int CurrentDifficulty);
@@ -66,6 +69,10 @@ public:
 	void LevelUpCheck();
 	void LevelUp();
 	void ListMovesToReplace();
+
+	void UpdateInventoryPlayerStats();
+	void UpdatePlayerStatsInventory();
+
 	virtual void move(Entity* ptr[6]);
 };
 

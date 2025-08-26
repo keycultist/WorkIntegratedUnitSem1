@@ -129,6 +129,11 @@ Moveset& Player::GetMoveSet()
     return moveset;
 }
 
+Inventory& Player::GetInventory()
+{
+    return inventory;
+}
+
 Player::Player() : Entity("Warrior", 100, 100, 5, 5, 0, 0, 0, 1, 0), PlayerEquippedWeapon("None"), PlayerEquippedArmor("None"), PlayerKarma(50), CurrentDifficulty(1)
 {
 }
@@ -945,9 +950,35 @@ void Player::ListMovesToReplace()
     std::cout << std::endl;
 }
 
+void Player::UpdateInventoryPlayerStats()
+{
+    GetInventory().SetInventoryWeaponEquipped(GetPlayerEquippedWeapon());
+    GetInventory().SetInventoryArmorEquipped(GetPlayerEquippedArmor());
+    GetInventory().SetInventoryPlayerClass(GetPlayerClass());
+    GetInventory().SetInventoryPlayerLvl(GetPlayerLvl());
+    GetInventory().SetInventoryPlayerEXP(GetPlayerXP());
+    GetInventory().SetInventoryPlayerHP(GetPlayerHP());
+    GetInventory().SetInventoryPlayerMaxHP(GetPlayerMaxHP());
+    GetInventory().SetInventoryPlayerPower(GetPlayerPower());
+    //GetInventory().SetInventoryPlayerDefence(int defence);
+    GetInventory().SetInventoryPlayerCritChance(GetPlayerCritChance());
+    GetInventory().SetInventoryPlayerCurrency(GetPlayerCurrency());
+    GetInventory().SetInventoryCurrentDifficulty(GetCurrentDifficulty());
+}
+
+void Player::UpdatePlayerStatsInventory()
+{
+    SetPlayerHP(GetInventory().GetInventoryPlayerHP());
+    SetPlayerMaxHP(GetInventory().GetInventoryPlayerMaxHP());
+    SetPlayerPower(GetInventory().GetInventoryPlayerPower());
+    SetPlayerCritChance(GetInventory().GetInventoryPlayerCritChance());
+    SetPlayerEquippedArmor(GetInventory().GetInventoryArmorEquipped());
+    SetPlayerEquippedWeapon(GetInventory().GetInventoryWeaponEquipped());
+}
+
 void Player::move(Entity* ptr[6]) //Not really sure if the changes affected anything
 {
-   // checkGhost(ptr);
+    // checkGhost(ptr);
     char input;
     input = _getch();
 
