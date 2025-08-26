@@ -458,7 +458,41 @@ void Shop::SetInventoryConsumableListIndex(std::string name, int index) {
 
 
 
+void Shop::SplitDescriptionString(std::string description) {
+	// seperate string into strings of 50 char
 
+	for (int i = 1; i < 3; i++) {
+		if (description.length() >= 60 * i) {
+			if (description[60 * i] == ' ') {
+				// moves all element from index 60 forward, replacing the ' ' at index 60
+				for (int j = 60 * i; j < description.length(); j++) {
+					description[j] = description[j + 1];
+				}
+				// adds an empty ' ' at the end to keep string length constant
+				description[description.length() - 1] = ' ';
+			}
+		}
+	}
+
+
+	for (int i = 0; i < 4; i++) {
+		descline[i] = "";
+	}
+
+	int maxcharlines = description.length() / 60;
+
+	// for lines with 60/60 characters
+	for (int i = 0; i < maxcharlines; i++) {
+		for (int j = 0; j < 60; j++) {
+			descline[i] += description[60 * i + j];
+		}
+	}
+
+	// for last line with <60 characters
+	for (int i = 60 * maxcharlines; i < description.length(); i++) {
+		descline[maxcharlines] += description[i];
+	}
+}
 
 
 
@@ -471,39 +505,195 @@ void Shop::SetInventoryConsumableListIndex(std::string name, int index) {
 
 std::string Shop::DrawShopUI() {
 
-	// debug show ALL item name, desc, cost
+	ShopUIString = "";
 
-	//
-	// for (int i = 0; i < 23; i++) {
-	//
-	//std::cout << ShopItemList[i] << std::endl;
-	//
-	//std::cout << ShopItemDescriptionList[i] << std::endl;
-	//
-	//std::cout << ShopItemCostList[i] << std::endl;
-	//
-	//std::cout << std::endl;
-	//
+	ShopUIString += "+====================================================================================###====###==============+\n";
+	ShopUIString += "|````````````````````````````````````````````````````````````````````````````````````|#||``||#|``````````````|\n";
+	ShopUIString += "|`````+_______________________________________________________________+``````````````|#||``||#|``````````````|\n";
+	ShopUIString += "|`````|                                                               |````````__-=+*{##****##}*+=-__````````|\n";
 
-
-
-	// sets random 3 items
-	//std::cout << "shop floor: " << ShopFloor << std::endl;
-	std::cout << "\n\n\n\n\n" << std::endl;
-	for (int i = 0; i < 3; i++) {
-		if (ItemIsInStock[i]) {
-			std::cout << "Shop Item " << i + 1 << ": " << ShopSlotItemName[i] << std::endl;
-			std::cout << ShopSlotItemDescription[i] << std::endl;
-			std::cout << "Type: " << ShopSlotItemType[i] << std::endl;
-			std::cout << "Cost: " << ShopSlotItemCost[i] << " Gold\n" << std::endl;
-		}
-
-		else {
-			std::cout << "Shop Item " << i + 1 << ": " << "OUT OF STOCK\n" << std::endl;
-		}
+	// item 1 + cost
+	// 44 spaces for item 1 name
+	ShopUIString += "|`````| Item 1: " + ShopSlotItemName[0];
+	for (int i = 0; i < 44 - ShopSlotItemName[0].length(); i++) {
+		ShopUIString += " ";
 	}
+	ShopUIString += "Cost: " + std::to_string(ShopSlotItemCost[0]) + "G";
+	for (int i = 0; i < 3 - std::to_string(ShopSlotItemCost[0]).length(); i++) {
+		ShopUIString += " ";
+	}
+	ShopUIString += "|`````__*                      *__`````|\n";
 
-	return "0";
+
+
+	//
+	ShopUIString += "|`````|                                                               |````#            SHOP            #````|\n";
+
+	// Item 1 description + floor number
+	SplitDescriptionString(ShopSlotItemDescription[0]);
+	// description line 1
+	ShopUIString += "|`````| " + descline[0];
+	for (int i = 0; i < 60 - descline[0].length(); i++) {
+		ShopUIString += " ";
+	}
+	ShopUIString += "  |```|_             F" + std::to_string(ShopFloor) + "             _|```|\n";
+
+	// description line 2
+	ShopUIString += "|`````| " + descline[1];
+	for (int i = 0; i < 60 - descline[1].length(); i++) {
+		ShopUIString += " ";
+	}
+	ShopUIString += "  |````#=-____                ____-=#````|\n";
+
+	// description line 3
+	ShopUIString += "|`````| " + descline[2];
+	for (int i = 0; i < 60 - descline[2].length(); i++) {
+		ShopUIString += " ";
+	}
+	ShopUIString += "  |```````````^*#===----===#*^```````````|\n";
+
+	// description line 4
+	ShopUIString += "|`````| " + descline[3];
+	for (int i = 0; i < 60 - descline[3].length(); i++) {
+		ShopUIString += " ";
+	}
+	ShopUIString += "  |````````````````````````````_`````````|\n";
+
+
+
+	//
+	ShopUIString += "|`````|                                                               |```````````````````````````///````````|\n";
+	ShopUIString += "|`````+===============================================================+```````````````````````````|#|````````|\n";
+	ShopUIString += "|`````````````````````````````````````````````````````````````````````````````````````````````````|#|````````|\n";
+	ShopUIString += "|`````+_______________________________________________________________+``````````````_````````````|#|````````|\n";
+	ShopUIString += "|`````|                                                               |`````````````+#+````````___/#\\___`````|\n";
+
+
+
+	// item 2 + cost
+	// 44 spaces for item 2 name
+	ShopUIString += "|`````| Item 2: " + ShopSlotItemName[1];
+	for (int i = 0; i < 44 - ShopSlotItemName[1].length(); i++) {
+		ShopUIString += " ";
+	}
+	ShopUIString += "Cost: " + std::to_string(ShopSlotItemCost[1]) + "G";
+	for (int i = 0; i < 3 - std::to_string(ShopSlotItemCost[1]).length(); i++) {
+		ShopUIString += " ";
+	}
+	ShopUIString += "|```````##````| |```````<=+#_ _+#=>````|\n";
+
+
+
+	//
+	ShopUIString += "|`````|                                                               |```````||```/   \\```````` \\;_;/```````|\n";
+
+
+
+	// item 2 description
+	SplitDescriptionString(ShopSlotItemDescription[1]);
+	// description line 1
+	ShopUIString += "|`````| " + descline[0];
+	for (int i = 0; i < 60 - descline[0].length(); i++) {
+		ShopUIString += " ";
+	}
+	ShopUIString += "  |``````/  \\`{     }`````=+|%%%%%|+=````|\n";
+
+	// description line 2
+	ShopUIString += "|`````| " + descline[1];
+	for (int i = 0; i < 60 - descline[1].length(); i++) {
+		ShopUIString += " ";
+	}
+	ShopUIString += "  |``````\\__/``\\___/``````````| |````````|\n";
+
+	// description line 3
+	ShopUIString += "|`````| " + descline[2];
+	for (int i = 0; i < 60 - descline[2].length(); i++) {
+		ShopUIString += " ";
+	}
+	ShopUIString += "  |`````==============````````| |````````|\n";
+
+	// description line 4
+	ShopUIString += "|`````| " + descline[3];
+	for (int i = 0; i < 60 - descline[3].length(); i++) {
+		ShopUIString += " ";
+	}
+	ShopUIString += "  |````/_____________/````````| |````````|\n";
+
+
+
+	//
+	ShopUIString += "|`````|                                                               |```````````````````````````| |````````|\n";
+	ShopUIString += "|`````+===============================================================+```````````````````````````| |````````|\n";
+	ShopUIString += "|`````````````````````````````````````````````````````````````````````````````````````````````````| |````````|\n";
+	ShopUIString += "|`````+_______________________________________________________________+```````````````````````````| |````````|\n";
+	ShopUIString += "|`````|                                                               |```````````````````````````\\ /````````|\n";
+
+
+
+	// item 3 + cost
+	ShopUIString += "|`````| Item 3: " + ShopSlotItemName[2];
+	for (int i = 0; i < 44 - ShopSlotItemName[2].length(); i++) {
+		ShopUIString += " ";
+	}
+	ShopUIString += "Cost: " + std::to_string(ShopSlotItemCost[2]) + "G";
+	for (int i = 0; i < 3 - std::to_string(ShopSlotItemCost[2]).length(); i++) {
+		ShopUIString += " ";
+	}
+	ShopUIString += "|````````````````````````````v`````````|\n";
+
+
+
+	//
+	ShopUIString += "|`````|                                                               |``````````````````````````````````````|\n";
+
+
+
+	// item 3 description
+	SplitDescriptionString(ShopSlotItemDescription[2]);
+	// description line 1
+	ShopUIString += "|`````| " + descline[0];
+	for (int i = 0; i < 60 - descline[0].length(); i++) {
+		ShopUIString += " ";
+	}
+	ShopUIString += "  |```````#===========================#``|\n";
+
+	// description line 2
+	ShopUIString += "|`````| " + descline[1];
+	for (int i = 0; i < 60 - descline[1].length(); i++) {
+		ShopUIString += " ";
+	}
+	ShopUIString += "  |``````/                           /|``|\n";
+
+
+	// description line 3
+	ShopUIString += "|`````| " + descline[2];
+	for (int i = 0; i < 60 - descline[2].length(); i++) {
+		ShopUIString += " ";
+	}
+	ShopUIString += "  |`````/                           / |``|\n";
+
+
+	// description line 4
+	ShopUIString += "|`````| " + descline[3];
+	for (int i = 0; i < 60 - descline[3].length(); i++) {
+		ShopUIString += " ";
+	}
+	ShopUIString += "  |````#===========================#  |``|\n";
+
+
+
+	//
+	ShopUIString += "|`````|                                                               |````|                           |  |``|\n";
+	ShopUIString += "|`````+===============================================================+````|                           |  |``|\n";
+	ShopUIString += "|``````````````````````````````````````````````````````````````````````````|                           |  |``|\n";
+	ShopUIString += "+==========================================================================#===========================#==#==+\n";
+
+
+
+
+
+
+	return ShopUIString;
 }
 
 

@@ -422,7 +422,7 @@ std::string Inventory::DrawInventroyUI() {
 	InventoryUIString += "|```````:|                              |:```````:|  " + ConsumableUISection[6] + "|:``````````|\n";
 	InventoryUIString += "|```````:|                              |:```````:|  " + ConsumableUISection[7] + "|:``````````|\n";
 	InventoryUIString += "|```````:|                              |:```````:|  " + ConsumableUISection[8] + "|:``````````|\n";
-	InventoryUIString += "|```````:|                              |:```````:|  " + ConsumableUISection[9] + "|:``````````|\n";
+	InventoryUIString += "|```````~.==============================.~```````:|  " + ConsumableUISection[9] + "|:``````````|\n";
 
 
 
@@ -565,7 +565,7 @@ void Inventory::PromptPlayerUseItem() {
 			ItemEffectCheck();
 			InventoryPlayerIsUsingItem = false;
 
-			std::cout << "Used: " << InventoryConsumables[InventoryPlayerItemUseChoice - 1] << std::endl;
+			std::cout << "item used; " << InventoryConsumables[InventoryPlayerItemUseChoice - 1] << std::endl;
 
 			InventoryConsumables[InventoryPlayerItemUseChoice - 1] = "-";
 
@@ -719,7 +719,7 @@ void Inventory::ObtainItemDrop() {
 
 	if (InventoryItemTypeList[templistindex] == "Consumable" && PlayerHasInventorySpace == false) {
 		// if item is consumable & player has no inv space
-		//std::cout << "debug dropped accessory but no space" << std::endl;
+		std::cout << "debug dropped accessory but no space" << std::endl;
 	}
 
 	else {

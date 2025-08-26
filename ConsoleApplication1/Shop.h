@@ -34,6 +34,7 @@ protected:
 
 	std::string InventoryConsumableList[10];
 
+	std::string descline[4];
 public:
 	Shop();
 
@@ -72,5 +73,6 @@ public:
 	void EquipBoughtWeapon(int slot);
 	void EquipBoughtArmor(int slot);
 	void BoughtConsumables(int slot);
+	void SplitDescriptionString(std::string description);
 };
 
