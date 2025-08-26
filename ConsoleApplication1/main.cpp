@@ -30,7 +30,7 @@ int main()
 
     Map GMap;
 
-    GMap.CreateNewFloor(2);
+    GMap.CreateNewFloor(0);
     GMap.RequestFloorUpdate();
 
     //...

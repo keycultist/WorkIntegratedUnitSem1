@@ -18,18 +18,23 @@ void Combat::InitCombat(Player& MC, Enemy& target)
 
 bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 {
-	std::cout << "You are fighting a: " << target.GetEnemyClass() << std::endl;
-	std::cout << target.GetEnemyHP() << "HP" << std::endl;
-	std::cout << "What will you do?" << std::endl;
-	std::cout << "(1) Attack" << std::endl;
-	std::cout << "(2) Defend" << std::endl;
-	std::cout << "(3) Item" << std::endl;
-	std::cout << "(4) Run" << std::endl;
-	MC.ShowPlayerStats();
+	bool turnEnd = false;
 	int ChosenMove = 0;
 	bool Defend = false;
 	int RunChance = rand() % 10;
-	const char* HORSEAscii = R"(
+	while (!turnEnd) {
+		std::cout << "You are fighting a: " << target.GetEnemyClass() << std::endl;
+		std::cout << target.GetEnemyHP() << "HP" << std::endl;
+		std::cout << "What will you do?" << std::endl;
+		std::cout << "(1) Attack" << std::endl;
+		std::cout << "(2) Defend" << std::endl;
+		std::cout << "(3) Item" << std::endl;
+		std::cout << "(4) Run" << std::endl;
+		MC.ShowPlayerStats();
+		ChosenMove = 0;
+		Defend = false;
+		RunChance = rand() % 10;
+		const char* HORSEAscii = R"(
 		                                                                                                              
                       @%                                                                                      
                       #@%*                                                    :-                              
@@ -94,70 +99,83 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
      ##%%%#@@@@%%@@%%%#%@@@@@%#%%##%@@@@@@@@@@@@@@@@@@@@@@@%#####*#*++-=++++*##**#*==-=-=--+==+=----=         
      %@%%#%%@@%@@@@##%%@@@@@@%@%%##@@@@@@@@@@@@@@@@@@@@@@@@%%%##%#*#+++++++**#####*+==-:--=++====--=-         
 		)";
+		turnEnd = false;
 
-	int chP = _getch();
-	system("cls");
-	switch (chP) { //select action
-	case '1':
-		//Include Player Moveset
-		MC.ShowPlayerMoves();
-		chP = _getch();
+		int chP = _getch();
 		system("cls");
-		switch (chP) {
+		switch (chP) { //select action
 		case '1':
-			ChosenMove = 1;
+			//Include Player Moveset
+			MC.ShowPlayerMoves();
+			chP = _getch();
+			system("cls");
+			switch (chP) {
+			case '1':
+				ChosenMove = 1;
+				break;
+			case '2':
+				ChosenMove = 2;
+				break;
+			case '3':
+				ChosenMove = 3;
+				break;
+			case '4':
+				ChosenMove = 4;
+				break;
+			default:
+				break;
+			}
+			Combat::PlayerAttack(MC, target, ChosenMove - 1);
+			chP = _getch();
+			turnEnd = true;
 			break;
 		case '2':
-			ChosenMove = 2;
+			std::cout << "Prepaired to Defend" << std::endl;
+			Defend = true;
+			chP = _getch();
+			turnEnd = true;
 			break;
 		case '3':
-			ChosenMove = 3;
+			MC.UpdateInventoryPlayerStats();
+			std::cout << MC.GetInventory().DrawInventoryUI() << std::endl;
+			std::cout << "Use an item? Y/N" << std::endl;
+			chP = _getch();
+			if (chP == 'y') {
+				MC.GetInventory().PromptPlayerUseItem();
+				MC.UpdatePlayerStatsInventory();
+				turnEnd = true;
+			}
+			else {
+				turnEnd = false;
+			}
 			break;
 		case '4':
-			ChosenMove = 4;
+			if (RunChance >= 8) {
+				std::cout << "Successfuly Ran Away" << std::endl;
+				return true;
+			}
+			else if (RunChance >= 4 && RunChance < 8) {
+				std::cout << "Ran Away but Damaged" << std::endl;
+				MC.SetPlayerHP(MC.GetPlayerHP() * 0.95);
+				return true;
+			}
+			else {
+				std::cout << "Failed to Run" << std::endl;
+				return false;
+				turnEnd = true;
+			}
+			chP = _getch();
+			break;
+		case 'h':
+			std::cout << HORSEAscii << "\n";
+			turnEnd = true;
 			break;
 		default:
+			turnEnd = false;
 			break;
 		}
-		Combat::PlayerAttack(MC, target, ChosenMove - 1);
-		chP = _getch();
-		break;
-	case '2':
-		std::cout << "Prepaired to Defend" << std::endl;
-		Defend = true;
-		chP = _getch();
-		break;
-	case '3':
-		MC.UpdateInventoryPlayerStats();
-		std::cout << MC.GetInventory().DrawInventoryUI() << std::endl;
-		MC.GetInventory().PromptPlayerUseItem();
-		MC.UpdatePlayerStatsInventory();
-		break;
-	case '4':
-		if (RunChance >= 8) {
-			std::cout << "Successfuly Ran Away" << std::endl;
-			return true;
-		}
-		else if (RunChance >= 4 && RunChance < 8) {
-			std::cout << "Ran Away but Damaged" << std::endl;
-			MC.SetPlayerHP(MC.GetPlayerHP() * 0.95);
-			return true;
-		}
-		else {
-			std::cout << "Failed to Run" << std::endl;
-			return false;
-		}
-		chP = _getch();
-		break;
-	case 'h':
-		std::cout << HORSEAscii << "\n";
-		chP = _getch();
-		break;
-	default:
-		chP = _getch();
-		break;
+		system("cls");
 	}
-	system("cls");
 	if (target.GetEnemyHP() <= 0) { //Enemy death check
 		std::cout << "Enemy Defeated! Gained XP!" << std::endl;
 		if (MC.GetPlayerClass() == "Berserker") {
@@ -204,6 +222,9 @@ void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
 	if (MC.GetMoveSet().GetMove(ChosenMove).MoveType == "Heal") {
 		MC.SetPlayerHP(MC.GetPlayerHP() + (MC.GetMoveSet().GetMove(ChosenMove).MoveStrength));
 		std::cout << "Healed " << MC.GetMoveSet().GetMove(ChosenMove).MoveStrength << " HP." << std::endl;
+		if (MC.GetPlayerHP() > MC.GetPlayerMaxHP()) {
+			MC.SetPlayerHP(MC.GetPlayerMaxHP());
+		}
 		std::cout << "Current HP: " << MC.GetPlayerHP() << "/" << MC.GetPlayerMaxHP() << std::endl;
 	}
 	//Heal Type, based on move strength
