@@ -14,6 +14,7 @@ int main()
     Player MC;
     Item items;
     MC.InitPlayer();
+    items.SetItemPlayerClass(MC.GetPlayerClass()); 
     items.SetItemList();
     // init player's inventory
     Enemy* Enemies[10]{};

@@ -181,7 +181,7 @@ int Inventory::GetInventoryPlayerCritChance()
 	return InventoryPlayerCritChance;
 }
 
-Item Inventory::GetItem()
+Item& Inventory::GetItem()
 {
 	return item;
 }
