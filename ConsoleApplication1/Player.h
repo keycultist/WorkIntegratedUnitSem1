@@ -67,6 +67,8 @@ public:
 	void LevelUp();
 	void ListMovesToReplace();
 	virtual void move(Entity* ptr[6]);
+	virtual void checkEnemy(Entity* ptr[6]);
+	virtual void checkEvent(Entity* ptr[6]);
 };
 
 

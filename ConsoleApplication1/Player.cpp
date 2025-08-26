@@ -1,5 +1,8 @@
 #include "Player.h"
 #include "Moveset.h"
+#include "Position.h"
+#include "Combat.h"
+#include "Events.h"
 #include <iostream>
 #include <conio.h>
 #include <string>
@@ -945,6 +948,49 @@ void Player::ListMovesToReplace()
     std::cout << std::endl;
 }
 
+void Player::checkEnemy(Entity* enemies[6])
+{
+    int EnemyX, EnemyY;
+    // Check enemies
+    for (int i = 1; i <= 3; i++) {
+        // Skip if this enemy doesn't exist
+        if (enemies[i] != nullptr) {
+            // Get enemy's position
+            EnemyX == enemies[i]->GetPosX();
+            EnemyY == enemies[i]->GetPosY();
+
+            // Check if player touches enemy (collision)
+            if (EnemyX == GetPosX() && EnemyY == GetPosY()) {
+                // Enter combat with this enemy
+                Combat::InitCombat( *this, );           //suspects that it can be solved by enemy inheiriting from entity class. checkenemy func not being called
+                break;  // Stop checking after first combat
+            }
+        }
+    }
+}
+
+void Player::checkEvent(Entity* events[6])
+{
+    int EventX, EventY;
+    // Check events
+    for (int b = 1; b <= 3; b++) {
+        // Skip if this event doesn't exist
+        if (events[b] != nullptr) {
+            // Get event's position
+            EventX == events[b]->GetPosX();
+            EventY == events[b]->GetPosY();
+
+            // Check if player touches event (collision)
+            if (EventX == GetPosX() && EventY == GetPosY()) {
+                // Enter the event
+                EventTriggered(events[b]);
+                break;  // Stop checking after first event
+            }
+        }
+    }
+}
+
+
 void Player::move(Entity* ptr[6]) //Not really sure if the changes affected anything
 {
    // checkGhost(ptr);
@@ -1000,3 +1046,4 @@ void Player::move(Entity* ptr[6]) //Not really sure if the changes affected anyt
     targetx = GetPlayerPosX();
     targety = GetPlayerPosY();
 }
+
