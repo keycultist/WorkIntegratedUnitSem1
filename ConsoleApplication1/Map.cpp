@@ -135,14 +135,22 @@ void Map::fillBoard(char** Board, int sizeX, int sizeY)
 
 void Map::drawBoard(char** Board, int sizeX, int sizeY)
 {
-    std::cout << "+---------------------------------------+" << endl;
+    std::cout << "+";
+    for (int i = 0; i < 128; i++) {
+        std::cout << "-";
+    }   
+    std::cout << "+" << endl;
     for (int h = 0; h < sizeX; ++h) {
         for (int v = 0; v < sizeY; ++v) {
             std::cout << Board[h][v];
         }
         std::cout << endl;
     }
-    std::cout << "+---------------------------------------+" << endl;
+    std::cout << "+";
+    for (int i = 0; i < 128; i++) {
+        std::cout << "-";
+    }
+    std::cout << "+" << endl;
 
 }
 
