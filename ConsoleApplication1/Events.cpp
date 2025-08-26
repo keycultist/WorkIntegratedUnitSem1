@@ -26,6 +26,11 @@ void Events::initializeEvents() {
         "A mutated rat taps you on the shoulder and demands for 5 gold pieces. It assures you that it needs it for food but his darting eyes and fidgety demeanor suggests otherwise. Do you spare 5 gold pieces? (+- Karma)",
         "The torches stuck to the wall all flicker at the same time..sending chills down your spine, guess it was just the wind.. in a dungeon..?",
         "A talking chest fills the once silent air with complaints of his \"mimic\" appearance, do you spend some time keeping it company? (+- Karma)"
+        "You find a child's toy sword, wooden and worn. Somehow, it feels heavier with the weight of lost innocence than any real blade"
+        "A ghostly cat phases through the wall and purrs at you before vanishing. You feel oddly blessed by this furry encounter"
+        "A weathered journal page finds itself beneath you, it reads, \"The gods watch not with eyes, but with balance in hand. Those who walk in light, leaving kindness in their wake, may find unseen hands guiding their steps… and perhaps, a blessing when most needed.\""
+        "A small shrine dedicated to forgotten gods sit in an alcove. Shrouded in thick vines and layers of time, you cant help but to leave an offering out of respect (+5 HP)"
+        "You find a vibrant patch of green, vines sprouting from cracks within the stone and sprouts pulsing faintly with a slight golden hue. The air humming softly around them as if the roots whisper ancient prayers, this looks like the work of Feronia The Fruithfulness.."
     };
 
     // Initialize Medium Events
