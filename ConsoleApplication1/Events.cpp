@@ -9,6 +9,10 @@ Events::Events() {
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
 }
 
+void Events::CombatEventTriggered()
+{
+}
+
 void Events::initializeEvents() {
     // Initialize Minor Events
     minorEvents = {

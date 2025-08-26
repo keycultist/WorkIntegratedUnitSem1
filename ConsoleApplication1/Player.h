@@ -2,20 +2,22 @@
 #include <string>
 #include "Moveset.h"
 #include "entity.h"
+#include "Position.h"
 class Player : public Entity
 {
 private:
-	std::string PlayerClass;
+	/*std::string PlayerClass;
 	int PlayerMaxHP;
 	int PlayerHP;
 	int PlayerPower;
 	int PlayerCritChance;
+	int PlayerCurrency;
 	int PlayerPosX, PlayerPosY;
 	int PlayerLvl;
-	int PlayerXP;
+	int PlayerXP;*/
+	//Commented out bc of Entity class integration
 	std::string PlayerEquippedWeapon;
 	std::string PlayerEquippedArmor;
-	int PlayerCurrency;
 	int PlayerKarma;
 	int CurrentDifficulty;
 
@@ -29,8 +31,7 @@ public:
 	void SetPlayerHP(int HP);
 	void SetPlayerPower(int Power);
 	void SetPlayerCritChance(int CritChance);
-	void SetPlayerPosX(int X);
-	void SetPlayerPosY(int Y);
+	void SetPlayerPos(int X, int Y);
 	void SetPlayerLvl(int Lvl);
 	void SetPlayerXP(int XP);
 	void SetPlayerEquippedWeapon(std::string Weapon);
@@ -53,17 +54,19 @@ public:
 	int GetPlayerCurrency(void) const;
 	int GetPlayerKarma(void) const;
 	int GetCurrentDifficulty(void) const;
-	Moveset& GetMoveset();
+	Moveset& GetMoveSet();
 
 	Player();
-	Player(std::string PlayerClass, int PlayerMaxHP, int PlayerHP, int PlayerPower, int PlayerCritChance, int PlayerPosX, int PlayerPosY, int PlayerLvl, int PlayerXP, std::string PlayerEquippedWeapon, std::string PlayerEquippedArmor, int PlayerCurrency, int PlayerKarma, int CurrentDifficulty);
+	Player(std::string PlayerClass, int PlayerMaxHP, int PlayerHP, int PlayerPower, int PlayerCritChance, int PlayerCurrency, int PlayerPosX, int PlayerPosY, int PlayerLvl, int PlayerXP, std::string PlayerEquippedWeapon, std::string PlayerEquippedArmor, int PlayerKarma, int CurrentDifficulty);
 	~Player();
 
 	void InitPlayer();
 	void ShowPlayerStats() const;
+	void ShowPlayerMoves() const;
 	void LevelUpCheck();
 	void LevelUp();
 	void ListMovesToReplace();
+	virtual void move(Entity* ptr[6]);
 };
 
 

@@ -24,8 +24,16 @@ void Enemy::SetEnemyHP(int HP) {
 	EnemyHP = HP;
 }
 
+void Enemy::SetEnemyMaxHP(int MaxHP) {
+	EnemyMaxHP = MaxHP;
+}
+
 void Enemy::SetEnemyPower(int Power) {
 	EnemyPower = Power;
+}
+
+void Enemy::SetEnemyCritChance(int CritChance) {
+	EnemyCritChance = CritChance;
 }
 
 void Enemy::SetEnemyPos(int X, int Y) {
@@ -56,8 +64,16 @@ int Enemy::GetEnemyHP(void) const {
 	return EnemyHP;
 }
 
+int Enemy::GetEnemyMaxHP(void) const {
+	return EnemyMaxHP;
+}
+
 int Enemy::GetEnemyPower(void) const {
 	return EnemyPower;
+}
+
+int Enemy::GetEnemyCritChance(void) const {
+	return EnemyCritChance;
 }
 
 int Enemy::GetEnemyPosX(void) const {
@@ -102,16 +118,159 @@ Enemy::~Enemy()
 
 void Enemy::InitEnemy()
 {
-	SetEnemyClass("Test");
+	SetEnemyClass("Grunt");
+	SetEnemyMaxHP(20);
 	SetEnemyHP(20);
 	SetEnemyPower(1);
+	SetEnemyCritChance(5);
 	SetEnemyPos(0, 0);;
 	SetEnemyLvl(1);
 	SetEnemyXP(0);
+	Phase = false;
 	SetEnemyEquippedWeapon("None");
 	SetEnemyEquippedArmor("None");
 }
 
 void Enemy::ShowEnemyStats(Enemy& MC) {
 	// Return Enemy Stats Here with STD::COUT!!!! (tedious)
+}
+
+std::string Enemy::DecisionMatrix(int PlayerHP, bool PlayerBuffed)
+{
+	// Standard Enemy Decision Matrix, here we go.
+
+	if (usedMoves.size() >= 3) {
+		usedMoves.erase(usedMoves.begin());
+	}
+
+	if (EnemyHP <= 0) {
+		return "DEAD";
+	}
+	else {
+		if (EnemyClass != "OneWingedAngel" and EnemyClass != "JovialChaos") {
+			if (EnemyHP <= 0) {
+				return "DEAD";
+			}
+
+			else if (Buffed == false) {
+				for (int i = 0; i < moveset.size(); i++) {
+					if (moveset.GetMove(i).MoveType == "Buff") {
+						std::string moveName = moveset.GetMove(i).MoveName;
+
+						if (std::find(usedMoves.begin(), usedMoves.end(), moveName) == usedMoves.end()) {
+							return moveName;
+						}
+					}
+				}
+			}
+
+			// thank you, next. (ariana grande!!!!) if no buff is available, check if player is buffed.
+			if (PlayerBuffed == true) {
+				for (int i = 0; i < moveset.size(); i++) {
+					if (moveset.GetMove(i).MoveType == "Debuff") {
+						std::string moveName = moveset.GetMove(i).MoveName;
+						if (std::find(usedMoves.begin(), usedMoves.end(), moveName) == usedMoves.end()) {
+							return moveName;
+						}
+					}
+				}
+			}
+
+			// if all else fails, launch an attack. or smth like that
+			for (int i = 0; i < moveset.size(); i++) {
+				if (moveset.GetMove(i).MoveType == "Physical" ||
+					moveset.GetMove(i).MoveType == "Abyssal" ||
+					moveset.GetMove(i).MoveType == "Magical") {
+					return moveset.GetMove(i).MoveName;
+				}
+			}
+
+		}
+		else {
+			// SPECIAL TRUE BOSS DECISION MATRIX WHAT THE WHAT!?!?
+			if (EnemyHP <= 0) {
+				if (Phase == true) {
+					for (int i = 0; i < moveset.size(); i++) {
+						if (moveset.GetMove(i).MoveType == "DeathMove") {
+							return moveset.GetMove(i).MoveName;
+						}
+					}
+
+					EnemyHP = 0;
+					Phase = false;
+				}
+				return "DEAD";
+			}
+
+			else if (Buffed == false) {
+				for (int i = 0; i < moveset.size(); i++) {
+					if (moveset.GetMove(i).MoveType == "Buff") {
+						std::string moveName = moveset.GetMove(i).MoveName;
+
+						if (std::find(usedMoves.begin(), usedMoves.end(), moveName) == usedMoves.end()) {
+							return moveName;
+						}
+					}
+				}
+			}
+
+			// thank you, next. (ariana grande!!!!) if no buff is available, check if player is buffed.
+			if (PlayerBuffed == true) {
+				for (int i = 0; i < moveset.size(); i++) {
+					if (moveset.GetMove(i).MoveType == "Counter") {
+						std::string moveName = moveset.GetMove(i).MoveName;
+						if (std::find(usedMoves.begin(), usedMoves.end(), moveName) == usedMoves.end()) {
+							return moveName;
+						}
+					}
+				}
+			}
+
+			if (Buffed == true) {
+				for (int i = 0; i < moveset.size(); i++) {
+					if (moveset.GetMove(i).MoveType == "Physical" ||
+						moveset.GetMove(i).MoveType == "Abyssal" ||
+						moveset.GetMove(i).MoveType == "Magical") {
+						std::string moveName = moveset.GetMove(i).MoveName;
+						if (std::find(usedMoves.begin(), usedMoves.end(), moveName) == usedMoves.end()) {
+							return moveName;
+						}
+					}
+				}
+			}
+
+			if (EnemyHP <= EnemyMaxHP / 2) {
+				if (Phase == false) {
+					Phase = true;
+
+					for (int i = 0; i < moveset.size(); i++) {
+						if (moveset.GetMove(i).MoveType == "BossMove") {
+							return moveset.GetMove(i).MoveName;
+						}
+					}
+				}
+			}
+
+			if (EnemyHP <= EnemyMaxHP / 99) {
+				for (int i = 0; i < moveset.size(); i++) {
+					if (moveset.GetMove(i).MoveType == "DeathMove") {
+						EnemyHP = 0;
+						Phase = false;
+						return moveset.GetMove(i).MoveName;
+					}
+				}
+			}
+
+			// if all else fails, launch an attack. or smth like that
+			for (int i = 0; i < moveset.size(); i++) {
+				if (moveset.GetMove(i).MoveType == "Physical" ||
+					moveset.GetMove(i).MoveType == "Abyssal" ||
+					moveset.GetMove(i).MoveType == "Magical") {
+					return moveset.GetMove(i).MoveName;
+				}
+			}
+
+
+		}
+	}
 }

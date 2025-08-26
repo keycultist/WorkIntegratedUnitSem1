@@ -132,8 +132,10 @@
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Moveset.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Position.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Shop.cpp" />
+    <ClCompile Include="Sound.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Combat.h" />
@@ -146,8 +148,10 @@
     <ClCompile Include="ConsoleApplication1.cpp" />
     <ClCompile Include="divine_intervention.cpp" />
     <ClCompile Include="entity.cpp" />
+    <ClInclude Include="Position.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Shop.h" />
+    <ClInclude Include="Sound.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConsoleApplication1.h" />

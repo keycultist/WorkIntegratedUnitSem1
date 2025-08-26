@@ -1,18 +1,7 @@
 #include "entity.h"
-
-Entity::Entity()
-{
-}
-
-Entity::Entity(std::string Cl, int MH, int H, int P, int mP, int C)
-    : Class(Cl), MaxHP(MH), HP(H), Power(P), magicPower(mP), Currency(C)
-{
-}
-
-Entity::~Entity()
-{
-}
-
+#include "Player.h"
+//#include ".h"
+#include <iostream>
 void Entity::SetClass(std::string Class)
 {
     this->Class = Class;
@@ -33,9 +22,9 @@ void Entity::SetPower(int Power)
     this->Power = Power;
 }
 
-void Entity::SetmagicPower(int magicPower)
+void Entity::SetCritChance(int CritChance)
 {
-    this->magicPower = magicPower;
+    this->CritChance = CritChance;
 }
 
 void Entity::SetCurrency(int Currency)
@@ -43,11 +32,27 @@ void Entity::SetCurrency(int Currency)
     this->Currency = Currency;
 }
 
+void Entity::SetPos(int PosX, int PosY)
+{
+    entityPosObj.SetX(PosX);
+    entityPosObj.SetY(PosY);
+}
+
+void Entity::SetLvl(int Lvl)
+{
+    this->Lvl = Lvl;
+}
+
+void Entity::SetXP(int XP)
+{
+    this->XP = XP;
+}
+
 std::string Entity::GetClass(void) const
 {
     return Class;
 }
-
+ 
 int Entity::GetMaxHP(void) const
 {
     return MaxHP;
@@ -63,14 +68,47 @@ int Entity::GetPower(void) const
     return Power;
 }
 
-int Entity::GetmagicPower(void) const
+int Entity::GetCritChance(void) const
 {
-    return magicPower;
+    return CritChance;
 }
 
 int Entity::GetCurrency(void) const
 {
     return Currency;
+}
+
+int Entity::GetPosX(void) const
+{
+    return entityPosObj.GetX();
+}
+
+int Entity::GetPosY(void) const
+{
+    return entityPosObj.GetY();
+}
+
+int Entity::GetLvl(void) const
+{
+    return Lvl;
+}
+
+int Entity::GetXP(void) const
+{
+    return XP;
+}
+
+Entity::Entity() : Class("None"), MaxHP(100), HP(100), Power(0), CritChance(0), Currency(0), entityPosObj(0, 0), Lvl(1), XP(0)
+{
+}
+
+Entity::Entity(std::string Cl, int MH, int H, int P, int CC, int C, int PX, int PY, int L, int XP) : 
+    Class(Cl), MaxHP(MH), HP(H), Power(P), CritChance(CC), Currency(C), entityPosObj(PX, PY), Lvl(L), XP(XP)
+{
+}
+
+Entity::~Entity()
+{
 }
 
 void Entity::applyBuff(const std::string& stat, int value) {
@@ -86,9 +124,9 @@ void Entity::applyBuff(const std::string& stat, int value) {
         std::cout << Class << "'s Power changed by " << value << ". Current Power: " << Power << std::endl;
     }
     else if (stat == "MAGIC") {
-        magicPower += value;
-        if (magicPower < 0) magicPower = 0;
-        std::cout << Class << "'s MAGIC Power changed by " << value << ". Current MAGIC Power: " << magicPower << std::endl;
+        Power += value;
+        if (Power < 0) Power = 0;
+        std::cout << Class << "'s MAGIC Power changed by " << value << ". Current MAGIC Power: " << Power << std::endl;
     }
     else if (stat == "Currency") {
         Currency += value;
@@ -97,57 +135,67 @@ void Entity::applyBuff(const std::string& stat, int value) {
     }
 }
 
-void Entity::applyKarmaEffect(int value, float multiplierChange) {
-    karma += value;
-    if (karma > 100) karma = 100;
-    if (karma < 0) karma = 0;
+void Entity::applyKarmaEffect(int value, int PlayerKarma, float multiplierChange) {
+    PlayerKarma += value;
+    if (PlayerKarma > 100) PlayerKarma = 100;
+    if (PlayerKarma < 0) PlayerKarma = 0;
 
-    karmaMultiplier += multiplierChange;
-    if (karmaMultiplier < 0.1f) karmaMultiplier = 0.1f;
+    PlayerKarma += multiplierChange;
+    if (PlayerKarma < 0.1f) PlayerKarma = 0.1f;
 
     std::cout << Class << "'s karma changed by " << value
-        << " (Now: " << karma << "/100)\n";
+        << " (Now: " << PlayerKarma << "/100)\n";
     std::cout << "Karma multiplier changed by " << multiplierChange
-        << " (Now: " << karmaMultiplier << "x)\n";
+        << " (Now: " << PlayerKarma << "x)\n";
 }
 
 void Entity::heal(int amount) {
     if (amount <= 0) return;
 
-    int oldHp = hp;
-    hp += amount;
-    if (hp > maxHp) hp = maxHp;
+    int oldHp = HP;
+    HP += amount;
+    if (HP > MaxHP) HP = MaxHP;
 
-    int actualHeal = hp - oldHp;
+    int actualHeal = HP - oldHp;
     std::cout << Class << " is healed for " << actualHeal << " HP! ";
-    std::cout << "Current HP: " << hp << "/" << maxHp << std::endl;
+    std::cout << "Current HP: " << HP << "/" << MaxHP << std::endl;
 }
 
 bool Entity::isAlive() const {
-    return HP > 0;
+    return HP > 0; 
 }
 
-void Entity::attack(Entity& target) {
-    int damage = Power;
-    std::cout << Class << " attacks " << target.Class << " for " << damage << " damage!" << std::endl;
-    target.HP -= damage;
-    if (target.HP < 0) target.HP = 0;
-}
-
-void Entity::magicAttack(Entity& target) {
-    int damage = magicPower;
-    std::cout << Class << " casts a spell on " << target.Class << " for " << damage << " magic damage!" << std::endl;
-    target.HP -= damage;
-    if (target.HP < 0) target.HP = 0;
-}
+//void Entity::attack(Entity& target) {
+//    int damage = Power;
+//    std::cout << Class << " attacks " << target.Class << " for " << damage << " damage!" << std::endl;
+//    target.HP -= damage;
+//    if (target.HP < 0) target.HP = 0;
+//}
+//
+//void Entity::magicAttack(Entity& target) {
+//    int damage = Power;
+//    std::cout << Class << " casts a spell on " << target.Class << " for " << damage << " magic damage!" << std::endl;
+//    target.HP -= damage;
+//    if (target.HP < 0) target.HP = 0;
+//}
 void Entity::increaseMaxHP(int amount) {
     if (amount <= 0) {
         return;
     }
 
-    int oldMaxHp = maxHp;
-    maxHp += amount;
+    int oldMaxHp = MaxHP;
+    MaxHP += amount;
 
     std::cout << Class << "'s maximum HP increased by " << amount << "! ";
-    std::cout << "HP: " << hp << "/" << maxHp << " (+" << amount << ")\n";
+    std::cout << "HP: " << HP << "/" << MaxHP << " (+" << amount << ")\n";
+}
+void Entity::modifyCritChance(int amount) {
+    SetCritChance(GetCritChance() + amount);
+    // Clamp crit chance between 0% and 100%
+    if (GetCritChance() < 0.0f) CritChance = 0.0f;
+    if (GetCritChance() > 1.0f) CritChance = 1.0f; {
+
+        std::cout << Class << "'s crit chance changed by " << (amount * 100) << "%";
+        std::cout << " (Now: " << (CritChance * 100) << "%)\n";
+    }
 }

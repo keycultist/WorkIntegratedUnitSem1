@@ -11,15 +11,29 @@
 int main()
 {
     Player MC;
-    Enemy Test;
     MC.InitPlayer();
-    Test.InitEnemy();
+    Enemy* Enemies[10]{};
+    for (int i = 0; i < 10; i++) {
+        Enemies[i] = nullptr;
+    }
+    Enemies[0] = new Enemy;
+    Enemies[0]->InitEnemy();
     MC.ShowPlayerStats();
-    Combat::InitCombat(MC, Test);
+
+    //82308 bytes of stack!!
 
     Map GMap;
 
     GMap.CreateNewFloor(2);
+
+    //...
+
+    //When init combat
+    Combat::InitCombat(MC, *Enemies[0]);
+
+    //...
+
+    //Print map again
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

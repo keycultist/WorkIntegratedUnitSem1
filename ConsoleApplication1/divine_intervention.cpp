@@ -1,4 +1,6 @@
 #include "divine_intervention.h"
+#include "entity.h"
+#include "Player.h"
 #include <iostream>
 
 DivineIntervention::DivineIntervention() : gen(rd()) {  
@@ -10,9 +12,9 @@ DivineIntervention::DivineIntervention() : gen(rd()) {
         {God::FERONIA, "Feronia the Fruitfulness"},
         {God::KERES, "Keres the Anathema"},
         {God::PREYSEYE, "Preyseye the Morality"},
-        {God::SANCTORUM, "Sanctorum the Sustentation" },
+        {God::SANCTORUM, "Sanctorum the Conservation" },
         {God::BOON, "Boon the Probability" },
-        {God::MAGNAR, "Magnar the Valour" }
+        /*{God::MAGNAR, "Magnar the Valour" }*/
     };
 
     // God-specific dialogues
@@ -41,7 +43,7 @@ DivineIntervention::DivineIntervention() : gen(rd()) {
         "\"My tender sprouts shall cure all of sickness and poison!\"",
         "\"No one has to die for one to see the light!\"",
         "\"It pains me to see that life has been so cruel... Let me heal you all...\"",
-        "\"Fear not, fear not. My mercy shall save all.\""
+        "\"Fear not, fear not. My mercy shall save us all.\""
     };
 
     godDialogues[God::KERES] = {
@@ -59,28 +61,28 @@ DivineIntervention::DivineIntervention() : gen(rd()) {
     };
 
     godDialogues[God::PREYSEYE] = {
-        "\"Morality's dichotomy is a conundrum best left to the omniscient, a distinction reserved for one of superior insight, namely myself.\"",
+        "\"Morality'as dichotomy is a conundrum best left to the omniscient, a distinction reserved for one of superior insight, namely myself.\"",
         "\"The forthcoming calibration of your metaphysical essence is about to commence.\"",
         "\"The division of Virtue and Vice. The antithesis of Rectitude and Iniquity. To which path shall one's predilections be inclined?\"",
         "\"The existential balance of moral gravitas, shall it incline in your direction or not? We shall, in due course, behold the veritable outcome.\""
     };
    
     godDialogues[God::BOON] = {
-        "\"lol.\"",
-        "\"ok.\"",
-        "\"girl.\"",
-        "\"ate.\""
+        "\"How marvellously lucky for you all to encounter me~\"",
+        "\"Just one strum of the threads of fate may tip the tides in your favour~\"",
+        "\"Observe! This is chaos theory in action!\"",
+        "\"Watch the threads of fate weave into an endless universal fabric of possibility...\""
     };
 
-    godDialogues[God::MAGNAR] = {
-        "\"uh.\"",
-        "\"pmo.\"",
-        "\"sybau.\"",
-        "\"lalalala.\""
-    };
+    /*godDialogues[God::MAGNAR] = {
+        "\"Let the might of a thousand warriors conquer your minds!\"",
+        "\"Their flesh and blood will forge our swords! Their veins will be our bowstrings! And their bones will be our daggers!\"",
+        "\"Our adversaries' bodies shall be relics of the past!\"",
+        "\"Behold, the law of absolute ruin!\""
+    };*/
 }
 
-std::string DivineIntervention::getRandomDialogue(God god) const {
+std::string DivineIntervention::getRandomDialogue(God god) const { //this is to get a random dialogue from the godDialogues map, which is a map of vectors
     if (god == God::NONE || godDialogues.find(god) == godDialogues.end()) {
         return "";
     }
@@ -97,13 +99,14 @@ void DivineIntervention::applyEffect(God god, Entity& player, Entity& enemy) con
     std::cout << godNames.at(god) << " manifests before you!\n";
     std::cout << getRandomDialogue(god) << "\n\n";
 
+    int healAmount;
     bool affectsPlayer = std::bernoulli_distribution(0.5)(gen);    //bernoulli_distribution is boolean, which is true-false, essentially checking if outcome is success or failure. 0.5 = 50% chance of success
     Entity& primaryTarget = affectsPlayer ? player : enemy;      // ? is an if statement
     Entity& secondaryTarget = affectsPlayer ? enemy : player;
 
-    switch (god) {
+    switch (god) {                 //assigns each god with its effect
     case God::SAGACITY: {
-		int effect = std::uniform_int_distribution<>(-3, 3)(gen);     //uniform_int_distribution makes it so that every number in the range has an equal chance of being picked and returned
+        int effect = std::uniform_int_distribution<>(-3, 3)(gen);     //uniform_int_distribution makes it so that every number in the range has an equal chance of being picked and returned
         if (effect == 0) effect = 1;
         std::cout << "The scent of books and arcane energies swirl around the battlefield!\n";
         primaryTarget.applyBuff("MAGIC", effect);
@@ -127,11 +130,12 @@ void DivineIntervention::applyEffect(God god, Entity& player, Entity& enemy) con
         break;
     }
     case God::FERONIA: {
-        int healAmount = std::uniform_int_distribution<>(10, 25)(gen);
+        healAmount = std::uniform_int_distribution<>(10, 25)(gen);
         std::cout << "Flourishing plants and blossoms begin to sprout on the ground!\n";
         primaryTarget.heal(healAmount);
         secondaryTarget.heal(healAmount / 2);
         break;
+    }
     case God::KERES: {
         int effect = -std::uniform_int_distribution<>(5, 15)(gen);
         std::cout << "A suffocating dark miasma shrouds the area!\n";
@@ -146,9 +150,10 @@ void DivineIntervention::applyEffect(God god, Entity& player, Entity& enemy) con
         secondaryTarget.increaseMaxHP(maxHpIncrease / 2);
         break;
     }
+
     case God::PREYSEYE: {
         int karmaChange = std::uniform_int_distribution<>(1, 20)(gen);
-		if (std::bernoulli_distribution(0.5)(gen)) {                 //bernoulli_distribution is boolean, which is true-false, essentially checking if outcome is success or failure. 0.5 = 50% chance of success
+        if (std::bernoulli_distribution(0.5)(gen)) {                 //bernoulli_distribution is boolean, which is true-false, essentially checking if outcome is success or failure. 0.5 = 50% chance of success
             karmaChange = -karmaChange;                              //if bernoulli_distribution is successful, then dialogue will run
         }
         float multiplierChange = std::uniform_real_distribution<float>(0.1f, 0.3f)(gen);
@@ -156,10 +161,21 @@ void DivineIntervention::applyEffect(God god, Entity& player, Entity& enemy) con
             multiplierChange = -multiplierChange;
         }
         std::cout << "The very fabric of morality bends around you!\n";
-        primaryTarget.applyKarmaEffect(karmaChange, multiplierChange);
-        secondaryTarget.applyKarmaEffect(karmaChange / 2, multiplierChange / 2);
+        primaryTarget.applyKarmaEffect(karmaChange, multiplierChange, 0);
+        secondaryTarget.applyKarmaEffect(karmaChange / 2, multiplierChange / 2, 0);
         break;
     }
+    case God::BOON: {
+        float critChanceChange = std::uniform_real_distribution<float>(0.05f, 0.15f)(gen);
+        if (std::bernoulli_distribution(0.3)(gen)) {
+            critChanceChange = -critChanceChange; // 30% chance for negative effect
+        }
+        std::cout << "The threads of fate begin to wave and warp!\n";
+        primaryTarget.modifyCritChance(critChanceChange);
+        secondaryTarget.modifyCritChance(critChanceChange / 2);
+        break;
+    }
+
     default:
         break;
     }

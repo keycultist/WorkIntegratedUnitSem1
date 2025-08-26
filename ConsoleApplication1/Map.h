@@ -51,8 +51,6 @@ protected:
 
 public:
 
-    std::string getRoomTypeName(RoomType type);
-
     void CreateNewFloor(int Difficulty);
 
     void RequestFloorUpdate();
@@ -65,8 +63,6 @@ public:
 
     void generateRoom(const Room& room, char** board, int boardSizeX, int boardSizeY);
     void generateLargeRoom(const Room& room);  // Uses InnerRoom for big rooms
-
-    std::string getRoomTypeName(RoomType type);
 
 
     Room* detectPlayerRoom(int playerX, int playerY);
