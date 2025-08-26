@@ -52,6 +52,11 @@ void Player::SetPlayerCurrency(int Currency) {
     SetCurrency(Currency);
 }
 
+void Player::SetPlayerDefence(int Defence)
+{
+    PlayerDefence = Defence;
+}
+
 void Player::SetPlayerKarma(int Karma)
 {
     PlayerKarma = Karma;
@@ -112,6 +117,11 @@ std::string Player::GetPlayerEquippedArmor(void) const {
 
 int Player::GetPlayerCurrency(void) const {
     return GetCurrency();
+}
+
+int Player::GetPlayerDefence(void) const
+{
+    return PlayerDefence;
 }
 
 int Player::GetPlayerKarma(void) const
@@ -227,12 +237,28 @@ void Player::InitPlayer()
             SetPlayerCritChance(5);
             break;
         }
+        GetInventory().GetItem().SetItemPlayerClass(GetPlayerClass());
+        if (GetPlayerClass() == "Warrior")
+            SetPlayerEquippedWeapon("Splintered Wood Sword (Common)");
+        else if (GetPlayerClass() == "Mage")
+            SetPlayerEquippedWeapon("Splintered Wood Staff (Common)");
+        else if (GetPlayerClass() == "Hunter")
+            SetPlayerEquippedWeapon("Splintered Wood Bow (Common)");
+        else if (GetPlayerClass() == "Assassin")
+            SetPlayerEquippedWeapon("Splintered Wood Dagger (Common)");
+        else if (GetPlayerClass() == "Berserker")
+            SetPlayerEquippedWeapon("Splintered Wood Battleaxe (Common)");
+        else if (GetPlayerClass() == "Summoner")
+            SetPlayerEquippedWeapon("Torn Grimoire (Common)");
+        else if (GetPlayerClass() == "Ritualist")
+            SetPlayerEquippedWeapon("Broken Ritualist Knife (Common)");
+        GetInventory().GetItem().SetItemList();
         SetPlayerPos(0, 0);
         SetPlayerLvl(1);
         SetPlayerXP(0);
-        SetPlayerEquippedWeapon("None");
-        SetPlayerEquippedArmor("None");
+        SetPlayerEquippedArmor("Ragged Clothing (Common)");
         SetPlayerCurrency(0);
+        SetPlayerDefence(0);
         SetPlayerKarma(50);
         SetCurrentDifficulty(1);
         system("cls");
@@ -267,6 +293,8 @@ void Player::ShowPlayerStats() const
     else {
         std::cout << "EXP: " << GetPlayerXP() << std::endl;
     }
+    std::cout << "Weapon: " << GetPlayerEquippedWeapon() << std::endl;
+    std::cout << "Armor: " << GetPlayerEquippedArmor() << std::endl;
     std::cout << "Currency: " << GetPlayerCurrency() << std::endl;
     std::cout << "Karma: " << GetPlayerKarma() << std::endl;
 }
@@ -960,7 +988,7 @@ void Player::UpdateInventoryPlayerStats()
     GetInventory().SetInventoryPlayerHP(GetPlayerHP());
     GetInventory().SetInventoryPlayerMaxHP(GetPlayerMaxHP());
     GetInventory().SetInventoryPlayerPower(GetPlayerPower());
-    //GetInventory().SetInventoryPlayerDefence(int defence);
+    GetInventory().SetInventoryPlayerDefence(GetPlayerDefence());
     GetInventory().SetInventoryPlayerCritChance(GetPlayerCritChance());
     GetInventory().SetInventoryPlayerCurrency(GetPlayerCurrency());
     GetInventory().SetInventoryCurrentDifficulty(GetCurrentDifficulty());
@@ -971,6 +999,7 @@ void Player::UpdatePlayerStatsInventory()
     SetPlayerHP(GetInventory().GetInventoryPlayerHP());
     SetPlayerMaxHP(GetInventory().GetInventoryPlayerMaxHP());
     SetPlayerPower(GetInventory().GetInventoryPlayerPower());
+    SetPlayerDefence(GetInventory().GetInventoryPlayerDefence());
     SetPlayerCritChance(GetInventory().GetInventoryPlayerCritChance());
     SetPlayerEquippedArmor(GetInventory().GetInventoryArmorEquipped());
     SetPlayerEquippedWeapon(GetInventory().GetInventoryWeaponEquipped());

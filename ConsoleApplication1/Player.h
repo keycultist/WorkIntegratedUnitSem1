@@ -19,6 +19,7 @@ private:
 	//Commented out bc of Entity class integration
 	std::string PlayerEquippedWeapon;
 	std::string PlayerEquippedArmor;
+	int PlayerDefence;
 	int PlayerKarma;
 	int CurrentDifficulty;
 
@@ -39,6 +40,7 @@ public:
 	void SetPlayerEquippedWeapon(std::string Weapon);
 	void SetPlayerEquippedArmor(std::string Armor);
 	void SetPlayerCurrency(int Currency);
+	void SetPlayerDefence(int Defence);
 	void SetPlayerKarma(int Karma);
 	void SetCurrentDifficulty(int Difficulty);
 
@@ -54,6 +56,7 @@ public:
 	std::string GetPlayerEquippedWeapon(void) const;
 	std::string GetPlayerEquippedArmor(void) const;
 	int GetPlayerCurrency(void) const;
+	int GetPlayerDefence(void) const;
 	int GetPlayerKarma(void) const;
 	int GetCurrentDifficulty(void) const;
 	Moveset& GetMoveSet();

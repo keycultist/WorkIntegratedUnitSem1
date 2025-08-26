@@ -63,6 +63,9 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 		break;
 	case '3':
 		MC.UpdateInventoryPlayerStats();
+		std::cout << "DEBUG: InventoryWeaponEquipped = '"
+			<< MC.GetInventory().GetInventoryWeaponEquipped() << "'" << std::endl;
+
 		std::cout << MC.GetInventory().DrawInventoryUI() << std::endl;
 		MC.GetInventory().PromptPlayerUseItem();
 		MC.UpdatePlayerStatsInventory();
@@ -272,9 +275,17 @@ void Combat::EnemyAttack(Player& MC, Enemy& target, int ChosenMove, bool Defend)
 
 		std::cout << target.GetEnemyClass() << " used " << target.GetMoveSet().GetMove(ChosenMove).MoveName << std::endl;
 		if (Defend) {
+			DamageTaken = (DamageTaken * 100) / (MC.GetPlayerDefence() + 100);
+			if (DamageTaken <= 1) {
+				DamageTaken = 1;
+			}
 			MC.SetPlayerHP(MC.GetPlayerHP() - DamageTaken / 2);
 		}
 		else if (!Defend) {
+			DamageTaken = (DamageTaken * 100) / (MC.GetPlayerDefence() + 100);
+			if (DamageTaken <= 1) {
+				DamageTaken = 1;
+			}
 			MC.SetPlayerHP(MC.GetPlayerHP() - DamageTaken);
 		}
 		if (target.GetMoveSet().GetMove(ChosenMove).MoveType != "Buff") {

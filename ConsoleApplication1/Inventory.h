@@ -74,7 +74,9 @@ public:
 	int GetInventoryPlayerHP();
 	int GetInventoryPlayerMaxHP();
 	int GetInventoryPlayerPower();
+	int GetInventoryPlayerDefence();
 	int GetInventoryPlayerCritChance();
+	Item GetItem();
 
 	std::string GetInventoryConsumablesIndex(int index);
 	int GetConsumableIndex();

@@ -171,9 +171,19 @@ int Inventory::GetInventoryPlayerPower()
 	return InventoryPlayerPower;
 }
 
+int Inventory::GetInventoryPlayerDefence()
+{
+	return InventoryPlayerDefence;
+}
+
 int Inventory::GetInventoryPlayerCritChance()
 {
 	return InventoryPlayerCritChance;
+}
+
+Item Inventory::GetItem()
+{
+	return item;
 }
 
 
