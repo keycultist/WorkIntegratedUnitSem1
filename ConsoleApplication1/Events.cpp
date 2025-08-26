@@ -1,6 +1,9 @@
 #include "Events.h"
 #include <iostream>
 #include <random>
+#include <chrono>
+#include <thread>
+#include <cstdlib>
 #include <ctime>
 
 Events::Events() {
@@ -25,12 +28,17 @@ void Events::initializeEvents() {
         "You discovered a prisoner chained to the wall, \"please..free me\" He whispers weakly. Upon further inspection, the prisoner does not seem to be human but a monster race. Do you free him? (+- Karma)",
         "A mutated rat taps you on the shoulder and demands for 5 gold pieces. It assures you that it needs it for food but his darting eyes and fidgety demeanor suggests otherwise. Do you spare 5 gold pieces? (+- Karma)",
         "The torches stuck to the wall all flicker at the same time..sending chills down your spine, guess it was just the wind.. in a dungeon..?",
-        "A talking chest fills the once silent air with complaints of his \"mimic\" appearance, do you spend some time keeping it company? (+- Karma)"
-        "You find a child's toy sword, wooden and worn. Somehow, it feels heavier with the weight of lost innocence than any real blade"
-        "A ghostly cat phases through the wall and purrs at you before vanishing. You feel oddly blessed by this furry encounter"
-        "A weathered journal page finds itself beneath you, it reads, \"The gods watch not with eyes, but with balance in hand. Those who walk in light, leaving kindness in their wake, may find unseen hands guiding their steps… and perhaps, a blessing when most needed.\""
-        "A small shrine dedicated to forgotten gods sit in an alcove. Shrouded in thick vines and layers of time, you cant help but to leave an offering out of respect (+5 HP)"
-        "You find a vibrant patch of green, vines sprouting from cracks within the stone and sprouts pulsing faintly with a slight golden hue. The air humming softly around them as if the roots whisper ancient prayers, this looks like the work of Feronia The Fruithfulness.."
+        "A talking chest fills the once silent air with complaints of his \"mimic\" appearance, do you spend some time keeping it company? (+- Karma)",
+        "You find a child's toy sword, wooden and worn. Somehow, it feels heavier with the weight of lost innocence than any real blade",
+        "A ghostly cat phases through the wall and purrs at you before vanishing. You feel oddly blessed by this furry encounter",
+        "A weathered journal page finds itself beneath you, it reads, \"The gods watch not with eyes, but with balance in hand. Those who walk in light, leaving kindness in their wake, may find unseen hands guiding their steps… and perhaps, a blessing when most needed.\"",
+        "A small shrine dedicated to forgotten gods sit in an alcove. Shrouded in thick vines and layers of time, you cant help but to leave an offering out of respect (+5 HP)",
+        "You find a vibrant patch of green, vines sprouting from cracks within the stone and sprouts pulsing faintly with a slight golden hue. The air humming softly around them as if the roots whisper ancient prayers, this looks like the work of Feronia The Fruithfulness..",
+        "You discover a pool of crystal-clear water that reflects not your face, but your deepest fears. You quickly look away.",
+        "A soft humming echoes within the cracked walls. Pressing your ear against it, you hear a lullaby in a language you dont understand. Yet, it brings you comfort, sorrow and strength..could this be the voice of Aurora The Concord..?",
+        "A broken puppet slumps against a wall. As you pass, its head creaks toward you. Strings are cut... but its eyes shine briefly. (+-Karma)",
+        "A skeleton slumps against the wall, hand outstretched toward a faded pouch.You open it, expecting dust—but find a small stash of gold.Seems you were luckier than they were. (+5 Gold)",
+        "A gentle rainfall begins to fall indoors, though there’s no roof above. As quickly as it starts, it stops. Your skin tingles, and the air smells of something divine.",
     };
 
     // Initialize Medium Events
@@ -45,6 +53,10 @@ void Events::initializeEvents() {
         "You entered a room where the familiarity of darkness envelops the room but scribbles on the wall catches your attention. The mural on the wall tells tales of an ancient-sealed entity wreaking havoc who can only be stopped by a person possessing unwavering courage."
         "The suspicious frog, seemingly appearing out of nowhere asks you a question again, “You are doomed to die by an ancient curse. Luckily, there lies a chest with a potion which would save you. However, guarding the chest is a child possessing the same fate as you. Do you take the cure for yourself or let the child take the cure.”"
         "You have been ignoring it, but the whispers of the dungeon have been getting louder. You decided to respond to the whispers only to be replied with a sudden deafening silence.. The dungeon knows of your presence."
+        "You discover an ornate chest with an intricate lock mechanism. The craftsmanship suggests valuable contents within. (Trigger lockpicking minigame)",
+        "You discover an ancient stone tablet etched with glowing runes. As you trace the symbols with your fingers, they flash briefly before fading .Suddenly, the tablet challenges you to replicate the sequence to unlock a hidden reward. Will your memory serve you well? (Trigger Memory Test minigame)"
+        "You find a room filled with mirrors, each showing a different version of yourself making different life choices. One mirror cracks as you approach.",
+
     };
 }
 
@@ -71,6 +83,12 @@ void Events::EventTriggered(Player& MC) {
         if (eventIndex == 9) {
             handleTalkingChestEvent(MC);
         }
+        if (eventIndex == 13) {
+            int PlayerHP = PlayerHP + 5;
+        }
+        if (eventIndex == 17) {
+            handleBrokenPuppetEvent(PlayerKarma);
+        }
         else {
             std::cout << minorEvents[eventIndex] << std::endl;
         }
@@ -79,7 +97,7 @@ void Events::EventTriggered(Player& MC) {
         // 40% chance for Medium Event
         int eventIndex = std::rand() % mediumEvents.size();
 
-        if (eventIndex == 10) { //skeletal warrior
+        if (eventIndex == 20) { //skeletal warrior
             CombatEventTriggered();
         }
         if (eventIndex == 11) {
@@ -91,7 +109,7 @@ void Events::EventTriggered(Player& MC) {
         if (eventIndex == 13) {
             handleMageKarmaTestEvent(MC);
         }
-        if (eventIndex == 15) { //sleeping orc
+        if (eventIndex == 25) { //sleeping orc
             CombatEventTriggered();
         }
         if (eventIndex == 16) { //goblin jester
@@ -100,7 +118,15 @@ void Events::EventTriggered(Player& MC) {
         if (eventIndex == 18) { 
             handleSuspiciousFrog2Event(MC);
         }
-        std::cout << mediumEvents[eventIndex] << std::endl;
+        if (eventIndex == 30) {
+            handleLockpickingEvent(PlayerCurrency);
+        }
+        if (eventIndex == 31) {
+            handleMemoryRuneEvent(PlayerCurrency);
+        }
+        else {
+            std::cout << mediumEvents[eventIndex] << std::endl;
+        }
     }
 }
 
@@ -436,4 +462,160 @@ void Events::handleSuspiciousFrog2Event(Player& MC) {
     }
 
     std::cout << "The frog croaks once more before hopping away into the shadows. You wonder if you made the right choice." << std::endl;
+}
+
+void Events::handleBrokenPuppetEvent(int& PlayerKarma) {
+    std::cout << "A broken puppet slumps against a wall. As you pass, its head creaks toward you. Strings are cut... but its eyes shine briefly. Do you fix its strings out of pity or smash it to pieces just in case?" << std::endl;
+    std::cout << "\nWhat do you choose?" << std::endl;
+    std::cout << "1. Fix the puppet" << std::endl;
+    std::cout << "2. Smash it.." << std::endl;
+    std::cout << "Enter your choice (1 or 2): ";
+
+    int choice;
+    std::cin >> choice;
+
+    while (choice != 1 && choice != 2) {
+        std::cout << "Invalid choice! Please enter 1 or 2: ";
+        std::cin >> choice;
+    }
+
+    if (choice == 1) {
+        // Player chooses to fix the puppets strings
+        int PlayerKarma = PlayerKarma + 10; // Gain karma 
+        std::cout << "You chose to fix the puppet" << std::endl;
+        std::cout << "The puppet shook violently in response to its newly fixed strings before freezing abruptly. You noticed a slight smile forming by the puppet" << std::endl;
+        std::cout << "Karma increased by 10! Current karma: " << PlayerKarma << std::endl;
+    }
+    else {
+        // Player chooses to smash the puppet
+        int PlayerKarma = PlayerKarma - 10; // Lose karma 
+        std::cout << "You chose to smash the puppet into pieces" << std::endl;
+        std::cout << "You ruthlessly raised the surprisingly light puppet above your head before smashing it into the ground. The puppet effortlessly shattered into pieces.." << std::endl;
+        std::cout << "Karma decreased by 10! Current karma: " << PlayerKarma << std::endl;
+    }
+
+    std::cout << "You left after your encounter with the puppet, you wondered what that puppet was doing in a dungeon in the first place" << std::endl;
+}
+
+void Events::handleLockpickingEvent(int& PlayerCurrency) {
+    std::cout << "You discover an ornate locked chest. The lock mechanism looks complex but pickable." << std::endl;
+    std::cout << "Do you attempt to pick the lock?" << std::endl;
+    std::cout << "1. Yes, try to pick it" << std::endl;
+    std::cout << "2. Leave it alone" << std::endl;
+
+    int choice;
+    std::cin >> choice;
+
+    if (choice == 1) {
+        std::cout << "\n=== LOCKPICKING CHALLENGE ===" << std::endl;
+        std::cout << "Listen carefully! Press ENTER when you see the 'click'!" << std::endl;
+        std::cout << "You have 3 attempts to get the timing right..." << std::endl;
+
+        int attempts = 3;
+        bool success = false;
+
+        while (attempts > 0 && !success) { //game stops when player succeeds OR run out of attempts
+            std::cout << "\nAttempt " << (4 - attempts) << "/3" << std::endl;
+            std::cout << "Get ready... ";
+
+            // generates a raandom timing between 1-4 seconds
+            int waitTime = (std::rand() % 4 + 1) * 1000;
+            std::this_thread::sleep_for(std::chrono::milliseconds(waitTime));
+
+            std::cout << "CLICK! Press ENTER now!" << std::endl;
+
+            auto start = std::chrono::high_resolution_clock::now(); //starts timing the duration
+            std::cin.ignore(); //clears any leftover input
+            std::cin.get(); //waiting for player to click enter
+            auto end = std::chrono::high_resolution_clock::now(); //stops timing the duration
+
+            auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start); //compares and calculates how long it took in milliseconds
+
+            if (duration.count() < 800) { // if player clicks enter within 0.8 seconds, they succeed
+                success = true;
+                std::cout << "Perfect! The lock clicks open!" << std::endl;
+                PlayerCurrency += 25;
+                std::cout << "You found 25 gold pieces!" << std::endl;
+            }
+            else {
+                attempts--;
+                if (attempts > 0) { //playrer failed an attempt
+                    std::cout << "Too slow! The pick slips. Try again..." << std::endl;
+                }
+            }
+        }
+
+        if (!success) { //player runs out of attempts
+            std::cout << "The lockpick breaks! The chest remains sealed." << std::endl;
+            
+        }
+    }
+}
+
+void Events::handleMemoryRuneEvent(int& PlayerCurrency) {
+    std::cout << "\n=== ANCIENT RUNE MEMORY CHALLENGE ===" << std::endl;
+    std::cout << "A mystical stone tablet glows with runes. Memorize the sequence!" << std::endl;
+
+    std::vector<char> runes = { 'A', 'B', 'C', 'D' };
+    std::vector<char> sequence;
+
+    // generate random sequence of 4-6 runes
+    int sequenceLength = std::rand() % 3 + 4; // 4-6 length
+    for (int i = 0; i < sequenceLength; i++) {
+        sequence.push_back(runes[std::rand() % 4]); //A = 0, B = 1, C = 2, D = 3
+    }
+
+    // flashes each rune with a 0.8 second interval
+    std::cout << "\nMemorize this sequence" << std::endl;
+    std::cout << "Get ready..." << std::endl;
+    std::this_thread::sleep_for(std::chrono::milliseconds(3000)); //delays for 3 seconds to give player time to prepare
+
+    for (int i = 0; i < sequence.size(); i++) {
+        std::cout << "\nRune " << (i + 1) << ": " << sequence[i] << std::endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(800));
+    }
+
+    // clear screen effect - push the sequence to the top and off screen by couting blank spaces
+    std::cout << "\n\n--- SEQUENCE COMPLETE ---" << std::endl;
+    std::cout << "The runes fade away..." << std::endl;
+    for (int i = 0; i < 20; i++) {
+        std::cout << std::endl;
+    }
+
+    std::cout << "Now enter the sequence!" << std::endl;
+    std::cout << "Enter " << sequenceLength << " runes (A, B, C, or D), separated by spaces:" << std::endl;
+    std::cout << "Example: A B C D" << std::endl;
+    std::cout << "Your sequence: ";
+
+    // getting player input
+    std::vector<char> playerInput;
+    for (int i = 0; i < sequenceLength; i++) {
+        char input;
+        std::cin >> input;
+        playerInput.push_back(toupper(input));
+    }
+
+    // show what they entered vs if its correct
+    std::cout << "\nYour answer:    ";
+    for (char rune : playerInput) {
+        std::cout << rune << " ";
+    }
+    std::cout << "\nCorrect answer: ";
+    for (char rune : sequence) {
+        std::cout << rune << " ";
+    }
+    std::cout << std::endl;
+
+    // check if correct
+    if (playerInput == sequence) {
+        std::cout << "\nPerfect! The ancient magic rewards you!" << std::endl;
+        int reward = sequenceLength * 8;
+       //player gains gold
+        std::cout << "You gained " << reward << " gold!" << std::endl;
+    }
+    else {
+        std::cout << "\nWrong sequence! The runes burn your mind!" << std::endl;
+       //player loses health maybe?
+        std::cout << "You lose 3 HP!" << std::endl;
+    }
 }
