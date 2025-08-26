@@ -1,9 +1,10 @@
 #pragma once
 #include <string>
+#include "Inventory.h"
 
 class Shop {
 protected:
-	std::string ShopUIString;
+	//std::ostringstream ShopUIString;
 	std::string ShopItemList[23];
 	std::string ShopItemDescriptionList[23];
 	int ShopItemCostList[23];
@@ -19,6 +20,7 @@ protected:
 
 	int ShopPlayerCurrency;
 	std::string ShopPlayerClass;
+	int ShopPlayerBaseHP;
 	int ShopPlayerNewHP;
 	int ShopPlayerNewPower;
 
@@ -27,6 +29,7 @@ protected:
 	std::string ShopWeaponList[7];
 	int ShopWeaponPowerList[7];
 	int ShopArmorHPList[5];
+	int ShopArmorDefList[5];
 	std::string ShopBoughtConsumablesList[3];
 
 	std::string ShopPlayerEquippedWeapon;
@@ -47,12 +50,14 @@ public:
 	void SetShopItemSlot();
 	void SetShopPlayerClass(const std::string& c);
 	void SetShopFloor(int floor);
-	void SetPlayerIsShopping();
+	void SetPlayerIsShopping(bool a);
+	void SetShopPlayerBaseHP(int hp);
 	void SetShopPlayerNewHP(int hp);
 	void SetShopPlayerNewPower(int power);
 	void SetShopWeaponListIndex(std::string name, int index);
 	void SetShopWeaponPowerList();
 	void SetShopArmorHPList();
+	void SetShopArmorDefList();
 	void SetConsumablesListIndex(std::string name, int index);
 	void SetInventoryConsumableListIndex(std::string name, int index);
 
