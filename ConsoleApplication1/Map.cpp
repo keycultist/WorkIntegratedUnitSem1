@@ -103,10 +103,6 @@ void Map::CreateNewFloor(int Difficulty) {
             << lastRoom->x << "," << lastRoom->y << ")" << std::endl;
     }
 
-    // Cleanup!! JANITOR ON AISLE 108 AND 109!!!
-
-	delete[] floorPtrs;  
-    delete[] innerPtrs;
 }
 
 void Map::RequestFloorUpdate() {
@@ -116,9 +112,17 @@ void Map::RequestFloorUpdate() {
     }
 
     drawBoard(floorPointers, 128, 128);
-
-	delete[] floorPointers;
 }
+
+void Map::RequestRoomUpdate() {
+    char* roomPointers[128];
+    for (int i = 0; i < 128; ++i) {
+        roomPointers[i] = FloorGrid[i];
+    }
+
+    drawBoard(roomPointers, 128, 128);
+}
+
 
 void Map::fillBoard(char** Board, int sizeX, int sizeY)
 {
@@ -176,7 +180,6 @@ void Map::generateLargeRoom(const Room& room) {
 
     generateRoom(scaledRoom, innerPtrs, 256, 256);
 
-	delete[] innerPtrs;
 }
 
 Room* Map::detectPlayerRoom(int playerX, int playerY) {
@@ -245,7 +248,6 @@ void Map::switchToRoomView(int playerX, int playerY) {
         
         std::cout << "Entered " << getRoomTypeName(playerRoom->type) << " room!" << std::endl;
         drawBoard(innerPtrs, 256, 256);  // Show just this room
-        delete[] innerPtrs;
     } else {
         std::cout << "Player is in a corridor or empty space." << std::endl;
     }

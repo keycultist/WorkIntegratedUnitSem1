@@ -7,28 +7,38 @@
 #include "Enemy.h"
 #include "Map.h"
 #include "Renderer.h"
+#include "Item.h"
 
 int main()
 {
     srand(time(0));
     Player MC;
+    Item items;
     MC.InitPlayer();
+    items.SetItemPlayerClass(MC.GetPlayerClass()); 
+    items.SetItemList();
+    // init player's inventory
     Enemy* Enemies[10]{};
     for (int i = 0; i < 10; i++) {
         Enemies[i] = nullptr;
     }
-    Enemies[1] = new Enemy;
-    Enemies[1]->InitEnemy();
+    Enemies[0] = new Enemy;
+    Enemies[0]->InitEnemy();
     MC.ShowPlayerStats();
+
+    //82308 bytes of stack!!
 
     Map GMap;
 
     GMap.CreateNewFloor(2);
+    GMap.RequestFloorUpdate();
 
     //...
-
+    Combat::InitCombat(MC, *Enemies[0]);
     //When init combat
-    Combat::InitCombat(MC, *Enemies[1]);
+    /*if (Collide) {
+        Combat::InitCombat(MC, CollidedEnemy);
+    }*/
 
     //...
 

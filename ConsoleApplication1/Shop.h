@@ -1,9 +1,10 @@
 #pragma once
 #include <string>
+#include "Inventory.h"
 
 class Shop {
 protected:
-	std::string ShopUIString;
+	//std::ostringstream ShopUIString;
 	std::string ShopItemList[23];
 	std::string ShopItemDescriptionList[23];
 	int ShopItemCostList[23];
@@ -19,18 +20,24 @@ protected:
 
 	int ShopPlayerCurrency;
 	std::string ShopPlayerClass;
+	int ShopPlayerBaseHP;
 	int ShopPlayerNewHP;
 	int ShopPlayerNewPower;
 
 	int ShopFloor;
 
-	std::string ShopWarriorWeaponList[7];
-	std::string ShopMageWeaponList[7];
-	std::string ShopHunterWeaponList[7];
+	std::string ShopWeaponList[7];
 	int ShopWeaponPowerList[7];
 	int ShopArmorHPList[5];
+	int ShopArmorDefList[5];
 	std::string ShopBoughtConsumablesList[3];
 
+	std::string ShopPlayerEquippedWeapon;
+	std::string ShopPlayerEquippedArmor;
+
+	std::string InventoryConsumableList[10];
+
+	std::string descline[4];
 public:
 	Shop();
 
@@ -43,14 +50,16 @@ public:
 	void SetShopItemSlot();
 	void SetShopPlayerClass(const std::string& c);
 	void SetShopFloor(int floor);
-	void SetPlayerIsShopping();
+	void SetPlayerIsShopping(bool a);
+	void SetShopPlayerBaseHP(int hp);
 	void SetShopPlayerNewHP(int hp);
 	void SetShopPlayerNewPower(int power);
-	void SetShopWarriorWeaponListIndex(std::string name, int index);
-	void SetShopMageWeaponListIndex(std::string name, int index);
-	void SetShopHunterWeaponListIndex(std::string name, int index);
+	void SetShopWeaponListIndex(std::string name, int index);
 	void SetShopWeaponPowerList();
 	void SetShopArmorHPList();
+	void SetShopArmorDefList();
+	void SetConsumablesListIndex(std::string name, int index);
+	void SetInventoryConsumableListIndex(std::string name, int index);
 
 	// getter
 	int GetPlayerCurrency();
@@ -58,6 +67,10 @@ public:
 	bool GetPlayerIsShopping();
 	int GetShopPlayerNewHP();
 	int GetShopPlayerNewPower();
+	std::string GetShopPlayerEquippedWeapon();
+	std::string GetShopPlayerEquippedArmor();
+	int GetShopFloor();
+	std::string GetConsumablesListIndex(int index);
 
 	// methods
 	std::string DrawShopUI();
@@ -65,5 +78,6 @@ public:
 	void EquipBoughtWeapon(int slot);
 	void EquipBoughtArmor(int slot);
 	void BoughtConsumables(int slot);
+	void SplitDescriptionString(std::string description);
 };
 

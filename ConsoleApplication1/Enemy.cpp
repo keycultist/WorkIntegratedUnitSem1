@@ -271,6 +271,7 @@ std::string Enemy::DecisionMatrix(int PlayerHP, bool PlayerBuffed)
 			}
 
 
+
 		}
 	}
 }

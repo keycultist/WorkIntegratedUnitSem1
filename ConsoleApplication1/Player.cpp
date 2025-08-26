@@ -55,6 +55,26 @@ void Player::SetPlayerCurrency(int Currency) {
     SetCurrency(Currency);
 }
 
+void Player::SetPlayerWeaponPower(int WPower)
+{
+    PlayerWeaponPower = WPower;
+}
+
+void Player::SetPlayerArmorHP(int AHP)
+{
+    PlayerArmorHP = AHP;
+}
+
+void Player::SetPlayerArmorDefence(int ADefence)
+{
+    PlayerArmorDefence = ADefence;
+}
+
+void Player::SetPlayerDefence(int Defence)
+{
+    PlayerDefence = Defence;
+}
+
 void Player::SetPlayerKarma(int Karma)
 {
     PlayerKarma = Karma;
@@ -117,6 +137,26 @@ int Player::GetPlayerCurrency(void) const {
     return GetCurrency();
 }
 
+int Player::GetPlayerWeaponPower(void) const
+{
+    return PlayerWeaponPower;
+}
+
+int Player::GetPlayerArmorHP(void) const
+{
+    return PlayerArmorHP;
+}
+
+int Player::GetPlayerArmorDefence(void) const
+{
+    return PlayerArmorDefence;
+}
+
+int Player::GetPlayerDefence(void) const
+{
+    return PlayerDefence;
+}
+
 int Player::GetPlayerKarma(void) const
 {
     return PlayerKarma;
@@ -130,6 +170,11 @@ int Player::GetCurrentDifficulty(void) const
 Moveset& Player::GetMoveSet()
 {
     return moveset;
+}
+
+Inventory& Player::GetInventory()
+{
+    return inventory;
 }
 
 Player::Player() : Entity("Warrior", 100, 100, 5, 5, 0, 0, 0, 1, 0), PlayerEquippedWeapon("None"), PlayerEquippedArmor("None"), PlayerKarma(50), CurrentDifficulty(1)
@@ -167,6 +212,7 @@ void Player::InitPlayer()
             SetPlayerHP(100);
             SetPlayerPower(4);
             SetPlayerCritChance(5);
+            SetPlayerEquippedWeapon("Splintered Wood Sword (Common)");
             break;
         case 2:
             SetPlayerClass("Mage");
@@ -174,6 +220,7 @@ void Player::InitPlayer()
             SetPlayerHP(70);
             SetPlayerPower(7);
             SetPlayerCritChance(5);
+            SetPlayerEquippedWeapon("Splintered Wood Staff (Common)");
             break;
         case 3:
             SetPlayerClass("Hunter");
@@ -181,6 +228,7 @@ void Player::InitPlayer()
             SetPlayerHP(40);
             SetPlayerPower(10);
             SetPlayerCritChance(5);
+            SetPlayerEquippedWeapon("Splintered Wood Bow (Common)");
             break;
         case 4:
             SetPlayerClass("Assassin");
@@ -188,6 +236,7 @@ void Player::InitPlayer()
             SetPlayerHP(50);
             SetPlayerPower(5);
             SetPlayerCritChance(10);
+            SetPlayerEquippedWeapon("Splintered Wood Dagger (Common)");
             break;
         case 5:
             SetPlayerClass("Summoner");
@@ -195,6 +244,7 @@ void Player::InitPlayer()
             SetPlayerHP(70);
             SetPlayerPower(0);
             SetPlayerCritChance(5);
+            SetPlayerEquippedWeapon("Torn Grimoire (Common)");
             break;
         case 6:
             SetPlayerClass("Ritualist");
@@ -202,6 +252,7 @@ void Player::InitPlayer()
             SetPlayerHP(250);
             SetPlayerPower(10);
             SetPlayerCritChance(5);
+            SetPlayerEquippedWeapon("Broken Ritualist Knife (Common)");
             break;
         case 7:
             SetPlayerClass("Berserker");
@@ -209,6 +260,7 @@ void Player::InitPlayer()
             SetPlayerHP(120);
             SetPlayerPower(10);
             SetPlayerCritChance(15);
+            SetPlayerEquippedWeapon("Splintered Wood Battleaxe (Common)");
             break;
         case 11037:
             SetPlayerClass("Conduit");
@@ -216,6 +268,7 @@ void Player::InitPlayer()
             SetPlayerHP(200);
             SetPlayerPower(10);
             SetPlayerCritChance(50);
+            SetPlayerEquippedWeapon("None");
             break;
         default:
             SetPlayerClass("Warrior");
@@ -223,14 +276,20 @@ void Player::InitPlayer()
             SetPlayerHP(100);
             SetPlayerPower(4);
             SetPlayerCritChance(5);
+            SetPlayerEquippedWeapon("Splintered Wood Sword (Common)");
             break;
         }
+        GetInventory().GetItem().SetItemPlayerClass(GetPlayerClass());
+        GetInventory().GetItem().SetItemList();
         SetPlayerPos(0, 0);
         SetPlayerLvl(1);
         SetPlayerXP(0);
-        SetPlayerEquippedWeapon("None");
-        SetPlayerEquippedArmor("None");
+        SetPlayerEquippedArmor("Ragged Clothing (Common)");
+        SetPlayerWeaponPower(0);
+        SetPlayerArmorHP(0);
+        SetPlayerArmorDefence(0);
         SetPlayerCurrency(0);
+        SetPlayerDefence(0);
         SetPlayerKarma(50);
         SetCurrentDifficulty(1);
         system("cls");
@@ -265,6 +324,8 @@ void Player::ShowPlayerStats() const
     else {
         std::cout << "EXP: " << GetPlayerXP() << std::endl;
     }
+    std::cout << "Weapon: " << GetPlayerEquippedWeapon() << std::endl;
+    std::cout << "Armor: " << GetPlayerEquippedArmor() << std::endl;
     std::cout << "Currency: " << GetPlayerCurrency() << std::endl;
     std::cout << "Karma: " << GetPlayerKarma() << std::endl;
 }
@@ -993,7 +1054,7 @@ void Player::checkEvent(Entity* events[6])
 
 void Player::move(Entity* ptr[6]) //Not really sure if the changes affected anything
 {
-   // checkGhost(ptr);
+    // checkGhost(ptr);
     char input;
     input = _getch();
 
