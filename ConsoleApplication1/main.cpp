@@ -2,12 +2,78 @@
 //
 
 #include <iostream>
+#include <conio.h>
+
+#include <windows.h>
+#include <algorithm>
+
 #include "Player.h"
 #include "Combat.h"
 #include "Enemy.h"
+#include "Events.h"
 #include "Map.h"
 #include "Renderer.h"
 #include "Item.h"
+
+static void CheckEnemyPlayerCollision(Player& MC, Enemy& target)
+{
+    int EnemyX = 0;
+    int EnemyY = 0;
+    EnemyX = target.GetEnemyPosX();
+    EnemyY = target.GetEnemyPosY();
+
+    // Check if player touches enemy (collision)
+    if (EnemyX == MC.GetPlayerPosX() && EnemyY == MC.GetPlayerPosY()) {
+        // Enter combat with this enemy
+        Combat::InitCombat(MC, target);           //suspects that it can be solved by enemy inheiriting from entity class. checkenemy func not being called
+    }
+}
+
+bool GameRunning(Player& MC, Enemy& Enemies, Map& GMap, bool& InsideRoom) {
+    //system("cls");
+    if (InsideRoom) {
+        GMap.switchToRoomView(MC.GetPlayerPosX(), MC.GetPlayerPosY(), MC);
+    }
+    else {
+        GMap.renderMapWithFOV(MC, 80, 30);
+    }
+
+    std::cout << "X: " << MC.GetPlayerPosX() << "    Y: " << MC.GetPlayerPosY() << std::endl;
+    MC.move();
+
+    if (GMap.detectPlayerRoom(MC.GetPlayerPosX(), MC.GetPlayerPosY())) {
+        InsideRoom = true;
+    }
+    else {
+        InsideRoom = false;
+    }
+
+    //GMap.RequestFloorUpdate(MC);
+    return true;
+}
+
+//Event Collsion check, what does player have to collide with?
+//static void CheckEventPlayerCollision(Player& MC, ???)
+//{
+//    int EventX, EventY;
+//    // Check events
+//    for (int b = 1; b <= 3; b++) {
+//        // Skip if this event doesn't exist
+//        if (events[b] != nullptr) {
+//            // Get event's position
+//            EventX == events[b]->GetPosX();
+//            EventY == events[b]->GetPosY();
+//
+//            // Check if player touches event (collision)
+//            if (EventX == GetPosX() && EventY == GetPosY()) {
+//                // Enter the event
+//                EventTriggered(events[b]);
+//                break;  // Stop checking after first event
+//            }
+//        }
+//    }
+//}
+
 
 int main()
 {
@@ -15,7 +81,7 @@ int main()
     Player MC;
     Item items;
     MC.InitPlayer();
-    items.SetItemPlayerClass(MC.GetPlayerClass()); 
+    items.SetItemPlayerClass(MC.GetPlayerClass());
     items.SetItemList();
     // init player's inventory
     Enemy* Enemies[10]{};
@@ -30,11 +96,17 @@ int main()
 
     Map GMap;
 
-    GMap.CreateNewFloor(2);
-    GMap.RequestFloorUpdate();
+    GMap.CreateNewFloor(6, MC);
+    GMap.RequestFloorUpdate(MC);
+
+    bool RUNNINGHORSE = true;
+    bool InsideRoom = false;
+    while (RUNNINGHORSE) {
+        RUNNINGHORSE = GameRunning(MC, *Enemies[0], GMap, InsideRoom);
+    }
 
     //...
-    Combat::InitCombat(MC, *Enemies[0]);
+    //Combat::InitCombat(MC, *Enemies[0]);
     //When init combat
     /*if (Collide) {
         Combat::InitCombat(MC, CollidedEnemy);

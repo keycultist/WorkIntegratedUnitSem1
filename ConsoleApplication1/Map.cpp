@@ -7,10 +7,11 @@ theres still stuff to do like actually generating the enemy spawns and etc, but 
 
 #include "Map.h"
 #include "Renderer.h"
+#include "Player.h"
 
 using namespace std;
 
-void Map::CreateNewFloor(int Difficulty) {
+void Map::CreateNewFloor(int Difficulty, Player& MC) {
     // Setup pointer arrays
     char* floorPtrs[128];
     char* innerPtrs[256];
@@ -18,8 +19,8 @@ void Map::CreateNewFloor(int Difficulty) {
     for (int i = 0; i < 256; ++i) innerPtrs[i] = InnerRoom[i];
 
     // Clear both boards
-    fillBoard(floorPtrs, 128, 128);
-    fillBoard(innerPtrs, 256, 256);
+    fillBoard(floorPtrs, 128, 128, MC);
+    fillBoard(innerPtrs, 256, 256, MC);
 
     // Clear previous room data
     rooms.clear();
@@ -103,12 +104,21 @@ void Map::CreateNewFloor(int Difficulty) {
             << lastRoom->x << "," << lastRoom->y << ")" << std::endl;
     }
 
+
 }
 
-void Map::RequestFloorUpdate() {
+void Map::RequestFloorUpdate(Player& MC) {
     char* floorPointers[128];
     for (int i = 0; i < 128; ++i) {
         floorPointers[i] = FloorGrid[i];
+    }
+
+    fillBoardPlayer(floorPointers, 128, 128, MC);
+
+    for (int i = 0; i < 128; ++i) {
+        for (int j = 0; j < 128; ++j) {
+            FloorGrid[i][j] = floorPointers[i][j];
+        }
     }
 
     drawBoard(floorPointers, 128, 128);
@@ -124,25 +134,47 @@ void Map::RequestRoomUpdate() {
 }
 
 
-void Map::fillBoard(char** Board, int sizeX, int sizeY)
+void Map::fillBoard(char** Board, int sizeX, int sizeY, Player& MC)
 {
     for (int h = 0; h < sizeX; ++h) {
         for (int v = 0; v < sizeY; ++v) {
             Board[h][v] = ' ';
         }
     }
+    fillBoardPlayer(Board, sizeX, sizeY, MC);
+}
+
+void Map::fillBoardPlayer(char** Board, int sizeX, int sizeY, Player& MC)
+{
+    for (int h = 0; h < sizeX; ++h) {
+        for (int v = 0; v < sizeY; ++v) {
+            if (Board[h][v] == 'P')
+                Board[h][v] = ' ';
+        }
+    }
+    Board[MC.GetPlayerPosY()][MC.GetPlayerPosX()] = 'P';
 }
 
 void Map::drawBoard(char** Board, int sizeX, int sizeY)
 {
-    std::cout << "+---------------------------------------+" << endl;
+    std::cout << "+";
+    for (int i = 0; i < 128; i++) {
+        std::cout << "-";
+    }   
+    std::cout << "+" << endl;
+    std::string buffer;
     for (int h = 0; h < sizeX; ++h) {
         for (int v = 0; v < sizeY; ++v) {
-            std::cout << Board[h][v];
+            buffer += Board[h][v];
         }
-        std::cout << endl;
+        buffer += '\n';
     }
-    std::cout << "+---------------------------------------+" << endl;
+    std::cout << buffer << std::endl;
+    std::cout << "+";
+    for (int i = 0; i < 128; i++) {
+        std::cout << "-";
+    }
+    std::cout << "+" << endl;
 
 }
 
@@ -154,7 +186,7 @@ void Map::generateRoom(const Room& room, char** board, int boardSizeX, int board
     for (int x = room.x - halfW; x <= room.x + halfW; ++x) {
         for (int y = room.y - halfH; y <= room.y + halfH; ++y) {
             if (x >= 0 && x < boardSizeX && y >= 0 && y < boardSizeY) {
-                board[x][y] = '#';
+                board[y][x] = '#';
             }
         }
     }
@@ -163,7 +195,7 @@ void Map::generateRoom(const Room& room, char** board, int boardSizeX, int board
     for (int x = room.x - halfW + 1; x < room.x + halfW; ++x) {
         for (int y = room.y - halfH + 1; y < room.y + halfH; ++y) {
             if (x >= 0 && x < boardSizeX && y >= 0 && y < boardSizeY) {
-                board[x][y] = room.floorChar;
+                board[y][x] = room.floorChar;
             }
         }
     }
@@ -194,49 +226,98 @@ Room* Map::detectPlayerRoom(int playerX, int playerY) {
 }
 
 bool Map::isPlayerInRoom(int playerX, int playerY, const Room& room) {
+    if (room.type == RoomType::CORRIDOR) {
+        return false;
+    }
     int halfW = room.width / 2;
     int halfH = room.height / 2;
     
     // Check if player is within room boundaries
     return (playerX >= room.x - halfW + 1 && playerX < room.x + halfW &&
             playerY >= room.y - halfH + 1 && playerY < room.y + halfH &&
-            FloorGrid[playerX][playerY] != '#');  // Make sure it's not a wall
+            FloorGrid[playerY][playerX] != '#' &&
+            FloorGrid[playerY][playerX] != ' ' &&
+            (   FloorGrid[playerY][playerX] == '.' ||
+                FloorGrid[playerY][playerX] == '$' ||
+                FloorGrid[playerY][playerX] == 'B'
+                ));  // Make sure it's not a wall
 }
 
-void Map::renderCurrentRoom(Room* room, char** roomBoard, int boardSize) {
+void Map::renderCurrentRoom(Room* room, char** roomBoard, int boardSize, Player& MC) {
+    //if (!room) return;
+
+    //fillBoard(roomBoard, boardSize, boardSize, MC);
+    //std::cout << "AAAAAAAAAAAAAAA" << std::endl;
+
+    //int scale = 8;  // Scale factor for detailed view
+    //int scaledWidth = room->width * scale;
+    //int scaledHeight = room->height * scale;
+    //int centerX = boardSize / 2;
+    //int centerY = boardSize / 2;
+
+    //// Render scaled-up version centered on roomBoard
+    //for (int x = 0; x < scaledWidth; ++x) {
+    //    for (int y = 0; y < scaledHeight; ++y) {
+    //        int roomBoardX = centerX - scaledWidth / 2 + x;
+    //        int roomBoardY = centerY - scaledHeight / 2 + y;
+
+    //        if (roomBoardX >= 0 && roomBoardX < boardSize && roomBoardY >= 0 && roomBoardY < boardSize) {
+    //            // Determine what this scaled pixel should be
+    //            int originalX = x / scale;
+    //            int originalY = y / scale;
+
+    //            if (originalX == 0 || originalX == room->width - 1 || originalY == 0 || originalY == room->height - 1) {
+    //                roomBoard[roomBoardX][roomBoardY] = '#';  // Wall
+    //            }
+    //            else {
+    //                roomBoard[roomBoardX][roomBoardY] = room->floorChar;  // Floor
+    //            }
+    //        }
+    //    }
+    //}
+
     if (!room) return;
 
-    fillBoard(roomBoard, boardSize, boardSize);
+    int w = room->width;
+    int h = room->height;
 
-    int scale = 8;  // Scale factor for detailed view
-    int scaledWidth = room->width * scale;
-    int scaledHeight = room->height * scale;
-    int centerX = boardSize / 2;
-    int centerY = boardSize / 2;
+    // Local room buffer
+    std::vector<std::string> roomBoardLC(h, std::string(w, ' '));
 
-    // Render scaled-up version centered on roomBoard
-    for (int x = 0; x < scaledWidth; ++x) {
-        for (int y = 0; y < scaledHeight; ++y) {
-            int roomBoardX = centerX - scaledWidth / 2 + x;
-            int roomBoardY = centerY - scaledHeight / 2 + y;
-
-            if (roomBoardX >= 0 && roomBoardX < boardSize && roomBoardY >= 0 && roomBoardY < boardSize) {
-                // Determine what this scaled pixel should be
-                int originalX = x / scale;
-                int originalY = y / scale;
-
-                if (originalX == 0 || originalX == room->width - 1 || originalY == 0 || originalY == room->height - 1) {
-                    roomBoard[roomBoardX][roomBoardY] = '#';  // Wall
-                }
-                else {
-                    roomBoard[roomBoardX][roomBoardY] = room->floorChar;  // Floor
-                }
+    // Draw walls and floor
+    for (int y = 0; y < h; ++y) {
+        for (int x = 0; x < w; ++x) {
+            if (y == 0 || y == h - 1 || x == 0 || x == w - 1) {
+                roomBoardLC[y][x] = '#';  // wall
+            }
+            else {
+                roomBoardLC[y][x] = room->floorChar;  // floor
             }
         }
     }
+
+    // Calculate player position relative to the **top-left interior floor tile**
+    int topLeftX = room->x - room->width / 2 + 1;
+    int topLeftY = room->y - room->height / 2 + 1;
+
+    int localX = MC.GetPlayerPosX() - topLeftX + 1;
+    int localY = MC.GetPlayerPosY() - topLeftY + 1;
+
+    // Clamp to interior
+    if (localX >= 1 && localX < w - 1 && localY >= 1 && localY < h - 1) {
+        roomBoardLC[localY][localX] = 'P';
+    }
+
+    system("cls");
+    std::cout << "Room View:\n";
+
+    // Print the room
+    for (const auto& row : roomBoardLC) {
+        std::cout << row << "\n";
+    }
 }
 
-void Map::switchToRoomView(int playerX, int playerY) {
+void Map::switchToRoomView(int playerX, int playerY, Player& MC) {
     Room* playerRoom = detectPlayerRoom(playerX, playerY);
     
     if (playerRoom) {
@@ -244,10 +325,10 @@ void Map::switchToRoomView(int playerX, int playerY) {
         char* innerPtrs[256];
         for (int i = 0; i < 256; ++i) innerPtrs[i] = InnerRoom[i];
         
-        renderCurrentRoom(playerRoom, innerPtrs, 256);
+        renderCurrentRoom(playerRoom, innerPtrs, 256, MC);
         
         std::cout << "Entered " << getRoomTypeName(playerRoom->type) << " room!" << std::endl;
-        drawBoard(innerPtrs, 256, 256);  // Show just this room
+        //drawBoard(innerPtrs, 256, 256);  // Show just this room
     } else {
         std::cout << "Player is in a corridor or empty space." << std::endl;
     }
@@ -370,3 +451,34 @@ Room* Map::getFinalShop() {
     return (lastRoom && lastRoom->type == RoomType::SHOP) ? lastRoom : nullptr;
 }
 
+void Map::renderMapWithFOV(Player& MC, int viewWidth = 40, int viewHeight = 20) {
+    int mapWidth = 128; // FloorGrid width
+    int mapHeight = 128; // FloorGrid height
+
+    // Compute top-left corner of the viewport (centered on player)
+    int topLeftX = MC.GetPlayerPosX() - viewWidth / 2;
+    int topLeftY = MC.GetPlayerPosY() - viewHeight / 2;
+
+    // Clamp to map boundaries
+    if (topLeftX < 0) topLeftX = 0;
+    if (topLeftY < 0) topLeftY = 0;
+    if (topLeftX + viewWidth > mapWidth)  topLeftX = mapWidth - viewWidth;
+    if (topLeftY + viewHeight > mapHeight) topLeftY = mapHeight - viewHeight;
+
+    // Clear screen
+    system("cls");
+
+    // Render visible portion of the map
+    for (int y = 0; y < viewHeight; ++y) {
+        for (int x = 0; x < viewWidth; ++x) {
+            int mapX = topLeftX + x;
+            int mapY = topLeftY + y;
+
+            if (mapX == MC.GetPlayerPosX() && mapY == MC.GetPlayerPosY())
+                std::cout << 'P'; // Player
+            else
+                std::cout << FloorGrid[mapY][mapX];
+        }
+        std::cout << "\n";
+    }
+}

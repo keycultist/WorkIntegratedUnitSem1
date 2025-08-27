@@ -1009,52 +1009,165 @@ void Player::ListMovesToReplace()
     std::cout << std::endl;
 }
 
-void Player::checkEnemy(Entity* enemies[6])
+void Player::UpdateInventoryPlayerStats()
 {
-    int EnemyX, EnemyY;
-    // Check enemies
-    for (int i = 1; i <= 3; i++) {
-        // Skip if this enemy doesn't exist
-        if (enemies[i] != nullptr) {
-            // Get enemy's position
-            EnemyX == enemies[i]->GetPosX();
-            EnemyY == enemies[i]->GetPosY();
+    GetInventory().SetInventoryWeaponEquipped(GetPlayerEquippedWeapon());
+    GetInventory().SetInventoryArmorEquipped(GetPlayerEquippedArmor());
+    GetInventory().SetInventoryPlayerClass(GetPlayerClass());
+    GetInventory().SetInventoryPlayerLvl(GetPlayerLvl());
+    GetInventory().SetInventoryPlayerEXP(GetPlayerXP());
+    GetInventory().SetInventoryPlayerHP(GetPlayerHP());
+    GetInventory().SetInventoryPlayerMaxHP(GetPlayerMaxHP());
+    GetInventory().SetInventoryPlayerPower(GetPlayerPower());
+    GetInventory().SetInventoryPlayerDefence(GetPlayerDefence());
+    GetInventory().SetInventoryPlayerCritChance(GetPlayerCritChance());
+    GetInventory().SetInventoryPlayerCurrency(GetPlayerCurrency());
+    GetInventory().SetInventoryCurrentDifficulty(GetCurrentDifficulty());
+}
 
-            // Check if player touches enemy (collision)
-            if (EnemyX == GetPosX() && EnemyY == GetPosY()) {
-                // Enter combat with this enemy
-                Combat::InitCombat( *this, );           //suspects that it can be solved by enemy inheiriting from entity class. checkenemy func not being called
-                break;  // Stop checking after first combat
-            }
-        }
+void Player::UpdatePlayerStatsInventory()
+{
+    SetPlayerHP(GetInventory().GetInventoryPlayerHP());
+    SetPlayerMaxHP(GetInventory().GetInventoryPlayerMaxHP());
+    SetPlayerPower(GetInventory().GetInventoryPlayerPower());
+    SetPlayerCritChance(GetInventory().GetInventoryPlayerCritChance());
+    SetPlayerEquippedArmor(GetInventory().GetInventoryArmorEquipped());
+    SetPlayerEquippedWeapon(GetInventory().GetInventoryWeaponEquipped());
+}
+
+void Player::AddPlayerEquipmentStats()
+{
+    if (GetPlayerEquippedWeapon() == GetInventory().GetItem().GetItemListIndex(0)) {
+        SetPlayerPower(GetPlayerPower() - GetPlayerWeaponPower());
+        SetPlayerWeaponPower(2);
+        SetPlayerPower(GetPlayerPower() + GetPlayerWeaponPower());
+    }
+    else if (GetPlayerEquippedWeapon() == GetInventory().GetItem().GetItemListIndex(5)) {
+        SetPlayerPower(GetPlayerPower() - GetPlayerWeaponPower());
+        SetPlayerWeaponPower(4);
+        SetPlayerPower(GetPlayerPower() + GetPlayerWeaponPower());
+    }
+    else if (GetPlayerEquippedWeapon() == GetInventory().GetItem().GetItemListIndex(10)) {
+        SetPlayerPower(GetPlayerPower() - GetPlayerWeaponPower());
+        SetPlayerWeaponPower(7);
+        SetPlayerPower(GetPlayerPower() + GetPlayerWeaponPower());
+    }
+    else if (GetPlayerEquippedWeapon() == GetInventory().GetItem().GetItemListIndex(15)) {
+        SetPlayerPower(GetPlayerPower() - GetPlayerWeaponPower());
+        SetPlayerWeaponPower(13);
+        SetPlayerPower(GetPlayerPower() + GetPlayerWeaponPower());
+    }
+    else if (GetPlayerEquippedWeapon() == GetInventory().GetItem().GetItemListIndex(20)) {
+        SetPlayerPower(GetPlayerPower() - GetPlayerWeaponPower());
+        SetPlayerWeaponPower(20);
+        SetPlayerPower(GetPlayerPower() + GetPlayerWeaponPower());
+    }
+    else if (GetPlayerEquippedWeapon() == GetInventory().GetItem().GetItemListIndex(22)) {
+        SetPlayerPower(GetPlayerPower() - GetPlayerWeaponPower());
+        SetPlayerWeaponPower(35);
+        SetPlayerPower(GetPlayerPower() + GetPlayerWeaponPower());
+    }
+
+    if (GetPlayerEquippedArmor() == GetInventory().GetItem().GetItemListIndex(1)) {
+        SetPlayerHP(GetPlayerHP() - GetPlayerArmorHP());
+        SetPlayerMaxHP(GetPlayerMaxHP() - GetPlayerArmorHP());
+        SetPlayerDefence(GetPlayerDefence() - GetPlayerArmorDefence());
+        SetPlayerArmorHP(25);
+        SetPlayerArmorDefence(5);
+        SetPlayerHP(GetPlayerHP() + GetPlayerArmorHP());
+        SetPlayerMaxHP(GetPlayerMaxHP() + GetPlayerArmorHP());
+        SetPlayerDefence(GetPlayerDefence() - GetPlayerArmorDefence());
+    }
+    else if (GetPlayerEquippedArmor() == GetInventory().GetItem().GetItemListIndex(6)) {
+        SetPlayerHP(GetPlayerHP() - GetPlayerArmorHP());
+        SetPlayerMaxHP(GetPlayerMaxHP() - GetPlayerArmorHP());
+        SetPlayerDefence(GetPlayerDefence() - GetPlayerArmorDefence());
+        SetPlayerArmorHP(50);
+        SetPlayerArmorDefence(12);
+        SetPlayerHP(GetPlayerHP() + GetPlayerArmorHP());
+        SetPlayerMaxHP(GetPlayerMaxHP() + GetPlayerArmorHP());
+        SetPlayerDefence(GetPlayerDefence() - GetPlayerArmorDefence());
+    }
+    else if (GetPlayerEquippedArmor() == GetInventory().GetItem().GetItemListIndex(11)) {
+        SetPlayerHP(GetPlayerHP() - GetPlayerArmorHP());
+        SetPlayerMaxHP(GetPlayerMaxHP() - GetPlayerArmorHP());
+        SetPlayerDefence(GetPlayerDefence() - GetPlayerArmorDefence());
+        SetPlayerArmorHP(90);
+        SetPlayerArmorDefence(22);
+        SetPlayerHP(GetPlayerHP() + GetPlayerArmorHP());
+        SetPlayerMaxHP(GetPlayerMaxHP() + GetPlayerArmorHP());
+        SetPlayerDefence(GetPlayerDefence() - GetPlayerArmorDefence());
+    }
+    else if (GetPlayerEquippedArmor() == GetInventory().GetItem().GetItemListIndex(16)) {
+        SetPlayerHP(GetPlayerHP() - GetPlayerArmorHP());
+        SetPlayerMaxHP(GetPlayerMaxHP() - GetPlayerArmorHP());
+        SetPlayerDefence(GetPlayerDefence() - GetPlayerArmorDefence());
+        SetPlayerArmorHP(175);
+        SetPlayerArmorDefence(35);
+        SetPlayerHP(GetPlayerHP() + GetPlayerArmorHP());
+        SetPlayerMaxHP(GetPlayerMaxHP() + GetPlayerArmorHP());
+        SetPlayerDefence(GetPlayerDefence() - GetPlayerArmorDefence());
+    }
+    else if (GetPlayerEquippedArmor() == GetInventory().GetItem().GetItemListIndex(21)) {
+        SetPlayerHP(GetPlayerHP() - GetPlayerArmorHP());
+        SetPlayerMaxHP(GetPlayerMaxHP() - GetPlayerArmorHP());
+        SetPlayerDefence(GetPlayerDefence() - GetPlayerArmorDefence());
+        SetPlayerArmorHP(250);
+        SetPlayerArmorDefence(50);
+        SetPlayerHP(GetPlayerHP() + GetPlayerArmorHP());
+        SetPlayerMaxHP(GetPlayerMaxHP() + GetPlayerArmorHP());
+        SetPlayerDefence(GetPlayerDefence() - GetPlayerArmorDefence());
     }
 }
 
-void Player::checkEvent(Entity* events[6])
+//////////I think this shd be in a "Game" class
+
+    //void Player::checkEnemy(Enemy enemies[6])
+    //{
+    //    int EnemyX, EnemyY;
+    //    // Check enemies
+    //    for (int i = 1; i <= 3; i++) {
+    //        // Skip if this enemy doesn't exist
+    //        //if (enemies[i]) {
+    //            // Get enemy's position
+    //        EnemyX == enemies[i].GetEnemyPosX();
+    //        EnemyY == enemies[i].GetEnemyPosY();
+
+    //        // Check if player touches enemy (collision)
+    //        if (EnemyX == GetPosX() && EnemyY == GetPosY()) {
+    //            // Enter combat with this enemy
+    //            Combat::InitCombat(*this, enemies[i]);           //suspects that it can be solved by enemy inheiriting from entity class. checkenemy func not being called
+    //            break;  // Stop checking after first combat
+    //        }
+    //        //}
+    //    }
+    //}
+
+    //void Player::checkEvent(Entity * events[6])
+    //{
+    //    int EventX, EventY;
+    //    // Check events
+    //    for (int b = 1; b <= 3; b++) {
+    //        // Skip if this event doesn't exist
+    //        if (events[b] != nullptr) {
+    //            // Get event's position
+    //            EventX == events[b]->GetPosX();
+    //            EventY == events[b]->GetPosY();
+
+    //            // Check if player touches event (collision)
+    //            if (EventX == GetPosX() && EventY == GetPosY()) {
+    //                // Enter the event
+    //                EventTriggered(events[b]);
+    //                break;  // Stop checking after first event
+    //            }
+    //        }
+    //    }
+    //}
+
+//////////
+
+void Player::move() //Not really sure if the changes affected anything
 {
-    int EventX, EventY;
-    // Check events
-    for (int b = 1; b <= 3; b++) {
-        // Skip if this event doesn't exist
-        if (events[b] != nullptr) {
-            // Get event's position
-            EventX == events[b]->GetPosX();
-            EventY == events[b]->GetPosY();
-
-            // Check if player touches event (collision)
-            if (EventX == GetPosX() && EventY == GetPosY()) {
-                // Enter the event
-                EventTriggered(events[b]);
-                break;  // Stop checking after first event
-            }
-        }
-    }
-}
-
-
-void Player::move(Entity* ptr[6]) //Not really sure if the changes affected anything
-{
-    // checkGhost(ptr);
     char input;
     input = _getch();
 
@@ -1084,7 +1197,7 @@ void Player::move(Entity* ptr[6]) //Not really sure if the changes affected anyt
         break;
     case 'S':
     case 's':
-        if (GetPlayerPosY() < 19) {
+        if (GetPlayerPosY() < 127) {
             targety = GetPlayerPosY() + 1;
         }
         else {
@@ -1094,7 +1207,7 @@ void Player::move(Entity* ptr[6]) //Not really sure if the changes affected anyt
         break;
     case 'D':
     case 'd':
-        if (GetPlayerPosX() < 19) {
+        if (GetPlayerPosX() < 127) {
             targetx = GetPlayerPosX() + 1;
         }
         else {
@@ -1104,7 +1217,6 @@ void Player::move(Entity* ptr[6]) //Not really sure if the changes affected anyt
     default:
         std::cout << "Invalid input\n";
     }
-    targetx = GetPlayerPosX();
-    targety = GetPlayerPosY();
+    SetPlayerPos(targetx, targety);
 }
 
