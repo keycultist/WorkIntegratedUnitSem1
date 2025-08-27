@@ -213,6 +213,11 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 		system("cls");
 		return false;
 	}
+	if (MC.GetPlayerHP() <= 0) { //Player death check
+		std::cout << "Player Defeated! You Lose!" << std::endl;
+		system("cls");
+		return true;
+	}
 }
 
 void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
