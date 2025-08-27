@@ -116,6 +116,23 @@ void Map::CreateNewFloor(int Difficulty, Player& MC) {
 }
 
 
+void Map::renderEnemiesOnBoard(char** Board, int sizeX, int sizeY) {
+    for (const auto& room : rooms) {
+        for (const auto& enemy : room.enemies) {
+            if (enemy.GetEnemyHP() > 0) {
+                int enemyX = enemy.GetEnemyPosX();
+                int enemyY = enemy.GetEnemyPosY();
+
+                if (enemyX >= 0 && enemyX < sizeX && enemyY >= 0 && enemyY < sizeY) {
+                    char enemyChar = getEnemyDisplayChar(enemy);
+                    Board[enemyY][enemyX] = enemyChar;
+                }
+            }
+        }
+    }
+}
+
+
 
 
 void Map::fillBoard(char** Board, int sizeX, int sizeY, Player& MC)
@@ -650,7 +667,8 @@ void Map::generateEnemyForRoom(Enemy& enemy, const Room& room, int difficulty, i
     setEnemyEquipment(enemy, chosenClass, difficulty);
 }
 
-void setEnemyEquipment(Enemy& enemy, const std::string& enemyClass, int difficulty) {
+void Map::setEnemyEquipment(Enemy& enemy, const std::string& enemyClass, int difficulty)
+{
     if (enemyClass == "Grunt") {
         enemy.SetEnemyEquippedWeapon("Rusty Iron Sword");
         enemy.SetEnemyEquippedArmor("Ragged Clothing");
@@ -766,6 +784,21 @@ void Map::generateBossForRoom(Enemy& enemy, const std::string& bossType, int dif
         std::cout << "TRUE BOSS GENERATED: " << enemy.GetEnemyClass()
             << " (HP: " << enemy.GetEnemyMaxHP()
             << ", Power: " << enemy.GetEnemyPower() << ")" << std::endl;
+    }
+}
+
+char Map::getEnemyDisplayChar(const Enemy& enemy) {
+    std::string enemyClass = enemy.GetEnemyClass();
+
+    // Boss characters
+    if (enemyClass == "OneWingedAngel" || enemyClass == "JovialChaos" || enemyClass == "Bob" || enemyClass == "Susanoo" || enemyClass == "DevilGene") {
+        return '?';
+    }
+    else if (enemyClass == "ColorCleaver" || enemyClass == "DarkSilence" || enemyClass == "ManiKatti" || enemyClass == "AzureResonance") {
+        return 'M';
+    }
+    else {
+        return 'E';
     }
 }
 

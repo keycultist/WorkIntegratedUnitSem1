@@ -56,7 +56,9 @@ private:
     bool trueBossGenerated = false;
     Room* minibossRoom = nullptr;
     Room* trueBossRoom = nullptr;
-
+    
+    char getEnemyDisplayChar(const Enemy& enemy);
+    void renderEnemiesOnBoard(char** Board, int sizeX, int sizeY);
     void generateEnemiesForRoom(Room& room, int difficulty);
     void generateEnemyForRoom(Enemy& enemy, const Room& room, int difficulty, int enemyIndex);
     void setEnemyEquipment(Enemy& enemy, const std::string& enemyClass, int difficulty);
@@ -120,8 +122,6 @@ public:
     bool hasTrueBoss() { return trueBossGenerated; }
 
     void generateBossForRoom(Enemy& enemy, const std::string& bossType, int difficulty);
-    Room* renderEnemiesOnBoard(char** Board, int sizeX, int sizeY);
-	char getEnemyDisplayChar(const Enemy& enemy);
     void removeDefeatedEnemies();
 	Enemy* getEnemyAtPosition(int x, int y);
 
