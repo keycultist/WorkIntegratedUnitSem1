@@ -86,7 +86,7 @@ public:
 	void UpdatePlayerStatsInventory();
 	void AddPlayerEquipmentStats();
 
-	virtual void move();
+	//virtual void move();
 
 	void PUpMove();
 	void PDownMove();

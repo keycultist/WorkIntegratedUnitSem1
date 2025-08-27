@@ -41,7 +41,6 @@ bool GameRunning(Player& MC, Enemy& Enemies, Map& GMap, bool& InsideRoom) {
     }
 
     std::cout << "X: " << MC.GetPlayerPosX() << "    Y: " << MC.GetPlayerPosY() << std::endl;
-    MC.move();
 
     if (GMap.detectPlayerRoom(MC.GetPlayerPosX(), MC.GetPlayerPosY())) {
         InsideRoom = true;

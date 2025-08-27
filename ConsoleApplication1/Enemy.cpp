@@ -17,35 +17,40 @@ using namespace std;
 
 // Functions, Classes
 void Enemy::SetEnemyClass(std::string Class) {
-	EnemyClass = Class;
+	SetClass(Class);
 }
 
 void Enemy::SetEnemyHP(int HP) {
-	EnemyHP = HP;
+	SetHP(HP);
 }
 
 void Enemy::SetEnemyMaxHP(int MaxHP) {
-	EnemyMaxHP = MaxHP;
+	SetMaxHP(MaxHP);
 }
 
 void Enemy::SetEnemyPower(int Power) {
-	EnemyPower = Power;
+	SetPower(Power);
 }
 
 void Enemy::SetEnemyCritChance(int CritChance) {
-	EnemyCritChance = CritChance;
+	SetCritChance(CritChance);
+}
+
+void Enemy::SetEnemyCurrency(int Currency)
+{
+	SetCurrency(Currency);
 }
 
 void Enemy::SetEnemyPos(int X, int Y) {
-	EnemyPosX, EnemyPosY = X, Y;
+	SetPos(X, Y);
 }
 
 void Enemy::SetEnemyLvl(int Lvl) {
-	EnemyLvl = Lvl;
+	SetLvl(Lvl);
 }
 
 void Enemy::SetEnemyXP(int XP) {
-	EnemyXP = XP;
+	SetXP(XP);
 }
 
 void Enemy::SetEnemyEquippedArmor(std::string Armor) {
@@ -57,39 +62,44 @@ void Enemy::SetEnemyEquippedWeapon(std::string Weapon) {
 }
 
 std::string Enemy::GetEnemyClass(void) const {
-	return EnemyClass;
+	return GetClass();
 }
 
 int Enemy::GetEnemyHP(void) const {
-	return EnemyHP;
+	return GetHP();
 }
 
 int Enemy::GetEnemyMaxHP(void) const {
-	return EnemyMaxHP;
+	return GetMaxHP();
 }
 
 int Enemy::GetEnemyPower(void) const {
-	return EnemyPower;
+	return GetPower();
 }
 
 int Enemy::GetEnemyCritChance(void) const {
-	return EnemyCritChance;
+	return GetCritChance();
+}
+
+int Enemy::GetEnemyCurrency(void) const
+{
+	return GetCurrency();
 }
 
 int Enemy::GetEnemyPosX(void) const {
-	return EnemyPosX;
+	return GetPosX();
 }
 
 int Enemy::GetEnemyPosY(void) const {
-	return EnemyPosY;
+	return GetPosY();
 }
 
 int Enemy::GetEnemyLvl(void) const {
-	return EnemyLvl;
+	return GetLvl();
 }
 
 int Enemy::GetEnemyXP(void) const {
-	return EnemyXP;
+	return GetXP();
 }
 
 std::string Enemy::GetEnemyEquippedWeapon(void) const {
@@ -104,11 +114,12 @@ Moveset& Enemy::GetMoveSet() {
 	return moveset;
 }
 
-Enemy::Enemy()
+Enemy::Enemy() : Entity("Grunt", 100, 100, 5, 5, 0, 0, 0, 1, 0), EnemyEquippedWeapon("None"), EnemyEquippedArmor("None")
 {
 }
 
-Enemy::Enemy(std::string EnemyClass, int EnemyHP, int EnemyPower, int EnemyPosX, int EnemyPosY, int EnemyLvl, std::string EnemyEquippedWeapon, std::string EnemyEquippedArmor)
+Enemy::Enemy(std::string EnemyClass, int EnemyMaxHP, int EnemyHP, int EnemyPower, int EnemyCritChance, int EnemyCurrency, int EnemyPosX, int EnemyPosY, int EnemyLvl, int EnemyXP, std::string EnemyEquippedWeapon, std::string EnemyEquippedArmor)
+	: Entity(EnemyClass, EnemyMaxHP, EnemyHP, EnemyPower, EnemyCritChance, EnemyCurrency, EnemyPosX, EnemyPosY, EnemyLvl, EnemyXP), EnemyEquippedWeapon(EnemyEquippedWeapon), EnemyEquippedArmor(EnemyEquippedArmor)
 {
 }
 
@@ -135,7 +146,7 @@ void Enemy::ShowEnemyStats(Enemy& MC) {
 	// Return Enemy Stats Here with STD::COUT!!!! (tedious)
 }
 
-std::string Enemy::DecisionMatrix(int PlayerHP, bool PlayerBuffed)
+std::string Enemy::DecisionMatrix(int EnemyHP, bool EnemyBuffed)
 {
 	// Standard Enemy Decision Matrix, here we go.
 
@@ -147,7 +158,7 @@ std::string Enemy::DecisionMatrix(int PlayerHP, bool PlayerBuffed)
 		return "DEAD";
 	}
 	else {
-		if (EnemyClass != "OneWingedAngel" and EnemyClass != "JovialChaos") {
+		if (GetEnemyClass() != "OneWingedAngel" and GetEnemyClass() != "JovialChaos") {
 			if (EnemyHP <= 0) {
 				return "DEAD";
 			}
@@ -164,8 +175,8 @@ std::string Enemy::DecisionMatrix(int PlayerHP, bool PlayerBuffed)
 				}
 			}
 
-			// thank you, next. (ariana grande!!!!) if no buff is available, check if player is buffed.
-			if (PlayerBuffed == true) {
+			// thank you, next. (ariana grande!!!!) if no buff is available, check if Enemy is buffed.
+			if (EnemyBuffed == true) {
 				for (int i = 0; i < moveset.size(); i++) {
 					if (moveset.GetMove(i).MoveType == "Debuff") {
 						std::string moveName = moveset.GetMove(i).MoveName;
@@ -214,8 +225,8 @@ std::string Enemy::DecisionMatrix(int PlayerHP, bool PlayerBuffed)
 				}
 			}
 
-			// thank you, next. (ariana grande!!!!) if no buff is available, check if player is buffed.
-			if (PlayerBuffed == true) {
+			// thank you, next. (ariana grande!!!!) if no buff is available, check if Enemy is buffed.
+			if (EnemyBuffed == true) {
 				for (int i = 0; i < moveset.size(); i++) {
 					if (moveset.GetMove(i).MoveType == "Counter") {
 						std::string moveName = moveset.GetMove(i).MoveName;
@@ -239,7 +250,7 @@ std::string Enemy::DecisionMatrix(int PlayerHP, bool PlayerBuffed)
 				}
 			}
 
-			if (EnemyHP <= EnemyMaxHP / 2) {
+			if (EnemyHP <= GetEnemyMaxHP() / 2) {
 				if (Phase == false) {
 					Phase = true;
 
@@ -251,7 +262,7 @@ std::string Enemy::DecisionMatrix(int PlayerHP, bool PlayerBuffed)
 				}
 			}
 
-			if (EnemyHP <= EnemyMaxHP / 99) {
+			if (EnemyHP <= GetEnemyMaxHP() / 99) {
 				for (int i = 0; i < moveset.size(); i++) {
 					if (moveset.GetMove(i).MoveType == "DeathMove") {
 						EnemyHP = 0;
