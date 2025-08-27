@@ -3,6 +3,10 @@
 
 #include <iostream>
 #include <conio.h>
+
+#include <windows.h>
+#include <algorithm>
+
 #include "Player.h"
 #include "Combat.h"
 #include "Enemy.h"
@@ -31,7 +35,7 @@ bool GameRunning(Player& MC, Enemy& Enemies, Map& GMap, bool& InsideRoom) {
         GMap.switchToRoomView(MC.GetPlayerPosX(), MC.GetPlayerPosY(), MC);
     }
     else {
-        GMap.RequestFloorUpdate(MC);
+        GMap.renderMapWithFOV(MC, 80, 30);
     }
 
     std::cout << "X: " << MC.GetPlayerPosX() << "    Y: " << MC.GetPlayerPosY() << std::endl;

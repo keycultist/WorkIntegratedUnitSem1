@@ -99,4 +99,6 @@ public:
 
     bool isLastRoomShop();
     Room* getFinalShop();
+
+    void renderMapWithFOV(Player& MC, int viewWidth, int viewHeight);
 };
