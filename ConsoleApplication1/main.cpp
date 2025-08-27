@@ -138,7 +138,6 @@ int main()
     std::cout << "Guardsman: There are some Grunts here, show me what you can do." << std::endl;
     Combat::InitCombat(MC, *Enemies[0]);
 
-    int chP = _getch();
     system("cls");
 
     bool RUNNINGHORSE = true;

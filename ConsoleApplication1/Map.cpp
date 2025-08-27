@@ -158,9 +158,9 @@ void Map::fillBoardPlayer(char** Board, int sizeX, int sizeY, Player& MC) {
 
     int playerX = MC.GetPlayerPosX();
     int playerY = MC.GetPlayerPosY();
-    if (playerX >= 0 && playerX < sizeX && playerY >= 0 && playerY < sizeY) {
+    /*if (playerX >= 0 && playerX < sizeX && playerY >= 0 && playerY < sizeY) {
         Board[playerY][playerX] = 'P';
-    }
+    }*/
 }
 
 void Map::drawBoard(char** Board, int sizeX, int sizeY)

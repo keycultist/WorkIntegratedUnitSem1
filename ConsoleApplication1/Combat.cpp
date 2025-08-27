@@ -254,7 +254,6 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 		case 1:
 			//Include Player Moveset
 			//MC.ShowPlayerMoves();
-			chP = _getch();
 			system("cls");
 			switch (ChoseAction(MC, target, 2)) {
 			case '1':
@@ -270,6 +269,7 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 				ChosenMove = 4;
 				break;
 			default:
+				ChosenMove = 1;
 				break;
 			}
 			Combat::PlayerAttack(MC, target, ChosenMove - 1);
@@ -313,7 +313,7 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 			}
 			chP = _getch();
 			break;
-		case 'h':
+		case 65:
 			std::cout << HORSEAscii << "\n";
 			turnEnd = true;
 			break;
@@ -422,6 +422,9 @@ int Combat::ChoseAction(Player& MC, Enemy& target, int stage)
 				case 13:
 					ChosingAction = false;
 					return tracker + 1;
+				case 'h':
+					ChosingAction = false;
+					return 65;
 				default:
 					break;
 				}
