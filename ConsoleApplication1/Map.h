@@ -5,6 +5,7 @@
 #include "Renderer.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "Shop.h"
 #include <map>
 
 enum class RoomType {
