@@ -3,18 +3,21 @@
 #pragma once
 
 #include "Moveset.h"
+#include "entity.h"
+#include "Position.h"
 
-class Enemy
+class Enemy : public Entity
 {
 private:
-	std::string EnemyClass;
+	/*std::string EnemyClass;
 	int EnemyMaxHP;
 	int EnemyHP;
 	int EnemyPower;
 	int EnemyCritChance;
+	int EnemyCurrency;
 	int EnemyPosX, EnemyPosY;
 	int EnemyLvl;
-	int EnemyXP;
+	int EnemyXP;*/
 	bool Phase;
 	bool Buffed;
 	std::string EnemyEquippedWeapon;
@@ -31,6 +34,7 @@ public:
 	void SetEnemyMaxHP(int MaxHP);
 	void SetEnemyPower(int Power);
 	void SetEnemyCritChance(int CritChance);
+	void SetEnemyCurrency(int Currency);
 	void SetEnemyPos(int X, int Y);
 	void SetEnemyLvl(int Lvl);
 	void SetEnemyXP(int XP);
@@ -42,6 +46,7 @@ public:
 	int GetEnemyMaxHP(void) const;
 	int GetEnemyPower(void) const;
 	int GetEnemyCritChance(void) const;
+	int GetEnemyCurrency(void) const;
 	int GetEnemyPosX(void) const;
 	int GetEnemyPosY(void) const;
 	int GetEnemyLvl(void) const;
@@ -51,11 +56,11 @@ public:
 	Moveset& GetMoveSet();
 
 	Enemy();
-	Enemy(std::string EnemyClass, int EnemyHP, int EnemyPower, int EnemyPosX, int EnemyPosY, int EnemyLvl, std::string EnemyEquippedWeapon, std::string EnemyEquippedArmor);
+	Enemy(std::string EnemyClass, int EnemyMaxHP, int EnemyHP, int EnemyPower, int EnemyCritChance, int EnemyCurrency, int EnemyPosX, int EnemyPosY, int EnemyLvl, int EnemyXP, std::string EnemyEquippedWeapon, std::string EnemyEquippedArmor);
 	~Enemy();
 
 	void InitEnemy();
 	static void ShowEnemyStats(Enemy& EC);
 
-	std::string DecisionMatrix(int PlayerHP, bool PlayerBuffed);
+	int DecisionMatrix(int PlayerHP, bool PlayerBuffed);
 };

@@ -86,7 +86,12 @@ public:
 	void UpdatePlayerStatsInventory();
 	void AddPlayerEquipmentStats();
 
-	virtual void move();
+	//virtual void move();
+
+	void PUpMove();
+	void PDownMove();
+	void PLeftMove();
+	void PRightMove();
 	/*virtual void checkEnemy(Player& MC, Enemy& target);
 	virtual void checkEvent(Entity* ptr[6]);*/
 };

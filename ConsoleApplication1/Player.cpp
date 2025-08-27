@@ -1166,56 +1166,42 @@ void Player::AddPlayerEquipmentStats()
 
 //////////
 
-void Player::move() //Not really sure if the changes affected anything
+void Player::PUpMove()
 {
-    char input;
-    input = _getch();
-
     int targetx = GetPlayerPosX();
     int targety = GetPlayerPosY();
+    if (GetPlayerPosY() > 0) {
+        targety = GetPlayerPosY() - 1;
+    }
+    SetPlayerPos(targetx, targety);
+}
 
+void Player::PDownMove()
+{
+    int targetx = GetPlayerPosX();
+    int targety = GetPlayerPosY();
+    if (GetPlayerPosY() < 127) {
+        targety = GetPlayerPosY() + 1;
+    }
+    SetPlayerPos(targetx, targety);
+}
 
+void Player::PLeftMove()
+{
+    int targetx = GetPlayerPosX();
+    int targety = GetPlayerPosY();
+    if (GetPlayerPosX() > 0) {
+        targetx = GetPlayerPosX() - 1;
+    }
+    SetPlayerPos(targetx, targety);
+}
 
-    switch (input) {
-    case 'W':
-    case 'w':
-        if (GetPlayerPosY() > 0) {
-            targety = GetPlayerPosY() - 1;
-        }
-        else {
-            std::cout << "You are at the edge of the board! \n";
-        }
-        break;
-    case 'A':
-    case 'a':
-        if (GetPlayerPosX() > 0) {
-            targetx = GetPlayerPosX() - 1;
-        }
-        else {
-            std::cout << "You are at the edge of the board! \n";
-        }
-        break;
-    case 'S':
-    case 's':
-        if (GetPlayerPosY() < 127) {
-            targety = GetPlayerPosY() + 1;
-        }
-        else {
-            std::cout << "You are at the edge of the board! \n";
-
-        }
-        break;
-    case 'D':
-    case 'd':
-        if (GetPlayerPosX() < 127) {
-            targetx = GetPlayerPosX() + 1;
-        }
-        else {
-            std::cout << "You are at the edge of the board! \n";
-        }
-        break;
-    default:
-        std::cout << "Invalid input\n";
+void Player::PRightMove()
+{
+    int targetx = GetPlayerPosX();
+    int targety = GetPlayerPosY();
+    if (GetPlayerPosX() < 127) {
+        targetx = GetPlayerPosX() + 1;
     }
     SetPlayerPos(targetx, targety);
 }
