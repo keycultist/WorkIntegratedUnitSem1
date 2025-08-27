@@ -194,7 +194,7 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 		std::cout << "Enemy's turn" << std::endl;
 		int chP = _getch();
 		system("cls");
-		int EnemyMoveChoice = rand() % 4 + 1;
+		int EnemyMoveChoice = target.DecisionMatrix(MC.GetPlayerHP(), MC.GetPlayerPower() > 0);
 		// Include Enemy Moveset
 		switch (EnemyMoveChoice) {
 		case 1:

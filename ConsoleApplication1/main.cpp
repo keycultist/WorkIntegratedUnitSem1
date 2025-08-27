@@ -79,7 +79,7 @@ void clearConsole() {
     SetConsoleCursorPosition(hConsole, topLeft);
 }
 
-//Event Collsion check, what does player have to collide with?
+//Event Collsion check, what does player have to collide with? idk like a tile lol.
 //static void CheckEventPlayerCollision(Player& MC, ???)
 //{
 //    int EventX, EventY;

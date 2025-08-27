@@ -146,7 +146,7 @@ void Enemy::ShowEnemyStats(Enemy& MC) {
 	// Return Enemy Stats Here with STD::COUT!!!! (tedious)
 }
 
-std::string Enemy::DecisionMatrix(int EnemyHP, bool EnemyBuffed)
+int Enemy::DecisionMatrix(int EnemyHP, bool EnemyBuffed)
 {
 	// Standard Enemy Decision Matrix, here we go.
 
@@ -155,12 +155,12 @@ std::string Enemy::DecisionMatrix(int EnemyHP, bool EnemyBuffed)
 	}
 
 	if (EnemyHP <= 0) {
-		return "DEAD";
+		return 0;
 	}
 	else {
 		if (GetEnemyClass() != "OneWingedAngel" and GetEnemyClass() != "JovialChaos") {
 			if (EnemyHP <= 0) {
-				return "DEAD";
+				return 0;
 			}
 
 			else if (Buffed == false) {
@@ -169,7 +169,7 @@ std::string Enemy::DecisionMatrix(int EnemyHP, bool EnemyBuffed)
 						std::string moveName = moveset.GetMove(i).MoveName;
 
 						if (std::find(usedMoves.begin(), usedMoves.end(), moveName) == usedMoves.end()) {
-							return moveName;
+							return i;
 						}
 					}
 				}
@@ -181,7 +181,7 @@ std::string Enemy::DecisionMatrix(int EnemyHP, bool EnemyBuffed)
 					if (moveset.GetMove(i).MoveType == "Debuff") {
 						std::string moveName = moveset.GetMove(i).MoveName;
 						if (std::find(usedMoves.begin(), usedMoves.end(), moveName) == usedMoves.end()) {
-							return moveName;
+							return i;
 						}
 					}
 				}
@@ -192,7 +192,7 @@ std::string Enemy::DecisionMatrix(int EnemyHP, bool EnemyBuffed)
 				if (moveset.GetMove(i).MoveType == "Physical" ||
 					moveset.GetMove(i).MoveType == "Abyssal" ||
 					moveset.GetMove(i).MoveType == "Magical") {
-					return moveset.GetMove(i).MoveName;
+					return i;
 				}
 			}
 
@@ -203,14 +203,14 @@ std::string Enemy::DecisionMatrix(int EnemyHP, bool EnemyBuffed)
 				if (Phase == true) {
 					for (int i = 0; i < moveset.size(); i++) {
 						if (moveset.GetMove(i).MoveType == "DeathMove") {
-							return moveset.GetMove(i).MoveName;
+							return i;
 						}
 					}
 
 					EnemyHP = 0;
 					Phase = false;
 				}
-				return "DEAD";
+				return 0;
 			}
 
 			else if (Buffed == false) {
@@ -219,7 +219,10 @@ std::string Enemy::DecisionMatrix(int EnemyHP, bool EnemyBuffed)
 						std::string moveName = moveset.GetMove(i).MoveName;
 
 						if (std::find(usedMoves.begin(), usedMoves.end(), moveName) == usedMoves.end()) {
-							return moveName;
+							break;
+						}
+						else {
+							return i;
 						}
 					}
 				}
@@ -231,7 +234,7 @@ std::string Enemy::DecisionMatrix(int EnemyHP, bool EnemyBuffed)
 					if (moveset.GetMove(i).MoveType == "Counter") {
 						std::string moveName = moveset.GetMove(i).MoveName;
 						if (std::find(usedMoves.begin(), usedMoves.end(), moveName) == usedMoves.end()) {
-							return moveName;
+							return i;
 						}
 					}
 				}
@@ -244,7 +247,7 @@ std::string Enemy::DecisionMatrix(int EnemyHP, bool EnemyBuffed)
 						moveset.GetMove(i).MoveType == "Magical") {
 						std::string moveName = moveset.GetMove(i).MoveName;
 						if (std::find(usedMoves.begin(), usedMoves.end(), moveName) == usedMoves.end()) {
-							return moveName;
+							return i;
 						}
 					}
 				}
@@ -256,7 +259,7 @@ std::string Enemy::DecisionMatrix(int EnemyHP, bool EnemyBuffed)
 
 					for (int i = 0; i < moveset.size(); i++) {
 						if (moveset.GetMove(i).MoveType == "BossMove") {
-							return moveset.GetMove(i).MoveName;
+							return i;
 						}
 					}
 				}
@@ -267,7 +270,7 @@ std::string Enemy::DecisionMatrix(int EnemyHP, bool EnemyBuffed)
 					if (moveset.GetMove(i).MoveType == "DeathMove") {
 						EnemyHP = 0;
 						Phase = false;
-						return moveset.GetMove(i).MoveName;
+						return i;
 					}
 				}
 			}
@@ -277,7 +280,7 @@ std::string Enemy::DecisionMatrix(int EnemyHP, bool EnemyBuffed)
 				if (moveset.GetMove(i).MoveType == "Physical" ||
 					moveset.GetMove(i).MoveType == "Abyssal" ||
 					moveset.GetMove(i).MoveType == "Magical") {
-					return moveset.GetMove(i).MoveName;
+					return i;
 				}
 			}
 

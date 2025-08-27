@@ -62,5 +62,5 @@ public:
 	void InitEnemy();
 	static void ShowEnemyStats(Enemy& EC);
 
-	std::string DecisionMatrix(int PlayerHP, bool PlayerBuffed);
+	int DecisionMatrix(int PlayerHP, bool PlayerBuffed);
 };
