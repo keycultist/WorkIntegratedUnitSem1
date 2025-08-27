@@ -32,27 +32,27 @@ static void CheckEnemyPlayerCollision(Player& MC, Enemy& target)
     }
 }
 
-bool GameRunning(Player& MC, Enemy& Enemies, Map& GMap, bool& InsideRoom) {
-    //system("cls");
-    if (InsideRoom) {
-        GMap.switchToRoomView(MC.GetPlayerPosX(), MC.GetPlayerPosY(), MC);
-    }
-    else {
-        GMap.renderMapWithFOV(MC, 80, 30);
-    }
-
-    std::cout << "X: " << MC.GetPlayerPosX() << "    Y: " << MC.GetPlayerPosY() << std::endl;
-
-    if (GMap.detectPlayerRoom(MC.GetPlayerPosX(), MC.GetPlayerPosY())) {
-        InsideRoom = true;
-    }
-    else {
-        InsideRoom = false;
-    }
-
-    //GMap.RequestFloorUpdate(MC);
-    return true;
-}
+//bool GameRunning(Player& MC, Enemy& Enemies, Map& GMap, bool& InsideRoom) {
+//    //system("cls");
+//    if (InsideRoom) {
+//        GMap.switchToRoomView(MC.GetPlayerPosX(), MC.GetPlayerPosY(), MC);
+//    }
+//    else {
+//        GMap.renderMapWithFOV(MC, 80, 30);
+//    }
+//
+//    std::cout << "X: " << MC.GetPlayerPosX() << "    Y: " << MC.GetPlayerPosY() << std::endl;
+//
+//    if (GMap.detectPlayerRoom(MC.GetPlayerPosX(), MC.GetPlayerPosY())) {
+//        InsideRoom = true;
+//    }
+//    else {
+//        InsideRoom = false;
+//    }
+//
+//    //GMap.RequestFloorUpdate(MC);
+//    return true;
+//}
 
 void PlayerInput(Player& MC) {
     if (_kbhit()) {  // Check if key pressed
