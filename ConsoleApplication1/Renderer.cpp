@@ -65,6 +65,14 @@ void Renderer::drawASCII(std::string asciiArt) {
         "`````````````````````````````|#=`    `       `        `      `           `` `+#\\_`````````````````````````````\n"
         "````````````````````````````/#+-            `     `                 `      `  -+#|````````````````````````````\n"
     };
+    //Add more art here liek the format above
 
-    std::cout << asciiArt << std::endl;
+
+    if (asciiArt == "TitleScreenUIString") {
+        std::cout << TitleScreenUIString << std::endl;
+    }
+    //Add more activation here
+    else {
+        std::cout << asciiArt << std::endl;
+    }
 }

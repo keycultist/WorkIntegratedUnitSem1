@@ -68,18 +68,18 @@ void PlayerInput(Player& MC) {
     }
 }
 
-void clearConsole() {
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_SCREEN_BUFFER_INFO csbi;
-    GetConsoleScreenBufferInfo(hConsole, &csbi);
-    DWORD consoleSize = csbi.dwSize.X * csbi.dwSize.Y;
-    DWORD charsWritten;
-
-    COORD topLeft = { 0, 0 };
-    FillConsoleOutputCharacter(hConsole, ' ', consoleSize, topLeft, &charsWritten);
-    FillConsoleOutputAttribute(hConsole, csbi.wAttributes, consoleSize, topLeft, &charsWritten);
-    SetConsoleCursorPosition(hConsole, topLeft);
-}
+//void clearConsole() {
+//    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+//    CONSOLE_SCREEN_BUFFER_INFO csbi;
+//    GetConsoleScreenBufferInfo(hConsole, &csbi);
+//    DWORD consoleSize = csbi.dwSize.X * csbi.dwSize.Y;
+//    DWORD charsWritten;
+//
+//    COORD topLeft = { 0, 0 };
+//    FillConsoleOutputCharacter(hConsole, ' ', consoleSize, topLeft, &charsWritten);
+//    FillConsoleOutputAttribute(hConsole, csbi.wAttributes, consoleSize, topLeft, &charsWritten);
+//    SetConsoleCursorPosition(hConsole, topLeft);
+//}
 
 //Event Collsion check, what does player have to collide with? idk like a tile lol.
 //static void CheckEventPlayerCollision(Player& MC, ???)
@@ -107,7 +107,7 @@ void clearConsole() {
 int main()
 {
     Renderer render;
-    render.drawASCII("e");
+    render.drawASCII("TitleScreenUIString");
 
     srand(time(0));
     Player MC;
@@ -160,7 +160,8 @@ int main()
         // 4. Render
         if (InsideRoom) {
             if (!Clearcheck) {
-                clearConsole();
+                //clearConsole();
+                system("cls");
                 Clearcheck = true;
             }
             GMap.switchToRoomView(MC.GetPlayerPosX(), MC.GetPlayerPosY(), MC, shop);

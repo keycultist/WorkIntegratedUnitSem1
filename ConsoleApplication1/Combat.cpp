@@ -46,11 +46,6 @@ bool Combat::UpdateTutorial(bool& InCombat, Player& MC, Enemy& target) //WIP
 		if (DivInt <= 30) {
 			DivInter.applyEffect(DivInter.getRandomGod(), MC, target);
 		}
-		std::cout << "(1) Attack" << std::endl;
-		std::cout << "(2) Defend" << std::endl;
-		std::cout << "(3) Item" << std::endl;
-		std::cout << "(4) Run" << std::endl;
-		MC.ShowPlayerStats();
 		ChosenMove = 0;
 		Defend = false;
 		RunChance = rand() % 10;
@@ -58,7 +53,7 @@ bool Combat::UpdateTutorial(bool& InCombat, Player& MC, Enemy& target) //WIP
 
 		int chP = _getch();
 		system("cls");
-		switch (chP) { //select action
+		switch (ChoseAction(MC, target, 1)) { //select action
 		case '1':
 			//Include Player Moveset
 			MC.ShowPlayerMoves();
@@ -96,6 +91,209 @@ bool Combat::UpdateTutorial(bool& InCombat, Player& MC, Enemy& target) //WIP
 			std::cout << "Use an item? Y/N" << std::endl;
 			chP = _getch();
 			if (chP == 'y') {
+				MC.GetInventory().PromptPlayerUseItem();
+				MC.UpdatePlayerStatsInventory();
+				turnEnd = true;
+			}
+			else {
+				turnEnd = false;
+			}
+			break;
+		case '4':
+			if (RunChance >= 8) {
+				std::cout << "Successfuly Ran Away" << std::endl;
+				return true;
+			}
+			else if (RunChance >= 4 && RunChance < 8) {
+				std::cout << "Ran Away but Damaged" << std::endl;
+				MC.SetPlayerHP(MC.GetPlayerHP() * 0.95);
+				return true;
+			}
+			else {
+				std::cout << "Failed to Run" << std::endl;
+				return false;
+				turnEnd = true;
+			}
+			chP = _getch();
+			break;
+		default:
+			turnEnd = false;
+			break;
+		}
+		system("cls");
+	}
+	if (target.GetEnemyHP() <= 0) { //Enemy death check
+		std::cout << "Enemy Defeated! Gained XP!" << std::endl;
+		if (MC.GetPlayerClass() == "Berserker") {
+			MC.SetPlayerPower(MC.GetPlayerPower() + target.GetEnemyXP());
+			std::cout << "Gained XP converted to Power! You have: " << MC.GetPlayerPower() << " Power" << std::endl;
+		}
+		else {
+			MC.SetPlayerXP(MC.GetPlayerXP() + target.GetEnemyXP());
+		}
+		MC.LevelUpCheck();
+		int chP = _getch();
+		system("cls");
+		return true;
+	}
+	else {
+		std::cout << "Enemy's turn" << std::endl;
+		int chP = _getch();
+		system("cls");
+		int EnemyMoveChoice = target.DecisionMatrix(MC.GetPlayerHP(), MC.GetPlayerPower() > 0);
+		// Include Enemy Moveset
+		switch (EnemyMoveChoice) {
+		case 1:
+			break;
+		case 2:
+			break;
+		case 3:
+			break;
+		case 4:
+			break;
+		case 5:
+			break;
+		case 6:
+			break;
+		default:
+			break;
+		}
+		Combat::EnemyAttack(MC, target, EnemyMoveChoice, Defend);
+		chP = _getch();
+		system("cls");
+		return false;
+	}
+	if (MC.GetPlayerHP() <= 0) { //Player death check
+		std::cout << "Player Defeated! You Lose!" << std::endl;
+		system("cls");
+		return true;
+	}
+}
+
+bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
+{
+	DivineIntervention DivInter;
+	bool turnEnd = false;
+	int ChosenMove = 0;
+	bool Defend = false;
+	int RunChance = rand() % 10;
+	int DivInt = 0;
+	while (!turnEnd) {
+		std::cout << "You are fighting a: " << target.GetEnemyClass() << std::endl;
+		std::cout << target.GetEnemyHP() << "HP" << std::endl;
+		std::cout << "What will you do?" << std::endl;
+		DivInt = rand() % 100 + 1;
+		if (DivInt <= 30) {
+			DivInter.applyEffect(DivInter.getRandomGod(), MC, target);
+		}
+		ChosenMove = 0;
+		Defend = false;
+		RunChance = rand() % 10;
+		const char* HORSEAscii = R"(
+		                                                                                                              
+                      @%                                                                                      
+                      #@%*                                                    :-                              
+                        %##+                                               ...--:                             
+                         #%#++---                                        .:==++..                             
+                         %%@@%##*+++=         :...    .  ..::.        .::=+*+*=..                             
+                          %@@@@@%%%%#+-::..... . .....::...     ....:-*****##%+..                             
+                          %@@@@@@@@@@#*=-+*#-::::=-.:::-++--...:+*-+#%#%##%%##+.                              
+                            %@@@@@@@@@%%@@#=-+:::---:-.=-+--::.:#%%%%%%%###%%*:.                              
+                             #@@@@@@@@@@@*=:++---==---==-++--:--.#@%%%%@%#%%+:.                               
+                              #@@@@@@@@%#+--+#:-====-=-=*=++:-:=:-*%%%%%%##+:                                 
+                               *@@@@@@%#*==+##=:==*==*===-=*=--==:=#%%%%#*=..                                 
+                                *@@@@@%#+===#*=--++==*-+=-=*+----::-+###*-.                                   
+                                -*@%%@%#*+==#*===+*+++-==:=**--=-.:-=+++-..                                   
+                                -:+%%%%%#++=#+=++=++++-+*==#+--=-.:-===:..:                                   
+                               =-:=#%%##**+=**+*++=++==+#=-*++---.:-=+-...                                    
+                               -:=##%#####**#***++=+====*+-*#+--:.:==++=..                                    
+                               :-+%***#*######%#++======+*-+##+--.-==-==-:           Neigh                     
+                              ==-+*###%%%%%#%#*%#+=-=====#+*##%+==++=----:.                                   
+                              ===+*#%@%%%%%%%%##%#+=+=+-=#+##*#*+-*###+=-:.                                   
+                              ==+%@@@@@@@@@%%%%%%%#++*+--*+*##*#%+%%%##+=::                                   
+                              -=*%@@@@@@@@%%%%#%%%##**==-++*##%##*%@@%%%##+                                   
+                              -=%@@@@@@@@@%%@%#%%%*%##+-=++*#%##%*%%@@@%%*+                                   
+                             =-+%%%@@@@@@@%%@%#%%#%%%#*=++***###%#%@%%@@@#=                                   
+                             ==+###@@@@@@@@%%%%%%%##%##*=***####%#%%#%@%*:                                    
+                             --+#%%@@@@@@@%%%@%%%%%%%#%#-+*#####%##%#**=::                                    
+                             ==+#%#%@@@@@@%%%@%%%%%%%%#%=*%###*#%##**#*-::                                    
+                             ==+#%#%%@@@@@%%%@%%%%%%%###+##**#####****+:::                                    
+                            +--+*%%%@@@@@%%%%@%%%%%%%#######*####*****=.::                                    
+                            =--+*%%%@@%@@%%%%@%%%%%%%######*#*##**++*+=..:                                    
+                            =--=*%%%@@%@@%%%%%%%%%########******+*+**+-....                                   
+                            =--=*%%%@@@@@%%#%%%%#####*####******+++**+-..:-                                   
+                            -=--*%%%%@@@@%%###########********+++*+**+-. ..                                   
+                            ====*%%%%@@@@%########**********++===+*#*+=. ..                                   
+                           =-+==##%%%@@@@%%#*###*#**#*****+++=-==+*##+-..::                                   
+                           =-+--%#%%@%@@%%%#**####*****##***+=:=++*#*+=...:                                   
+                          --==++*#%%@@%%%%%#*#####*###*******+=-+++**+-::::                                   
+                         =--=+=+##%%@@%%%%%#######*##**##**+===-++++++-:-.:                                   
+                         +=-=-+###%@%@%%%%%#**=#**##******+==:.-=++++=:.:::                                   
+                        =----*+*%#%@@@%%%%#*-=+++**###***++=-:..===**+.:....:                                 
+                      ++-:=--***%#%@@@@%###*==++**##*****++=-:..-=+**=-::::..:.:                              
+                     =-=+==--=*#%%%%@@@%%%#+==+**#*####*#*++=:..--+*+::-:::::...::                            
+                   --+*+*+*=-=##%%%%%@@@%%*+=+***#*###******+=:.=+*+-:::--::=-..:.:-                          
+                 ++++*+#**++-=*#%@@%%@@@%#++*%######%##*****#**=-++-:.::=-...:---::::                         
+               +*+*#*#*##*=-::+#%@@@@@@@%**%%@@%%###%#######%%%#+=+-::-:-*=....===-:..:                       
+             +==*#%%#%%@*++-::=#%@@@@@@@%*%@@@@@%%#%%%#%%%%%%#%@@+::.:---+++...-=+==-:.:                      
+            **##%%%@%%%@%*+=::=*%@@@@@@@@%@@@@@@@@%%%%%%%%%@@%#@@#--..:-=-=*:...-+++=--.-                     
+           #%@@%%@@@@%%#*=--:--+#@@@@@@@#%@@@@@%@@@@@%%%@@@@@%%%@#=-:.::--=++:...-++===:.:                    
+          #%@@%%%@@@%%#++-==---+*@@@@@@@%%@@@@@%@@@@@%%%@@@@@%%%%#+-:::-==+===:...:-++=-::-                   
+          %@@@@@@@@@#*===+*==--=+%@@@@@@@#%%@@@@@@@@@%%@@@@@@*###*==::==-==+==-.....-++=:::=                  
+         #%@@@@@@@@#+=+--=+---==+%@@@@@@@%#@@%%@@@@@@@@@@@@@%****+==-:==++*+=++-.:....---::-                  
+         %@@@@@@@%*+++++++*#*--++%@@@@@@@@#%@@@@@@@@@@@@@@@@%%#+=++=:::=****+=++=::..:::--::-                 
+         %@@@@@%***+++++++**++:+*#@@@@@@@@%#%@@@%@@@@@@@@@%%#*+=+*+=-:-===*#=--=--::::..::::-                 
+        %@@@@@%*+*+++=+##+*#++--**%@@@@@@@%#@%%%%@%@@@@%%%%#+==+++++-.:+=++*#++====:.:::..:--=                
+        %@@@@%*++*+*#+#**###**+-=*%@@@@@@@@%%@@@%###%%%%##**#*++++++=:--++###*+=+=--:--:....:-                
+        %%@%#*###*+=#####%%#*#+--*%@@@@@@@@@@@@@@@@@@@@@@%%#**#***++=--*+**###===+-==-::-=-..:=               
+        %@%#@%*#%%##+=######%#+==*#@@@@@@@@@@@@@@@@%%#%%@%#%%###+**==-:+*#**##*++==+++---=++:::=              
+        %#%%**##%%%%=+####%%%%%==+#%@@@@@@@@@@@@@@@@@@@@@@%%%###***==--=**#####*+++===-:+==+-:.:-             
+       %@##%###%@@##%#%%##@%%@@++*#%@@@@@@@@@@@@@@@@@@@@@@@%%####*+-=-==++**####*++===--+=+=-::-:=            
+      ####%%*%#@%%#%@#%%##@@@@#+**#%@@@@@@@@@@@@@@@@@@@@@@@@%#*##**====+++*#####*+=:==---====-=-.:=           
+      %@#%%%@%@%%@@@#%@%#%@@@@**#*#%@@@@@@@@@@@@@@@@@@@@@@@%%%###**+=====+#*#%###+==:+=-:-=++=------          
+     ##%%%#@@@@%%@@%%%#%@@@@@%#%%##%@@@@@@@@@@@@@@@@@@@@@@@%#####*#*++-=++++*##**#*==-=-=--+==+=----=         
+     %@%%#%%@@%@@@@##%%@@@@@@%@%%##@@@@@@@@@@@@@@@@@@@@@@@@%%%##%#*#+++++++**#####*+==-:--=++====--=-         
+		)";
+		turnEnd = false;
+		int chP;
+		switch (ChoseAction(MC, target, 1)) { //select action
+		case '1':
+			//Include Player Moveset
+			//MC.ShowPlayerMoves();
+			chP = _getch();
+			system("cls");
+			switch (ChoseAction(MC, target, 2)) {
+			case '1':
+				ChosenMove = 1;
+				break;
+			case '2':
+				ChosenMove = 2;
+				break;
+			case '3':
+				ChosenMove = 3;
+				break;
+			case '4':
+				ChosenMove = 4;
+				break;
+			default:
+				break;
+			}
+			Combat::PlayerAttack(MC, target, ChosenMove - 1);
+			chP = _getch();
+			turnEnd = true;
+			break;
+		case '2':
+			std::cout << "Prepaired to Defend" << std::endl;
+			Defend = true;
+			chP = _getch();
+			turnEnd = true;
+			break;
+		case '3':
+			MC.UpdateInventoryPlayerStats();
+			std::cout << MC.GetInventory().DrawInventoryUI() << std::endl;
+			std::cout << "Use an item? Y/N" << std::endl;
+			chP = _getch();
+			if (chP == 'y' || chP == 'Y') {
 				MC.GetInventory().PromptPlayerUseItem();
 				MC.UpdatePlayerStatsInventory();
 				turnEnd = true;
@@ -179,218 +377,57 @@ bool Combat::UpdateTutorial(bool& InCombat, Player& MC, Enemy& target) //WIP
 	}
 }
 
-bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
+int Combat::ChoseAction(Player& MC, Enemy& target, int stage)
 {
-	DivineIntervention DivInter;
-	bool turnEnd = false;
-	int ChosenMove = 0;
-	bool Defend = false;
-	int RunChance = rand() % 10;
-	int DivInt = 0;
-	while (!turnEnd) {
-		std::cout << "You are fighting a: " << target.GetEnemyClass() << std::endl;
-		std::cout << target.GetEnemyHP() << "HP" << std::endl;
-		std::cout << "What will you do?" << std::endl;
-		DivInt = rand() % 100 + 1;
-		if (DivInt <= 30) {
-			DivInter.applyEffect(DivInter.getRandomGod(), MC, target);
+	bool ChosingAction = true;
+	int tracker;
+	int chP;
+		if (stage == 1) {
+			std::string c[4] = {
+				"(1) Attack ",
+				"(2) Defend ",
+				"(3) Item   ",
+				"(4) Run    ",
+			};
+			c[0] += "<-";
+			tracker = 0;
+			while (ChosingAction) {
+				std::cout << c[0] << std::endl;
+				std::cout << c[1] << std::endl;
+				std::cout << c[2] << std::endl;
+				std::cout << c[3] << std::endl;
+				chP = _getch();
+				system("cls");
+				switch (chP) {
+				case 'w':
+				case 'W':
+					c[tracker].erase(12);
+					if (tracker == 0) {
+						tracker = 3;
+					}
+					else {
+						tracker -= 1;
+					}
+					c[tracker] += "<-";
+					break;
+				case 's':
+				case 'S':
+					c[tracker].erase(12);
+					if (tracker == 3) {
+						tracker = 0;
+					}
+					else {
+						tracker += 1;
+					}
+					c[tracker] += "<-";
+					break;
+				case '13':
+					return (tracker + 1);
+				default:
+					break;
+				}
+			}
 		}
-		std::cout << "(1) Attack" << std::endl;
-		std::cout << "(2) Defend" << std::endl;
-		std::cout << "(3) Item" << std::endl;
-		std::cout << "(4) Run" << std::endl;
-		MC.ShowPlayerStats();
-		ChosenMove = 0;
-		Defend = false;
-		RunChance = rand() % 10;
-		const char* HORSEAscii = R"(
-		                                                                                                              
-                      @%                                                                                      
-                      #@%*                                                    :-                              
-                        %##+                                               ...--:                             
-                         #%#++---                                        .:==++..                             
-                         %%@@%##*+++=         :...    .  ..::.        .::=+*+*=..                             
-                          %@@@@@%%%%#+-::..... . .....::...     ....:-*****##%+..                             
-                          %@@@@@@@@@@#*=-+*#-::::=-.:::-++--...:+*-+#%#%##%%##+.                              
-                            %@@@@@@@@@%%@@#=-+:::---:-.=-+--::.:#%%%%%%%###%%*:.                              
-                             #@@@@@@@@@@@*=:++---==---==-++--:--.#@%%%%@%#%%+:.                               
-                              #@@@@@@@@%#+--+#:-====-=-=*=++:-:=:-*%%%%%%##+:                                 
-                               *@@@@@@%#*==+##=:==*==*===-=*=--==:=#%%%%#*=..                                 
-                                *@@@@@%#+===#*=--++==*-+=-=*+----::-+###*-.                                   
-                                -*@%%@%#*+==#*===+*+++-==:=**--=-.:-=+++-..                                   
-                                -:+%%%%%#++=#+=++=++++-+*==#+--=-.:-===:..:                                   
-                               =-:=#%%##**+=**+*++=++==+#=-*++---.:-=+-...                                    
-                               -:=##%#####**#***++=+====*+-*#+--:.:==++=..                                    
-                               :-+%***#*######%#++======+*-+##+--.-==-==-:           Neigh                     
-                              ==-+*###%%%%%#%#*%#+=-=====#+*##%+==++=----:.                                   
-                              ===+*#%@%%%%%%%%##%#+=+=+-=#+##*#*+-*###+=-:.                                   
-                              ==+%@@@@@@@@@%%%%%%%#++*+--*+*##*#%+%%%##+=::                                   
-                              -=*%@@@@@@@@%%%%#%%%##**==-++*##%##*%@@%%%##+                                   
-                              -=%@@@@@@@@@%%@%#%%%*%##+-=++*#%##%*%%@@@%%*+                                   
-                             =-+%%%@@@@@@@%%@%#%%#%%%#*=++***###%#%@%%@@@#=                                   
-                             ==+###@@@@@@@@%%%%%%%##%##*=***####%#%%#%@%*:                                    
-                             --+#%%@@@@@@@%%%@%%%%%%%#%#-+*#####%##%#**=::                                    
-                             ==+#%#%@@@@@@%%%@%%%%%%%%#%=*%###*#%##**#*-::                                    
-                             ==+#%#%%@@@@@%%%@%%%%%%%###+##**#####****+:::                                    
-                            +--+*%%%@@@@@%%%%@%%%%%%%#######*####*****=.::                                    
-                            =--+*%%%@@%@@%%%%@%%%%%%%######*#*##**++*+=..:                                    
-                            =--=*%%%@@%@@%%%%%%%%%########******+*+**+-....                                   
-                            =--=*%%%@@@@@%%#%%%%#####*####******+++**+-..:-                                   
-                            -=--*%%%%@@@@%%###########********+++*+**+-. ..                                   
-                            ====*%%%%@@@@%########**********++===+*#*+=. ..                                   
-                           =-+==##%%%@@@@%%#*###*#**#*****+++=-==+*##+-..::                                   
-                           =-+--%#%%@%@@%%%#**####*****##***+=:=++*#*+=...:                                   
-                          --==++*#%%@@%%%%%#*#####*###*******+=-+++**+-::::                                   
-                         =--=+=+##%%@@%%%%%#######*##**##**+===-++++++-:-.:                                   
-                         +=-=-+###%@%@%%%%%#**=#**##******+==:.-=++++=:.:::                                   
-                        =----*+*%#%@@@%%%%#*-=+++**###***++=-:..===**+.:....:                                 
-                      ++-:=--***%#%@@@@%###*==++**##*****++=-:..-=+**=-::::..:.:                              
-                     =-=+==--=*#%%%%@@@%%%#+==+**#*####*#*++=:..--+*+::-:::::...::                            
-                   --+*+*+*=-=##%%%%%@@@%%*+=+***#*###******+=:.=+*+-:::--::=-..:.:-                          
-                 ++++*+#**++-=*#%@@%%@@@%#++*%######%##*****#**=-++-:.::=-...:---::::                         
-               +*+*#*#*##*=-::+#%@@@@@@@%**%%@@%%###%#######%%%#+=+-::-:-*=....===-:..:                       
-             +==*#%%#%%@*++-::=#%@@@@@@@%*%@@@@@%%#%%%#%%%%%%#%@@+::.:---+++...-=+==-:.:                      
-            **##%%%@%%%@%*+=::=*%@@@@@@@@%@@@@@@@@%%%%%%%%%@@%#@@#--..:-=-=*:...-+++=--.-                     
-           #%@@%%@@@@%%#*=--:--+#@@@@@@@#%@@@@@%@@@@@%%%@@@@@%%%@#=-:.::--=++:...-++===:.:                    
-          #%@@%%%@@@%%#++-==---+*@@@@@@@%%@@@@@%@@@@@%%%@@@@@%%%%#+-:::-==+===:...:-++=-::-                   
-          %@@@@@@@@@#*===+*==--=+%@@@@@@@#%%@@@@@@@@@%%@@@@@@*###*==::==-==+==-.....-++=:::=                  
-         #%@@@@@@@@#+=+--=+---==+%@@@@@@@%#@@%%@@@@@@@@@@@@@%****+==-:==++*+=++-.:....---::-                  
-         %@@@@@@@%*+++++++*#*--++%@@@@@@@@#%@@@@@@@@@@@@@@@@%%#+=++=:::=****+=++=::..:::--::-                 
-         %@@@@@%***+++++++**++:+*#@@@@@@@@%#%@@@%@@@@@@@@@%%#*+=+*+=-:-===*#=--=--::::..::::-                 
-        %@@@@@%*+*+++=+##+*#++--**%@@@@@@@%#@%%%%@%@@@@%%%%#+==+++++-.:+=++*#++====:.:::..:--=                
-        %@@@@%*++*+*#+#**###**+-=*%@@@@@@@@%%@@@%###%%%%##**#*++++++=:--++###*+=+=--:--:....:-                
-        %%@%#*###*+=#####%%#*#+--*%@@@@@@@@@@@@@@@@@@@@@@%%#**#***++=--*+**###===+-==-::-=-..:=               
-        %@%#@%*#%%##+=######%#+==*#@@@@@@@@@@@@@@@@%%#%%@%#%%###+**==-:+*#**##*++==+++---=++:::=              
-        %#%%**##%%%%=+####%%%%%==+#%@@@@@@@@@@@@@@@@@@@@@@%%%###***==--=**#####*+++===-:+==+-:.:-             
-       %@##%###%@@##%#%%##@%%@@++*#%@@@@@@@@@@@@@@@@@@@@@@@%%####*+-=-==++**####*++===--+=+=-::-:=            
-      ####%%*%#@%%#%@#%%##@@@@#+**#%@@@@@@@@@@@@@@@@@@@@@@@@%#*##**====+++*#####*+=:==---====-=-.:=           
-      %@#%%%@%@%%@@@#%@%#%@@@@**#*#%@@@@@@@@@@@@@@@@@@@@@@@%%%###**+=====+#*#%###+==:+=-:-=++=------          
-     ##%%%#@@@@%%@@%%%#%@@@@@%#%%##%@@@@@@@@@@@@@@@@@@@@@@@%#####*#*++-=++++*##**#*==-=-=--+==+=----=         
-     %@%%#%%@@%@@@@##%%@@@@@@%@%%##@@@@@@@@@@@@@@@@@@@@@@@@%%%##%#*#+++++++**#####*+==-:--=++====--=-         
-		)";
-		turnEnd = false;
-
-		int chP = _getch();
-		system("cls");
-		switch (chP) { //select action
-		case '1':
-			//Include Player Moveset
-			MC.ShowPlayerMoves();
-			chP = _getch();
-			system("cls");
-			switch (chP) {
-			case '1':
-				ChosenMove = 1;
-				break;
-			case '2':
-				ChosenMove = 2;
-				break;
-			case '3':
-				ChosenMove = 3;
-				break;
-			case '4':
-				ChosenMove = 4;
-				break;
-			default:
-				break;
-			}
-			Combat::PlayerAttack(MC, target, ChosenMove - 1);
-			chP = _getch();
-			turnEnd = true;
-			break;
-		case '2':
-			std::cout << "Prepaired to Defend" << std::endl;
-			Defend = true;
-			chP = _getch();
-			turnEnd = true;
-			break;
-		case '3':
-			MC.UpdateInventoryPlayerStats();
-			std::cout << MC.GetInventory().DrawInventoryUI() << std::endl;
-			std::cout << "Use an item? Y/N" << std::endl;
-			chP = _getch();
-			if (chP == 'y') {
-				MC.GetInventory().PromptPlayerUseItem();
-				MC.UpdatePlayerStatsInventory();
-				turnEnd = true;
-			}
-			else {
-				turnEnd = false;
-			}
-			break;
-		case '4':
-			if (RunChance >= 8) {
-				std::cout << "Successfuly Ran Away" << std::endl;
-				return true;
-			}
-			else if (RunChance >= 4 && RunChance < 8) {
-				std::cout << "Ran Away but Damaged" << std::endl;
-				MC.SetPlayerHP(MC.GetPlayerHP() * 0.95);
-				return true;
-			}
-			else {
-				std::cout << "Failed to Run" << std::endl;
-				return false;
-				turnEnd = true;
-			}
-			chP = _getch();
-			break;
-		case 'h':
-			std::cout << HORSEAscii << "\n";
-			turnEnd = true;
-			break;
-		default:
-			turnEnd = false;
-			break;
-		}
-		system("cls");
-	}
-	if (target.GetEnemyHP() <= 0) { //Enemy death check
-		std::cout << "Enemy Defeated! Gained XP!" << std::endl;
-		if (MC.GetPlayerClass() == "Berserker") {
-			MC.SetPlayerPower(MC.GetPlayerPower() + target.GetEnemyXP());
-			std::cout << "Gained XP converted to Power! You have: " << MC.GetPlayerPower() << " Power" << std::endl;
-		}
-		else {
-			MC.SetPlayerXP(MC.GetPlayerXP() + target.GetEnemyXP());
-		}
-		MC.LevelUpCheck();
-		int chP = _getch();
-		system("cls");
-		return true;
-	}
-	else {
-		std::cout << "Enemy's turn" << std::endl;
-		int chP = _getch();
-		system("cls");
-		int EnemyMoveChoice = target.DecisionMatrix(MC.GetPlayerHP(), MC.GetPlayerPower() > 0);
-		// Include Enemy Moveset
-		switch (EnemyMoveChoice) {
-		case 1:
-			break;
-		case 2:
-			break;
-		case 3:
-			break;
-		case 4:
-			break;
-		case 5:
-			break;
-		case 6:
-			break;
-		default:
-			break;
-		}
-		Combat::EnemyAttack(MC, target, EnemyMoveChoice, Defend);
-		chP = _getch();
-		system("cls");
-		return false;
-	}
-	if (MC.GetPlayerHP() <= 0) { //Player death check
-		std::cout << "Player Defeated! You Lose!" << std::endl;
-		system("cls");
-		return true;
-	}
 }
 
 void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
