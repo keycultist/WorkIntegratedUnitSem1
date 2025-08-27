@@ -108,11 +108,16 @@ int main()
 {
     Renderer render;
     int StartGame = false;
+    bool debugEnd = false;
     while (!StartGame) {
         render.drawASCII("TitleScreenUIString");
 
         int chP = _getch();
         if (chP == 13) {
+            StartGame = true;
+        }
+        else if (chP == 'h') {
+            debugEnd = true;
             StartGame = true;
         }
         system("cls");
@@ -137,8 +142,12 @@ int main()
     //82308 bytes of stack!!
 
     Map GMap;
-
-    GMap.CreateNewFloor(6, MC);
+    if (debugEnd) {
+        GMap.CreateNewFloor(6, MC);
+    }
+    else {
+        GMap.CreateNewFloor(0, MC);
+    }
     //GMap.RequestFloorUpdate(MC);
 
     system("cls");
@@ -185,7 +194,7 @@ int main()
             GMap.switchToRoomView(MC.GetPlayerPosX(), MC.GetPlayerPosY(), MC, shop, FinishShopping);
         }
         else {
-            GMap.renderMapWithFOV(MC, 40, 20);
+            GMap.renderMapWithFOV(MC, 50, 25);
             Clearcheck = false;
             FinishShopping = false;
         }
