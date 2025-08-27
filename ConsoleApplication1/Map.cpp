@@ -9,6 +9,7 @@ theres still stuff to do like actually generating the enemy spawns and etc, but 
 #include "Renderer.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "Shop.h"
 #define NOMINMAX
 #include <windows.h> 
 
@@ -320,7 +321,7 @@ void Map::renderCurrentRoom(Room* room, char** roomBoard, int boardSize, Player&
     std::cout << frameBuffer;
 }
 
-void Map::switchToRoomView(int playerX, int playerY, Player& MC) {
+void Map::switchToRoomView(int playerX, int playerY, Player& MC, Shop& shop) {
     Room* playerRoom = detectPlayerRoom(playerX, playerY);
     
     if (playerRoom) {
@@ -332,6 +333,9 @@ void Map::switchToRoomView(int playerX, int playerY, Player& MC) {
         
         std::cout << "Entered " << getRoomTypeName(playerRoom->type) << " room!" << std::endl;
         //drawBoard(innerPtrs, 256, 256);  // Show just this room
+        if (playerRoom->type == RoomType::SHOP) {
+            shop.DrawShopUI();
+        }
     } else {
         std::cout << "Player is in a corridor or empty space." << std::endl;
     }

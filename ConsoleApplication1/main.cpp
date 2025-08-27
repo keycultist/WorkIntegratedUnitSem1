@@ -14,6 +14,7 @@
 #include "Enemy.h"
 #include "Events.h"
 #include "Map.h"
+#include "Shop.h"
 #include "Renderer.h"
 #include "Item.h"
 
@@ -111,6 +112,7 @@ int main()
     srand(time(0));
     Player MC;
     Item items;
+    Shop shop;
     MC.InitPlayer();
     items.SetItemPlayerClass(MC.GetPlayerClass());
     items.SetItemList();
@@ -155,7 +157,7 @@ int main()
                 clearConsole();
                 Clearcheck = true;
             }
-            GMap.switchToRoomView(MC.GetPlayerPosX(), MC.GetPlayerPosY(), MC);
+            GMap.switchToRoomView(MC.GetPlayerPosX(), MC.GetPlayerPosY(), MC, shop);
         }
         else {
             GMap.renderMapWithFOV(MC, 40, 20);
