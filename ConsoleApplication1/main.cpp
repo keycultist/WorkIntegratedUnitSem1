@@ -25,12 +25,26 @@ static void CheckEnemyPlayerCollision(Player& MC, Enemy& target)
     }
 }
 
-bool GameRunning(Player& MC, Enemy& Enemies, Map& GMap) {
-    MC.move();
-    system("cls");
+bool GameRunning(Player& MC, Enemy& Enemies, Map& GMap, bool& InsideRoom) {
+    //system("cls");
+    if (InsideRoom) {
+        GMap.switchToRoomView(MC.GetPlayerPosX(), MC.GetPlayerPosY(), MC);
+    }
+    else {
+        GMap.RequestFloorUpdate(MC);
+    }
 
-    GMap.RequestFloorUpdate(MC);
     std::cout << "X: " << MC.GetPlayerPosX() << "    Y: " << MC.GetPlayerPosY() << std::endl;
+    MC.move();
+
+    if (GMap.detectPlayerRoom(MC.GetPlayerPosX(), MC.GetPlayerPosY())) {
+        InsideRoom = true;
+    }
+    else {
+        InsideRoom = false;
+    }
+
+    //GMap.RequestFloorUpdate(MC);
     return true;
 }
 
@@ -82,8 +96,9 @@ int main()
     GMap.RequestFloorUpdate(MC);
 
     bool RUNNINGHORSE = true;
+    bool InsideRoom = false;
     while (RUNNINGHORSE) {
-        RUNNINGHORSE = GameRunning(MC, *Enemies[0], GMap);
+        RUNNINGHORSE = GameRunning(MC, *Enemies[0], GMap, InsideRoom);
     }
 
     //...

@@ -1197,7 +1197,7 @@ void Player::move() //Not really sure if the changes affected anything
         break;
     case 'S':
     case 's':
-        if (GetPlayerPosY() < 128) {
+        if (GetPlayerPosY() < 127) {
             targety = GetPlayerPosY() + 1;
         }
         else {
@@ -1207,7 +1207,7 @@ void Player::move() //Not really sure if the changes affected anything
         break;
     case 'D':
     case 'd':
-        if (GetPlayerPosX() < 128) {
+        if (GetPlayerPosX() < 127) {
             targetx = GetPlayerPosX() + 1;
         }
         else {

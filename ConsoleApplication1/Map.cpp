@@ -239,6 +239,7 @@ void Map::renderCurrentRoom(Room* room, char** roomBoard, int boardSize, Player&
     if (!room) return;
 
     fillBoard(roomBoard, boardSize, boardSize, MC);
+    std::cout << "AAAAAAAAAAAAAAA" << std::endl;
 
     int scale = 8;  // Scale factor for detailed view
     int scaledWidth = room->width * scale;
