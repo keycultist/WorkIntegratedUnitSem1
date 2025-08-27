@@ -1,4 +1,5 @@
 #include "Combat.h"
+#include "divine_intervention.h"
 #include <conio.h>
 #include <stdlib.h>
 #include <time.h> 
@@ -18,14 +19,20 @@ void Combat::InitCombat(Player& MC, Enemy& target)
 
 bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 {
+	DivineIntervention DivInter;
 	bool turnEnd = false;
 	int ChosenMove = 0;
 	bool Defend = false;
 	int RunChance = rand() % 10;
+	int DivInt = 0;
 	while (!turnEnd) {
 		std::cout << "You are fighting a: " << target.GetEnemyClass() << std::endl;
 		std::cout << target.GetEnemyHP() << "HP" << std::endl;
 		std::cout << "What will you do?" << std::endl;
+		DivInt = rand() % 100 + 1;
+		if (DivInt <= 30) {
+			DivInter.applyEffect(DivInter.getRandomGod(), MC, target);
+		}
 		std::cout << "(1) Attack" << std::endl;
 		std::cout << "(2) Defend" << std::endl;
 		std::cout << "(3) Item" << std::endl;
