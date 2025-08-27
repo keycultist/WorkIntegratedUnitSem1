@@ -121,10 +121,6 @@ bool Combat::UpdateTutorial(bool& InCombat, Player& MC, Enemy& target) //WIP
 			}
 			chP = _getch();
 			break;
-		case 'h':
-			std::cout << HORSEAscii << "\n";
-			turnEnd = true;
-			break;
 		default:
 			turnEnd = false;
 			break;
@@ -195,11 +191,6 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 		if (DivInt <= 30) {
 			DivInter.applyEffect(DivInter.getRandomGod(), MC, target);
 		}
-		std::cout << "(1) Attack" << std::endl;
-		std::cout << "(2) Defend" << std::endl;
-		std::cout << "(3) Item" << std::endl;
-		std::cout << "(4) Run" << std::endl;
-		MC.ShowPlayerStats();
 		ChosenMove = 0;
 		Defend = false;
 		RunChance = rand() % 10;
@@ -269,16 +260,14 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
      %@%%#%%@@%@@@@##%%@@@@@@%@%%##@@@@@@@@@@@@@@@@@@@@@@@@%%%##%#*#+++++++**#####*+==-:--=++====--=-         
 		)";
 		turnEnd = false;
-
-		int chP = _getch();
-		system("cls");
-		switch (chP) { //select action
+		int chP;
+		switch (ChoseAction(MC, target, 1)) { //select action
 		case '1':
 			//Include Player Moveset
-			MC.ShowPlayerMoves();
+			//MC.ShowPlayerMoves();
 			chP = _getch();
 			system("cls");
-			switch (chP) {
+			switch (ChoseAction(MC, target, 2)) {
 			case '1':
 				ChosenMove = 1;
 				break;
@@ -391,6 +380,59 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 		system("cls");
 		return true;
 	}
+}
+
+int Combat::ChoseAction(Player& MC, Enemy& target, int stage)
+{
+	bool ChosingAction = true;
+	int tracker;
+	int chP;
+		if (stage == 1) {
+			std::string c[4] = {
+				"(1) Attack ",
+				"(2) Defend ",
+				"(3) Item   ",
+				"(4) Run    ",
+			};
+			c[0] += "<-";
+			tracker = 0;
+			while (ChosingAction) {
+				std::cout << c[0] << std::endl;
+				std::cout << c[1] << std::endl;
+				std::cout << c[2] << std::endl;
+				std::cout << c[3] << std::endl;
+				chP = _getch();
+				system("cls");
+				switch (chP) {
+				case 'w':
+				case 'W':
+					c[tracker].erase(12);
+					if (tracker == 0) {
+						tracker = 3;
+					}
+					else {
+						tracker -= 1;
+					}
+					c[tracker] += "<-";
+					break;
+				case 's':
+				case 'S':
+					c[tracker].erase(12);
+					if (tracker == 3) {
+						tracker = 0;
+					}
+					else {
+						tracker += 1;
+					}
+					c[tracker] += "<-";
+					break;
+				case '13':
+					return (tracker + 1);
+				default:
+					break;
+				}
+			}
+		}
 }
 
 void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
