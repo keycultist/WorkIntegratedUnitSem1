@@ -132,11 +132,11 @@ int main()
     GMap.CreateNewFloor(6, MC);
     //GMap.RequestFloorUpdate(MC);
 
-    system("cls");
-    //Kombat Tutorial Insert Here
-    std::cout << "Guardsman: Welcome to the Abyss, let's make sure you're up to the challenge." << std::endl;
-    std::cout << "Guardsman: There are some Grunts here, show me what you can do." << std::endl;
-    Combat::InitCombat(MC, *Enemies[0]);
+    //system("cls");
+    ////Kombat Tutorial Insert Here
+    //std::cout << "Guardsman: Welcome to the Abyss, let's make sure you're up to the challenge." << std::endl;
+    //std::cout << "Guardsman: There are some Grunts here, show me what you can do." << std::endl;
+    //Combat::InitCombat(MC, *Enemies[0]);
 
     int chP = _getch();
     system("cls");
