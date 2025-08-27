@@ -14,6 +14,7 @@
 #include "Enemy.h"
 #include "Events.h"
 #include "Map.h"
+#include "Shop.h"
 #include "Renderer.h"
 #include "Item.h"
 
@@ -67,18 +68,18 @@ void PlayerInput(Player& MC) {
     }
 }
 
-void clearConsole() {
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_SCREEN_BUFFER_INFO csbi;
-    GetConsoleScreenBufferInfo(hConsole, &csbi);
-    DWORD consoleSize = csbi.dwSize.X * csbi.dwSize.Y;
-    DWORD charsWritten;
-
-    COORD topLeft = { 0, 0 };
-    FillConsoleOutputCharacter(hConsole, ' ', consoleSize, topLeft, &charsWritten);
-    FillConsoleOutputAttribute(hConsole, csbi.wAttributes, consoleSize, topLeft, &charsWritten);
-    SetConsoleCursorPosition(hConsole, topLeft);
-}
+//void clearConsole() {
+//    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+//    CONSOLE_SCREEN_BUFFER_INFO csbi;
+//    GetConsoleScreenBufferInfo(hConsole, &csbi);
+//    DWORD consoleSize = csbi.dwSize.X * csbi.dwSize.Y;
+//    DWORD charsWritten;
+//
+//    COORD topLeft = { 0, 0 };
+//    FillConsoleOutputCharacter(hConsole, ' ', consoleSize, topLeft, &charsWritten);
+//    FillConsoleOutputAttribute(hConsole, csbi.wAttributes, consoleSize, topLeft, &charsWritten);
+//    SetConsoleCursorPosition(hConsole, topLeft);
+//}
 
 //Event Collsion check, what does player have to collide with? idk like a tile lol.
 //static void CheckEventPlayerCollision(Player& MC, ???)
@@ -106,11 +107,12 @@ void clearConsole() {
 int main()
 {
     Renderer render;
-    render.drawASCII();
+    render.drawASCII("TitleScreenUIString");
 
     srand(time(0));
     Player MC;
     Item items;
+    Shop shop;
     MC.InitPlayer();
     items.SetItemPlayerClass(MC.GetPlayerClass());
     items.SetItemList();
@@ -129,6 +131,12 @@ int main()
 
     GMap.CreateNewFloor(6, MC);
     //GMap.RequestFloorUpdate(MC);
+
+    system("cls");
+    //Kombat Tutorial Insert Here
+    std::cout << "Guardsman: Welcome to the Abyss, let's make sure you're up to the challenge." << std::endl;
+    std::cout << "Guardsman: There are some Grunts here, show me what you can do." << std::endl;
+    Combat::InitCombat(MC, *Enemies[0]);
 
     int chP = _getch();
     system("cls");
@@ -152,10 +160,11 @@ int main()
         // 4. Render
         if (InsideRoom) {
             if (!Clearcheck) {
-                clearConsole();
+                //clearConsole();
+                system("cls");
                 Clearcheck = true;
             }
-            GMap.switchToRoomView(MC.GetPlayerPosX(), MC.GetPlayerPosY(), MC);
+            GMap.switchToRoomView(MC.GetPlayerPosX(), MC.GetPlayerPosY(), MC, shop);
         }
         else {
             GMap.renderMapWithFOV(MC, 40, 20);

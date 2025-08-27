@@ -7,8 +7,11 @@ class Combat
 {
 public:
 	static void InitCombat(Player& MC, Enemy& target);
+	static void InitTutorialCombat(Player& MC, Enemy& target);
+	static bool UpdateTutorial(bool& InCombat, Player& MC, Enemy& target);
 	static bool Update(bool& InCombat, Player& MC, Enemy& target);
 
+	static int ChoseAction(Player& MC, Enemy& target, int stage);
 	static void PlayerAttack(Player& MC, Enemy& target, int ChosenMove);
 	static void EnemyAttack(Player& MC, Enemy& target, int ChosenMove, bool Defend);
 };
