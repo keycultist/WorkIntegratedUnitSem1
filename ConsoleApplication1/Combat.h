@@ -5,7 +5,12 @@
 
 class Combat
 {
+private:
+	static int tracker;
+
 public:
+	int GetTracker(void);
+
 	static void InitCombat(Player& MC, Enemy& target);
 	static void InitTutorialCombat(Player& MC, Enemy& target);
 	static bool UpdateTutorial(bool& InCombat, Player& MC, Enemy& target);

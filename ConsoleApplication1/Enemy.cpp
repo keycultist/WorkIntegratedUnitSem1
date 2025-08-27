@@ -136,7 +136,7 @@ void Enemy::InitEnemy()
 	SetEnemyCritChance(5);
 	SetEnemyPos(0, 0);;
 	SetEnemyLvl(1);
-	SetEnemyXP(0);
+	SetEnemyXP(3);
 	Phase = false;
 	SetEnemyEquippedWeapon("None");
 	SetEnemyEquippedArmor("None");
@@ -284,7 +284,6 @@ int Enemy::DecisionMatrix(int EnemyHP, bool EnemyBuffed)
 					return i;
 				}
 			}
-
 
 
 		}

@@ -11,6 +11,7 @@ theres still stuff to do like actually generating the enemy spawns and etc, but 
 #include "Enemy.h"
 #include "Shop.h"
 #include "Combat.h"
+#include "conio.h"
 #define NOMINMAX
 #include <windows.h> 
 
@@ -116,6 +117,23 @@ void Map::CreateNewFloor(int Difficulty, Player& MC) {
 }
 
 
+void Map::renderEnemiesOnBoard(char** Board, int sizeX, int sizeY) {
+    for (const auto& room : rooms) {
+        for (const auto& enemy : room.enemies) {
+            if (enemy.GetEnemyHP() > 0) {
+                int enemyX = enemy.GetEnemyPosX();
+                int enemyY = enemy.GetEnemyPosY();
+
+                if (enemyX >= 0 && enemyX < sizeX && enemyY >= 0 && enemyY < sizeY) {
+                    char enemyChar = getEnemyDisplayChar(enemy);
+                    Board[enemyY][enemyX] = enemyChar;
+                }
+            }
+        }
+    }
+}
+
+
 
 
 void Map::fillBoard(char** Board, int sizeX, int sizeY, Player& MC)
@@ -140,9 +158,9 @@ void Map::fillBoardPlayer(char** Board, int sizeX, int sizeY, Player& MC) {
 
     int playerX = MC.GetPlayerPosX();
     int playerY = MC.GetPlayerPosY();
-    if (playerX >= 0 && playerX < sizeX && playerY >= 0 && playerY < sizeY) {
+    /*if (playerX >= 0 && playerX < sizeX && playerY >= 0 && playerY < sizeY) {
         Board[playerY][playerX] = 'P';
-    }
+    }*/
 }
 
 void Map::drawBoard(char** Board, int sizeX, int sizeY)
@@ -307,7 +325,7 @@ void Map::renderCurrentRoom(Room* room, char** roomBoard, int boardSize, Player&
     std::cout << frameBuffer;
 }
 
-void Map::switchToRoomView(int playerX, int playerY, Player& MC, Shop& shop) {
+void Map::switchToRoomView(int playerX, int playerY, Player& MC, Shop& shop, bool& FinishShopping) {
     Room* playerRoom = detectPlayerRoom(playerX, playerY);
     
     if (playerRoom) {
@@ -320,7 +338,12 @@ void Map::switchToRoomView(int playerX, int playerY, Player& MC, Shop& shop) {
         std::cout << "Entered " << getRoomTypeName(playerRoom->type) << " room!" << std::endl;
         //drawBoard(innerPtrs, 256, 256);  // Show just this room
         if (playerRoom->type == RoomType::SHOP) {
-            shop.DrawShopUI();
+            if (!FinishShopping) {
+                std::cout << shop.DrawShopUI() << std::endl;
+                shop.PromptPlayerShopInteraction();
+                FinishShopping = true;
+                system("cls");
+            }
         }
     } else {
         std::cout << "Player is in a corridor or empty space." << std::endl;
@@ -650,7 +673,8 @@ void Map::generateEnemyForRoom(Enemy& enemy, const Room& room, int difficulty, i
     setEnemyEquipment(enemy, chosenClass, difficulty);
 }
 
-void setEnemyEquipment(Enemy& enemy, const std::string& enemyClass, int difficulty) {
+void Map::setEnemyEquipment(Enemy& enemy, const std::string& enemyClass, int difficulty)
+{
     if (enemyClass == "Grunt") {
         enemy.SetEnemyEquippedWeapon("Rusty Iron Sword");
         enemy.SetEnemyEquippedArmor("Ragged Clothing");
@@ -769,6 +793,21 @@ void Map::generateBossForRoom(Enemy& enemy, const std::string& bossType, int dif
     }
 }
 
+char Map::getEnemyDisplayChar(const Enemy& enemy) {
+    std::string enemyClass = enemy.GetEnemyClass();
+
+    // Boss characters
+    if (enemyClass == "OneWingedAngel" || enemyClass == "JovialChaos" || enemyClass == "Bob" || enemyClass == "Susanoo" || enemyClass == "DevilGene") {
+        return '?';
+    }
+    else if (enemyClass == "ColorCleaver" || enemyClass == "DarkSilence" || enemyClass == "ManiKatti" || enemyClass == "AzureResonance") {
+        return 'M';
+    }
+    else {
+        return 'E';
+    }
+}
+
 std::vector<Enemy*> Map::getEnemiesInRoom(Room* room) {
     std::vector<Enemy*> enemyPtrs;
     if (room) {
@@ -815,4 +854,53 @@ Enemy* Map::getEnemyAtPosition(int x, int y) {
         }
     }
     return nullptr;
+}
+
+bool Map::checkForCombat(Room* room, Player& MC) {
+    if (!room || room->enemiesCleared) {
+        return false;
+    }
+
+    Enemy* enemyAtPlayerPos = getEnemyAtPosition(MC.GetPlayerPosX(), MC.GetPlayerPosY());
+
+    if (enemyAtPlayerPos && enemyAtPlayerPos->GetEnemyHP() > 0) {
+        std::string enemyClass = enemyAtPlayerPos->GetEnemyClass();
+
+        if (enemyClass == "OneWingedAngel" || enemyClass == "JovialChaos" || enemyClass == "Bob" || enemyClass == "Susanoo" || enemyClass == "DevilGene") {
+            std::cout << "\n!!! TRUE BOSS ENCOUNTER !!!" << std::endl;
+            std::cout << "The final challenge awaits..." << std::endl;
+        }
+        else if (enemyClass == "ColorCleaver" || enemyClass == "DarkSilence" || enemyClass == "ManiKatti" || enemyClass == "AzureResonance") {
+            std::cout << "\n!!! MINIBOSS ENCOUNTER !!!" << std::endl;
+            std::cout << "A powerful guardian blocks your path..." << std::endl;
+        }
+        else {
+            std::cout << "\nEnemy encountered: " << enemyClass << "!" << std::endl;
+        }
+
+        std::cout << "Press any key to engage!" << std::endl;
+        int chP = _getch();
+        system("cls");
+
+        Combat combat;
+        combat.InitCombat(MC, *enemyAtPlayerPos);
+
+        if (enemyAtPlayerPos->GetEnemyHP() <= 0) {
+            removeDefeatedEnemies();
+
+            if (enemyClass == "OneWingedAngel" || enemyClass == "JovialChaos") {
+                std::cout << "\n!!! TRUE BOSS DEFEATED !!!" << std::endl;
+                std::cout << "Victory is yours!" << std::endl;
+            }
+            else if (enemyClass == "Guardian Elite") {
+                std::cout << "\n!!! MINIBOSS DEFEATED !!!" << std::endl;
+                std::cout << "The guardian has fallen!" << std::endl;
+            }
+        }
+        isRoomEnemiesCleared(room);
+
+        return true;
+    }
+
+    return false;
 }
