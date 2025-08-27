@@ -47,16 +47,11 @@ bool Combat::UpdateTutorial(bool& InCombat, Player& MC, Enemy& target) //WIP
 		Defend = false;
 		RunChance = rand() % 10;
 		turnEnd = false;
-
-		int chP = _getch();
-		system("cls");
+		int chP;
 		switch (ChoseAction(MC, target, 1)) { //select action
-		case '1':
-			//Include Player Moveset
-			MC.ShowPlayerMoves();
-			chP = _getch();
+		case 1:
 			system("cls");
-			switch (chP) {
+			switch (ChoseAction(MC, target, 2)) {
 			case '1':
 				ChosenMove = 1;
 				break;
@@ -70,24 +65,25 @@ bool Combat::UpdateTutorial(bool& InCombat, Player& MC, Enemy& target) //WIP
 				ChosenMove = 4;
 				break;
 			default:
+				ChosenMove = 1;
 				break;
 			}
 			Combat::PlayerAttack(MC, target, ChosenMove - 1);
 			chP = _getch();
 			turnEnd = true;
 			break;
-		case '2':
+		case 2:
 			std::cout << "Prepaired to Defend" << std::endl;
 			Defend = true;
 			chP = _getch();
 			turnEnd = true;
 			break;
-		case '3':
+		case 3:
 			MC.UpdateInventoryPlayerStats();
 			std::cout << MC.GetInventory().DrawInventoryUI() << std::endl;
 			std::cout << "Use an item? Y/N" << std::endl;
 			chP = _getch();
-			if (chP == 'y') {
+			if (chP == 'y' || chP == 'Y') {
 				MC.GetInventory().PromptPlayerUseItem();
 				MC.UpdatePlayerStatsInventory();
 				turnEnd = true;
@@ -96,7 +92,7 @@ bool Combat::UpdateTutorial(bool& InCombat, Player& MC, Enemy& target) //WIP
 				turnEnd = false;
 			}
 			break;
-		case '4':
+		case 4:
 			if (RunChance >= 8) {
 				std::cout << "Successfuly Ran Away" << std::endl;
 				return true;
