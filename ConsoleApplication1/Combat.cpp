@@ -426,6 +426,58 @@ int Combat::ChoseAction(Player& MC, Enemy& target, int stage)
 				}
 			}
 		}
+
+		if (stage == 2) {
+			std::string c[4] = {
+				'[' + MC.GetMoveSet().GetMove(0).MoveName + "] Strength: (" + std::to_string(MC.GetMoveSet().GetMove(0).MoveStrength) + ") Hits: (" + std::to_string(MC.GetMoveSet().GetMove(0).Hits) + ") Type: " + MC.GetMoveSet().GetMove(0).MoveType,
+				'[' + MC.GetMoveSet().GetMove(1).MoveName + "] Strength: (" + std::to_string(MC.GetMoveSet().GetMove(1).MoveStrength) + ") Hits: (" + std::to_string(MC.GetMoveSet().GetMove(1).Hits) + ") Type: " + MC.GetMoveSet().GetMove(1).MoveType,
+				'[' + MC.GetMoveSet().GetMove(2).MoveName + "] Strength: (" + std::to_string(MC.GetMoveSet().GetMove(2).MoveStrength) + ") Hits: (" + std::to_string(MC.GetMoveSet().GetMove(2).Hits) + ") Type: " + MC.GetMoveSet().GetMove(2).MoveType,
+				'[' + MC.GetMoveSet().GetMove(3).MoveName + "] Strength: (" + std::to_string(MC.GetMoveSet().GetMove(3).MoveStrength) + ") Hits: (" + std::to_string(MC.GetMoveSet().GetMove(3).Hits) + ") Type: " + MC.GetMoveSet().GetMove(3).MoveType,
+			};
+			c[0] += " <--";
+			tracker = 0;
+			while (ChosingAction) {
+				std::cout << "Choose your move" << std::endl;
+				std::cout << target.GetEnemyHP() << "HP" << std::endl;
+				std::cout << "What will you do?" << std::endl;
+				std::cout << c[0] << std::endl;
+				std::cout << c[1] << std::endl;
+				std::cout << c[2] << std::endl;
+				std::cout << c[3] << std::endl;
+				chP = _getch();
+				std::cout << (int)chP << std::endl;
+				system("cls");
+				switch (chP) {
+				case 'w':
+				case 'W':
+					c[tracker].erase(c[tracker].find(" <--"));
+					if (tracker == 0) {
+						tracker = 3;
+					}
+					else {
+						tracker -= 1;
+					}
+					c[tracker] += " <--";
+					break;
+				case 's':
+				case 'S':
+					c[tracker].erase(c[tracker].find(" <--"));
+					if (tracker == 3) {
+						tracker = 0;
+					}
+					else {
+						tracker += 1;
+					}
+					c[tracker] += " <--";
+					break;
+				case 13:
+					ChosingAction = false;
+					return tracker + 1;
+				default:
+					break;
+				}
+			}
+		}
 }
 
 void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
