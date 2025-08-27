@@ -32,7 +32,7 @@ void Renderer::drawBoard(char** Board, int sizeX, int sizeY) {
     std::cout << "+---------------------------------------+" << endl;
 }
 
-void Renderer::drawASCII() {
+void Renderer::drawASCII(std::string asciiArt) {
     std::string TitleScreenUIString = {
         "```````````````````````````````````````````````_,-~.______.~-,_```````````````````````````````````````````````\n"
         "````````````````````````````````````````````__-=+=-=+#$$#+=-=+=-__````````````````````````````````````````````\n"
