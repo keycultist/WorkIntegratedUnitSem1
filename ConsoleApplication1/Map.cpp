@@ -8,6 +8,8 @@ theres still stuff to do like actually generating the enemy spawns and etc, but 
 #include "Map.h"
 #include "Renderer.h"
 #include "Player.h"
+#define NOMINMAX
+#include <windows.h> 
 
 using namespace std;
 
@@ -152,7 +154,7 @@ void Map::fillBoardPlayer(char** Board, int sizeX, int sizeY, Player& MC)
                 Board[h][v] = ' ';
         }
     }
-    Board[MC.GetPlayerPosY()][MC.GetPlayerPosX()] = 'P';
+    //Board[MC.GetPlayerPosY()][MC.GetPlayerPosX()] = 'P';
 }
 
 void Map::drawBoard(char** Board, int sizeX, int sizeY)
@@ -287,34 +289,34 @@ void Map::renderCurrentRoom(Room* room, char** roomBoard, int boardSize, Player&
     // Draw walls and floor
     for (int y = 0; y < h; ++y) {
         for (int x = 0; x < w; ++x) {
-            if (y == 0 || y == h - 1 || x == 0 || x == w - 1) {
+            if (y == 0 || y == h - 1 || x == 0 || x == w - 1)
                 roomBoardLC[y][x] = '#';  // wall
-            }
-            else {
+            else
                 roomBoardLC[y][x] = room->floorChar;  // floor
-            }
         }
     }
 
-    // Calculate player position relative to the **top-left interior floor tile**
-    int topLeftX = room->x - room->width / 2 + 1;
-    int topLeftY = room->y - room->height / 2 + 1;
-
-    int localX = MC.GetPlayerPosX() - topLeftX + 1;
-    int localY = MC.GetPlayerPosY() - topLeftY + 1;
+    // Calculate player position relative to room top-left
+    int localX = MC.GetPlayerPosX() - (room->x - room->width / 2);
+    int localY = MC.GetPlayerPosY() - (room->y - room->height / 2);
 
     // Clamp to interior
     if (localX >= 1 && localX < w - 1 && localY >= 1 && localY < h - 1) {
         roomBoardLC[localY][localX] = 'P';
     }
 
-    system("cls");
-    std::cout << "Room View:\n";
-
-    // Print the room
+    // Build frame buffer string
+    std::string frameBuffer;
+    frameBuffer += "Room View:\n";
     for (const auto& row : roomBoardLC) {
-        std::cout << row << "\n";
+        frameBuffer += row + "\n";
     }
+
+    // Move cursor to top-left and print
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    COORD topLeft = { 0, 0 };
+    SetConsoleCursorPosition(hConsole, topLeft);
+    std::cout << frameBuffer;
 }
 
 void Map::switchToRoomView(int playerX, int playerY, Player& MC) {
@@ -452,33 +454,45 @@ Room* Map::getFinalShop() {
 }
 
 void Map::renderMapWithFOV(Player& MC, int viewWidth = 40, int viewHeight = 20) {
-    int mapWidth = 128; // FloorGrid width
-    int mapHeight = 128; // FloorGrid height
+    int mapWidth = 128, mapHeight = 128;
 
-    // Compute top-left corner of the viewport (centered on player)
     int topLeftX = MC.GetPlayerPosX() - viewWidth / 2;
     int topLeftY = MC.GetPlayerPosY() - viewHeight / 2;
 
-    // Clamp to map boundaries
     if (topLeftX < 0) topLeftX = 0;
     if (topLeftY < 0) topLeftY = 0;
-    if (topLeftX + viewWidth > mapWidth)  topLeftX = mapWidth - viewWidth;
+    if (topLeftX + viewWidth > mapWidth) topLeftX = mapWidth - viewWidth;
     if (topLeftY + viewHeight > mapHeight) topLeftY = mapHeight - viewHeight;
 
-    // Clear screen
-    system("cls");
+    std::string frameBuffer;
+    frameBuffer += '+';
+    for (int x = 0; x < viewWidth; ++x) frameBuffer += '-';
+    frameBuffer += "+\n";
 
-    // Render visible portion of the map
     for (int y = 0; y < viewHeight; ++y) {
+        frameBuffer += '|';
         for (int x = 0; x < viewWidth; ++x) {
             int mapX = topLeftX + x;
             int mapY = topLeftY + y;
 
             if (mapX == MC.GetPlayerPosX() && mapY == MC.GetPlayerPosY())
-                std::cout << 'P'; // Player
+                frameBuffer += 'P';
             else
-                std::cout << FloorGrid[mapY][mapX];
+                frameBuffer += FloorGrid[mapY][mapX];
         }
-        std::cout << "\n";
+        frameBuffer += "|\n";
     }
+    frameBuffer += '+';
+    for (int x = 0; x < viewWidth; ++x) frameBuffer += '-';
+    frameBuffer += "+\n";
+    frameBuffer += "Current Position: ";
+    frameBuffer += std::to_string(MC.GetPlayerPosX());
+    frameBuffer += ',';
+    frameBuffer += std::to_string(MC.GetPlayerPosY());
+
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    COORD topLeft = { 0,0 };
+    SetConsoleCursorPosition(hConsole, topLeft);
+
+    std::cout << frameBuffer;
 }

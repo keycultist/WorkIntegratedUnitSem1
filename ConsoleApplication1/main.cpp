@@ -4,8 +4,10 @@
 #include <iostream>
 #include <conio.h>
 
-#include <windows.h>
-#include <algorithm>
+#include <chrono>
+#include <thread>
+#define NOMINMAX
+#include <windows.h> 
 
 #include "Player.h"
 #include "Combat.h"
@@ -52,6 +54,32 @@ bool GameRunning(Player& MC, Enemy& Enemies, Map& GMap, bool& InsideRoom) {
     return true;
 }
 
+void PlayerInput(Player& MC) {
+    if (_kbhit()) {  // Check if key pressed
+        char key = _getch();  // Read key without blocking
+
+        switch (key) {
+        case 'w': MC.PUpMove(); break;
+        case 's': MC.PDownMove(); break;
+        case 'a': MC.PLeftMove(); break;
+        case 'd': MC.PRightMove(); break;
+        }
+    }
+}
+
+void clearConsole() {
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo(hConsole, &csbi);
+    DWORD consoleSize = csbi.dwSize.X * csbi.dwSize.Y;
+    DWORD charsWritten;
+
+    COORD topLeft = { 0, 0 };
+    FillConsoleOutputCharacter(hConsole, ' ', consoleSize, topLeft, &charsWritten);
+    FillConsoleOutputAttribute(hConsole, csbi.wAttributes, consoleSize, topLeft, &charsWritten);
+    SetConsoleCursorPosition(hConsole, topLeft);
+}
+
 //Event Collsion check, what does player have to collide with?
 //static void CheckEventPlayerCollision(Player& MC, ???)
 //{
@@ -90,19 +118,53 @@ int main()
     }
     Enemies[0] = new Enemy;
     Enemies[0]->InitEnemy();
-    MC.ShowPlayerStats();
+    //MC.ShowPlayerStats();
 
     //82308 bytes of stack!!
 
     Map GMap;
 
     GMap.CreateNewFloor(6, MC);
-    GMap.RequestFloorUpdate(MC);
+    //GMap.RequestFloorUpdate(MC);
+
+    int chP = _getch();
+    system("cls");
 
     bool RUNNINGHORSE = true;
     bool InsideRoom = false;
+    bool Clearcheck = false;
     while (RUNNINGHORSE) {
-        RUNNINGHORSE = GameRunning(MC, *Enemies[0], GMap, InsideRoom);
+        //RUNNINGHORSE = GameRunning(MC, *Enemies[0], GMap, InsideRoom);
+        auto startTime = std::chrono::high_resolution_clock::now();
+
+        // 1. Handle input if any
+        PlayerInput(MC);
+
+        // 2. Update enemies
+        //updateEnemies();
+
+        // 3. Update game state
+        InsideRoom = (GMap.detectPlayerRoom(MC.GetPlayerPosX(), MC.GetPlayerPosY()) != nullptr);
+
+        // 4. Render
+        if (InsideRoom) {
+            if (!Clearcheck) {
+                clearConsole();
+                Clearcheck = true;
+            }
+            GMap.switchToRoomView(MC.GetPlayerPosX(), MC.GetPlayerPosY(), MC);
+        }
+        else {
+            GMap.renderMapWithFOV(MC, 40, 20);
+            Clearcheck = false;
+        }
+
+        // 5. Wait until next frame (~16ms for ~60 FPS)
+        auto endTime = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double, std::milli> elapsed = endTime - startTime;
+        int frameDelay = 1000 / 30; // 30 FPS
+        if (elapsed.count() < frameDelay)
+            std::this_thread::sleep_for(std::chrono::milliseconds(frameDelay) - elapsed);
     }
 
     //...

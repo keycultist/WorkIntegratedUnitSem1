@@ -1220,3 +1220,55 @@ void Player::move() //Not really sure if the changes affected anything
     SetPlayerPos(targetx, targety);
 }
 
+void Player::PUpMove()
+{
+    int targetx = GetPlayerPosX();
+    int targety = GetPlayerPosY();
+    if (GetPlayerPosY() > 0) {
+        targety = GetPlayerPosY() - 1;
+    }
+    else {
+        std::cout << "You are at the edge of the board! \n";
+    }
+    SetPlayerPos(targetx, targety);
+}
+
+void Player::PDownMove()
+{
+    int targetx = GetPlayerPosX();
+    int targety = GetPlayerPosY();
+    if (GetPlayerPosY() < 127) {
+        targety = GetPlayerPosY() + 1;
+    }
+    else {
+        std::cout << "You are at the edge of the board! \n";
+    }
+    SetPlayerPos(targetx, targety);
+}
+
+void Player::PLeftMove()
+{
+    int targetx = GetPlayerPosX();
+    int targety = GetPlayerPosY();
+    if (GetPlayerPosX() > 0) {
+        targetx = GetPlayerPosX() - 1;
+    }
+    else {
+        std::cout << "You are at the edge of the board! \n";
+    }
+    SetPlayerPos(targetx, targety);
+}
+
+void Player::PRightMove()
+{
+    int targetx = GetPlayerPosX();
+    int targety = GetPlayerPosY();
+    if (GetPlayerPosX() < 127) {
+        targetx = GetPlayerPosX() + 1;
+    }
+    else {
+        std::cout << "You are at the edge of the board! \n";
+    }
+    SetPlayerPos(targetx, targety);
+}
+
