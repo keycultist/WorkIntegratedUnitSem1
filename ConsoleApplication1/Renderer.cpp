@@ -30,5 +30,8 @@ void Renderer::drawBoard(char** Board, int sizeX, int sizeY) {
         std::cout << endl;
     }
     std::cout << "+---------------------------------------+" << endl;
+}
 
+void Renderer::drawASCII(std::string asciiArt) {
+    std::cout << asciiArt << std::endl;
 }

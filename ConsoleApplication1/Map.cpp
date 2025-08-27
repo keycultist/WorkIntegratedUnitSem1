@@ -8,6 +8,7 @@ theres still stuff to do like actually generating the enemy spawns and etc, but 
 #include "Map.h"
 #include "Renderer.h"
 #include "Player.h"
+#include "Enemy.h"
 #define NOMINMAX
 #include <windows.h> 
 

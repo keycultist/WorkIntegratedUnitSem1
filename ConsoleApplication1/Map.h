@@ -23,6 +23,8 @@ struct Room {
     char floorChar;     // What character to fill floor with
     bool visited;       // Has player been here?
     bool cleared;       // Has room been completed?
+	std::vector<Enemy> enemies; // Enemy Table
+    bool enemiesCleared = false;
 
     Room(int id, int x, int y, RoomType type) : id(id), x(x), y(y), type(type), visited(false), cleared(false) {
         switch (type) {
@@ -47,7 +49,12 @@ private:
     std::vector<Room> rooms;    
     std::map<int, Room*> roomLookup;  
     Room* currentRoom;                 
-    int nextRoomId;                    
+    int nextRoomId;      
+
+    void generateEnemiesForRoom(Room& room, int difficulty);
+    void generateEnemyForRoom(Enemy& enemy, const Room& room, int difficulty, int enemyIndex);
+    void setEnemyEquipment(Enemy& enemy, const std::string& enemyClass, int difficulty);
+
 protected:
 
 public:
@@ -99,6 +106,10 @@ public:
 
     bool isLastRoomShop();
     Room* getFinalShop();
+
+    std::vector<Enemy*> getEnemiesInRoom(Room* room);
+    bool isRoomEnemiesCleared(Room* room);
+    bool checkForCombat(Room* room, Player& MC);
 
     void renderMapWithFOV(Player& MC, int viewWidth, int viewHeight);
 };

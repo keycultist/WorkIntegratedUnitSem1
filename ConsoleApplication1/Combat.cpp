@@ -195,6 +195,23 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 		int chP = _getch();
 		system("cls");
 		int EnemyMoveChoice = target.DecisionMatrix(MC.GetPlayerHP(), MC.GetPlayerPower() > 0);
+		// Include Enemy Moveset
+		switch (EnemyMoveChoice) {
+		case 1:
+			break;
+		case 2:
+			break;
+		case 3:
+			break;
+		case 4:
+			break;
+		case 5:
+			break;
+		case 6:
+			break;
+		default:
+			break;
+		}
 		Combat::EnemyAttack(MC, target, EnemyMoveChoice, Defend);
 		chP = _getch();
 		system("cls");
