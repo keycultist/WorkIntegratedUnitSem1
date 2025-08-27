@@ -38,7 +38,7 @@ int main()
     /*if (Collide) {
         Combat::InitCombat(MC, CollidedEnemy);
     }*/
-
+            
     //...
 
     //Print map again
