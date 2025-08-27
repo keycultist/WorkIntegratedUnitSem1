@@ -140,6 +140,7 @@ void Enemy::InitEnemy()
 	Phase = false;
 	SetEnemyEquippedWeapon("None");
 	SetEnemyEquippedArmor("None");
+	moveset.EnemyInit(GetEnemyClass());
 }
 
 void Enemy::ShowEnemyStats(Enemy& MC) {

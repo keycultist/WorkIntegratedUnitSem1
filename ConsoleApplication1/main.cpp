@@ -168,11 +168,11 @@ int main()
     }
 
     //...
-    //Combat::InitCombat(MC, *Enemies[0]);
+    Combat::InitCombat(MC, *Enemies[0]);
     //When init combat
-    /*if (Collide) {
-        Combat::InitCombat(MC, CollidedEnemy);
-    }*/
+    //if (Collide) {
+        //Combat::InitCombat(MC, CollidedEnemy);
+    //}
             
     //...
 
