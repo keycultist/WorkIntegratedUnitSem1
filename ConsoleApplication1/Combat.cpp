@@ -298,7 +298,7 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 			std::cout << MC.GetInventory().DrawInventoryUI() << std::endl;
 			std::cout << "Use an item? Y/N" << std::endl;
 			chP = _getch();
-			if (chP == 'y') {
+			if (chP == 'y' || chP == 'Y') {
 				MC.GetInventory().PromptPlayerUseItem();
 				MC.UpdatePlayerStatsInventory();
 				turnEnd = true;
