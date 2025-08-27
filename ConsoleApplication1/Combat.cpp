@@ -17,6 +17,168 @@ void Combat::InitCombat(Player& MC, Enemy& target)
 	}
 }
 
+void Combat::InitTutorialCombat(Player& MC, Enemy& target) //WIP
+{
+	std::cout << "Welcome to the Abyss, combat here is turn-based and enemies will spawn randomly inside." << std::endl;
+	int chP = _getch();
+	system("cls");
+	srand(time(NULL));
+
+	bool InCombat = true; //starts combat loop
+	while (InCombat) {
+		InCombat = !UpdateTutorial(InCombat, MC, target);
+	}
+}
+
+bool Combat::UpdateTutorial(bool& InCombat, Player& MC, Enemy& target) //WIP
+{
+	DivineIntervention DivInter;
+	bool turnEnd = false;
+	int ChosenMove = 0;
+	bool Defend = false;
+	int RunChance = rand() % 10;
+	int DivInt = 0;
+	while (!turnEnd) {
+		std::cout << "You are fighting a: " << target.GetEnemyClass() << std::endl;
+		std::cout << target.GetEnemyHP() << "HP" << std::endl;
+		std::cout << "What will you do?" << std::endl;
+		DivInt = rand() % 100 + 1;
+		if (DivInt <= 30) {
+			DivInter.applyEffect(DivInter.getRandomGod(), MC, target);
+		}
+		std::cout << "(1) Attack" << std::endl;
+		std::cout << "(2) Defend" << std::endl;
+		std::cout << "(3) Item" << std::endl;
+		std::cout << "(4) Run" << std::endl;
+		MC.ShowPlayerStats();
+		ChosenMove = 0;
+		Defend = false;
+		RunChance = rand() % 10;
+		turnEnd = false;
+
+		int chP = _getch();
+		system("cls");
+		switch (chP) { //select action
+		case '1':
+			//Include Player Moveset
+			MC.ShowPlayerMoves();
+			chP = _getch();
+			system("cls");
+			switch (chP) {
+			case '1':
+				ChosenMove = 1;
+				break;
+			case '2':
+				ChosenMove = 2;
+				break;
+			case '3':
+				ChosenMove = 3;
+				break;
+			case '4':
+				ChosenMove = 4;
+				break;
+			default:
+				break;
+			}
+			Combat::PlayerAttack(MC, target, ChosenMove - 1);
+			chP = _getch();
+			turnEnd = true;
+			break;
+		case '2':
+			std::cout << "Prepaired to Defend" << std::endl;
+			Defend = true;
+			chP = _getch();
+			turnEnd = true;
+			break;
+		case '3':
+			MC.UpdateInventoryPlayerStats();
+			std::cout << MC.GetInventory().DrawInventoryUI() << std::endl;
+			std::cout << "Use an item? Y/N" << std::endl;
+			chP = _getch();
+			if (chP == 'y') {
+				MC.GetInventory().PromptPlayerUseItem();
+				MC.UpdatePlayerStatsInventory();
+				turnEnd = true;
+			}
+			else {
+				turnEnd = false;
+			}
+			break;
+		case '4':
+			if (RunChance >= 8) {
+				std::cout << "Successfuly Ran Away" << std::endl;
+				return true;
+			}
+			else if (RunChance >= 4 && RunChance < 8) {
+				std::cout << "Ran Away but Damaged" << std::endl;
+				MC.SetPlayerHP(MC.GetPlayerHP() * 0.95);
+				return true;
+			}
+			else {
+				std::cout << "Failed to Run" << std::endl;
+				return false;
+				turnEnd = true;
+			}
+			chP = _getch();
+			break;
+		case 'h':
+			std::cout << HORSEAscii << "\n";
+			turnEnd = true;
+			break;
+		default:
+			turnEnd = false;
+			break;
+		}
+		system("cls");
+	}
+	if (target.GetEnemyHP() <= 0) { //Enemy death check
+		std::cout << "Enemy Defeated! Gained XP!" << std::endl;
+		if (MC.GetPlayerClass() == "Berserker") {
+			MC.SetPlayerPower(MC.GetPlayerPower() + target.GetEnemyXP());
+			std::cout << "Gained XP converted to Power! You have: " << MC.GetPlayerPower() << " Power" << std::endl;
+		}
+		else {
+			MC.SetPlayerXP(MC.GetPlayerXP() + target.GetEnemyXP());
+		}
+		MC.LevelUpCheck();
+		int chP = _getch();
+		system("cls");
+		return true;
+	}
+	else {
+		std::cout << "Enemy's turn" << std::endl;
+		int chP = _getch();
+		system("cls");
+		int EnemyMoveChoice = target.DecisionMatrix(MC.GetPlayerHP(), MC.GetPlayerPower() > 0);
+		// Include Enemy Moveset
+		switch (EnemyMoveChoice) {
+		case 1:
+			break;
+		case 2:
+			break;
+		case 3:
+			break;
+		case 4:
+			break;
+		case 5:
+			break;
+		case 6:
+			break;
+		default:
+			break;
+		}
+		Combat::EnemyAttack(MC, target, EnemyMoveChoice, Defend);
+		chP = _getch();
+		system("cls");
+		return false;
+	}
+	if (MC.GetPlayerHP() <= 0) { //Player death check
+		std::cout << "Player Defeated! You Lose!" << std::endl;
+		system("cls");
+		return true;
+	}
+}
+
 bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 {
 	DivineIntervention DivInter;
