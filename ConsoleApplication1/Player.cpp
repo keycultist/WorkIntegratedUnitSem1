@@ -1,5 +1,8 @@
 #include "Player.h"
 #include "Moveset.h"
+#include "Position.h"
+#include "Combat.h"
+#include "Events.h"
 #include <iostream>
 #include <conio.h>
 #include <string>
@@ -1027,11 +1030,9 @@ void Player::UpdatePlayerStatsInventory()
     SetPlayerHP(GetInventory().GetInventoryPlayerHP());
     SetPlayerMaxHP(GetInventory().GetInventoryPlayerMaxHP());
     SetPlayerPower(GetInventory().GetInventoryPlayerPower());
-    SetPlayerDefence(GetInventory().GetInventoryPlayerDefence());
     SetPlayerCritChance(GetInventory().GetInventoryPlayerCritChance());
     SetPlayerEquippedArmor(GetInventory().GetInventoryArmorEquipped());
     SetPlayerEquippedWeapon(GetInventory().GetInventoryWeaponEquipped());
-    AddPlayerEquipmentStats();
 }
 
 void Player::AddPlayerEquipmentStats()
@@ -1119,58 +1120,89 @@ void Player::AddPlayerEquipmentStats()
     }
 }
 
-void Player::move(Entity* ptr[6]) //Not really sure if the changes affected anything
-{
-    // checkGhost(ptr);
-    char input;
-    input = _getch();
+//////////I think this shd be in a "Game" class
 
+    //void Player::checkEnemy(Enemy enemies[6])
+    //{
+    //    int EnemyX, EnemyY;
+    //    // Check enemies
+    //    for (int i = 1; i <= 3; i++) {
+    //        // Skip if this enemy doesn't exist
+    //        //if (enemies[i]) {
+    //            // Get enemy's position
+    //        EnemyX == enemies[i].GetEnemyPosX();
+    //        EnemyY == enemies[i].GetEnemyPosY();
+
+    //        // Check if player touches enemy (collision)
+    //        if (EnemyX == GetPosX() && EnemyY == GetPosY()) {
+    //            // Enter combat with this enemy
+    //            Combat::InitCombat(*this, enemies[i]);           //suspects that it can be solved by enemy inheiriting from entity class. checkenemy func not being called
+    //            break;  // Stop checking after first combat
+    //        }
+    //        //}
+    //    }
+    //}
+
+    //void Player::checkEvent(Entity * events[6])
+    //{
+    //    int EventX, EventY;
+    //    // Check events
+    //    for (int b = 1; b <= 3; b++) {
+    //        // Skip if this event doesn't exist
+    //        if (events[b] != nullptr) {
+    //            // Get event's position
+    //            EventX == events[b]->GetPosX();
+    //            EventY == events[b]->GetPosY();
+
+    //            // Check if player touches event (collision)
+    //            if (EventX == GetPosX() && EventY == GetPosY()) {
+    //                // Enter the event
+    //                EventTriggered(events[b]);
+    //                break;  // Stop checking after first event
+    //            }
+    //        }
+    //    }
+    //}
+
+//////////
+
+void Player::PUpMove()
+{
     int targetx = GetPlayerPosX();
     int targety = GetPlayerPosY();
-
-
-
-    switch (input) {
-    case 'W':
-    case 'w':
-        if (GetPlayerPosY() > 0) {
-            targety = GetPlayerPosY() - 1;
-        }
-        else {
-            std::cout << "You are at the edge of the board! \n";
-        }
-        break;
-    case 'A':
-    case 'a':
-        if (GetPlayerPosX() > 0) {
-            targetx = GetPlayerPosX() - 1;
-        }
-        else {
-            std::cout << "You are at the edge of the board! \n";
-        }
-        break;
-    case 'S':
-    case 's':
-        if (GetPlayerPosY() < 19) {
-            targety = GetPlayerPosY() + 1;
-        }
-        else {
-            std::cout << "You are at the edge of the board! \n";
-
-        }
-        break;
-    case 'D':
-    case 'd':
-        if (GetPlayerPosX() < 19) {
-            targetx = GetPlayerPosX() + 1;
-        }
-        else {
-            std::cout << "You are at the edge of the board! \n";
-        }
-        break;
-    default:
-        std::cout << "Invalid input\n";
+    if (GetPlayerPosY() > 0) {
+        targety = GetPlayerPosY() - 1;
     }
-    targetx = GetPlayerPosX();
-    targety = GetPlayerPosY();
+    SetPlayerPos(targetx, targety);
 }
+
+void Player::PDownMove()
+{
+    int targetx = GetPlayerPosX();
+    int targety = GetPlayerPosY();
+    if (GetPlayerPosY() < 127) {
+        targety = GetPlayerPosY() + 1;
+    }
+    SetPlayerPos(targetx, targety);
+}
+
+void Player::PLeftMove()
+{
+    int targetx = GetPlayerPosX();
+    int targety = GetPlayerPosY();
+    if (GetPlayerPosX() > 0) {
+        targetx = GetPlayerPosX() - 1;
+    }
+    SetPlayerPos(targetx, targety);
+}
+
+void Player::PRightMove()
+{
+    int targetx = GetPlayerPosX();
+    int targety = GetPlayerPosY();
+    if (GetPlayerPosX() < 127) {
+        targetx = GetPlayerPosX() + 1;
+    }
+    SetPlayerPos(targetx, targety);
+}
+

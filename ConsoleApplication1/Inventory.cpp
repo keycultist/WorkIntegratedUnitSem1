@@ -286,8 +286,8 @@ std::string Inventory::DrawInventoryUI() {
 	InventoryUIString += "|`````````````````````````````````````````````**^^==--__--==^^**`````````````````````````````````````````````|\n";
 	InventoryUIString += "|````````````````````````````````````````````````````````````````````````````````````````````````````````````|\n";
 	InventoryUIString += "|````````````````````````````````````````````````````````````````````````````````````````````````````````````|\n";
-	InventoryUIString += "|```````~.___________________________________.~``````````````````````````````````````````````````````````````|\n";
-	InventoryUIString += "|```````:|                                   |:```~.______________________________________________.~`````````|\n";
+	InventoryUIString += "|````~.___________________________________.~`````````````````````````````````````````````````````````````````|\n";
+	InventoryUIString += "|````:|                                   |:```~._________________________________________________________.~`|\n";
 
 
 
@@ -300,27 +300,27 @@ std::string Inventory::DrawInventoryUI() {
 
 	SpaceAmount = 29 - PlayerLvl.length() - 1 - InventoryPlayerClass.length() - PlayerEXP.length() - RequiredEXP.length() - 6;
 
-	InventoryUIString += "|```````:| Lvl ";
+	InventoryUIString += "|````:| Lvl ";
 	InventoryUIString += PlayerLvl + " " + InventoryPlayerClass;
 	for (int i = 0; i < SpaceAmount; i++) {
 		InventoryUIString += " ";
 	}
 	InventoryUIString += "(" + PlayerEXP + "/" + RequiredEXP + " XP)";
-	InventoryUIString += " |:```:|                                              |:`````````|\n";
+	InventoryUIString += " |:``:|                                                         |:``|\n";
 
 
 
 	// line with EQUIPPED WEAPON NAME
-	// 37 spaces for weapon name
+	// 48 spaces for weapon name
 	// space = 37 - weaponname length
-	SpaceAmount = 37 - InventoryWeaponEquipped.length();
+	SpaceAmount = 48 - InventoryWeaponEquipped.length();
 
-	InventoryUIString += "|```````:|                                   |:```:| Weapon: ";
+	InventoryUIString += "|````:|                                   |:``:| Weapon: ";
 	InventoryUIString += InventoryWeaponEquipped;
 	for (int i = 0; i < SpaceAmount; i++) {
 		InventoryUIString += " ";
 	}
-	InventoryUIString += "|:`````````|\n";
+	InventoryUIString += "|:``|\n";
 
 
 
@@ -331,12 +331,12 @@ std::string Inventory::DrawInventoryUI() {
 	std::string PlayerMaxHP = std::to_string(InventoryPlayerMaxHP);
 	SpaceAmount = 29 - PlayerHP.length() - PlayerMaxHP.length() - 1;
 
-	InventoryUIString += "|```````:| HP: ";
+	InventoryUIString += "|````:| HP: ";
 	InventoryUIString += PlayerHP + "/" + PlayerMaxHP;
 	for (int i = 0; i < SpaceAmount; i++) {
 		InventoryUIString += " ";
 	}
-	InventoryUIString += " |:```:|                                              |:`````````|\n";
+	InventoryUIString += " |:``:|                                                         |:``|\n";
 
 
 
@@ -348,27 +348,32 @@ std::string Inventory::DrawInventoryUI() {
 	// remaining is -s
 	// armor:
 	// 38 spaces for armor name
-	// space = 38 - armorname length
+	// space = 49 - armorname length
 	int PlayerHPPercentBar = (static_cast<float>(InventoryPlayerHP) / static_cast<float>(InventoryPlayerMaxHP)) * 31.f;
-	SpaceAmount = 38 - InventoryArmorEquipped.length();
+	SpaceAmount = 49 - InventoryArmorEquipped.length();
 
-	InventoryUIString += "|```````:| [";
+	InventoryUIString += "|````:| [";
 	for (int i = 0; i < PlayerHPPercentBar; i++) {
 		InventoryUIString += "%";
 	}
-	for (int i = 0; i < 31 - PlayerHPPercentBar; i++) {
+
+	if (PlayerHPPercentBar < (static_cast<float>(InventoryPlayerHP) / static_cast<float>(InventoryPlayerMaxHP)) * 31.f) { // if theres a bar with partial hp
+		InventoryUIString += "+";
+	}
+
+	for (int i = 0; i < 31 - PlayerHPPercentBar - 1; i++) {
 		InventoryUIString += "-";
 	}
-	InventoryUIString += "] |:```:| Armor: " + InventoryArmorEquipped;
+	InventoryUIString += "] |:``:| Armor: " + InventoryArmorEquipped;
 	for (int i = 0; i < SpaceAmount; i++) {
 		InventoryUIString += " ";
 	}
-	InventoryUIString += "|:`````````|\n";
+	InventoryUIString += "|:``|\n";
 
 	// 
 
-	InventoryUIString += "|```````:|                                   |:```:|                                              |:`````````|\n";
-	InventoryUIString += "|```````~.===================================.~```~.==============================================.~`````````|\n";
+	InventoryUIString += "|````:|                                   |:``:|                                                         |:``|\n";
+	InventoryUIString += "|````~.===================================.~``~.=========================================================.~``|\n";
 	InventoryUIString += "|````````````````````````````````````````````````````````````````````````````````````````````````````````````|\n";
 	InventoryUIString += "|````````````````````````````````````````````````````````````````````````````````````````````````````````````|\n";
 	InventoryUIString += "|```````~.______________________________.~```````~.______________________________________________.~``````````|\n";
