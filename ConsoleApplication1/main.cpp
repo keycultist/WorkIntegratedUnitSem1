@@ -55,7 +55,8 @@ bool GameRunning(Player& MC, Enemy& Enemies, Map& GMap, bool& InsideRoom) {
 
 void PlayerInput(Player& MC) {
     if (_kbhit()) {  // Check if key pressed
-        char key = _getch();  // Read key without blocking
+        char key = tolower(_getch());  // Read key without blocking
+
 
         switch (key) {
         case 'w': MC.PUpMove(); break;

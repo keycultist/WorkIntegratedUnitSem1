@@ -200,4 +200,7 @@ void Moveset::PlayerInit(const std::string Class)
         SetMove(Move("Omnislash", 3, 7, "Physical"));
         SetMove(Move("Armiger", 7, 3, "Magical"));
     }
+    else if (Class == "Debug") {
+		SetMove(Move("Debug Strike", 100, 1, "Physical"));
+    }
 }
