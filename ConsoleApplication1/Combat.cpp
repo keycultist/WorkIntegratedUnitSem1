@@ -3,6 +3,12 @@
 #include <conio.h>
 #include <stdlib.h>
 #include <time.h> 
+int Combat::tracker = 0;
+
+int Combat::GetTracker(void)
+{
+	return tracker;
+}
 
 void Combat::InitCombat(Player& MC, Enemy& target)
 {
@@ -370,7 +376,7 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 int Combat::ChoseAction(Player& MC, Enemy& target, int stage)
 {
 	bool ChosingAction = true;
-	int tracker;
+	tracker = 0;
 	int chP;
 		if (stage == 1) {
 			std::string c[4] = {
