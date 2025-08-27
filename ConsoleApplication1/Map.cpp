@@ -467,7 +467,7 @@ Room* Map::getFinalShop() {
     return (lastRoom && lastRoom->type == RoomType::SHOP) ? lastRoom : nullptr;
 }
 
-void Map::renderMapWithFOV(Player& MC, int viewWidth = 40, int viewHeight = 20) {
+void Map::renderMapWithFOV(Player& MC, int viewWidth, int viewHeight) {
     int mapWidth = 128, mapHeight = 128;
 
     int topLeftX = MC.GetPlayerPosX() - viewWidth / 2;
