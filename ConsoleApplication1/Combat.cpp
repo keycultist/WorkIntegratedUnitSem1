@@ -46,11 +46,6 @@ bool Combat::UpdateTutorial(bool& InCombat, Player& MC, Enemy& target) //WIP
 		if (DivInt <= 30) {
 			DivInter.applyEffect(DivInter.getRandomGod(), MC, target);
 		}
-		std::cout << "(1) Attack" << std::endl;
-		std::cout << "(2) Defend" << std::endl;
-		std::cout << "(3) Item" << std::endl;
-		std::cout << "(4) Run" << std::endl;
-		MC.ShowPlayerStats();
 		ChosenMove = 0;
 		Defend = false;
 		RunChance = rand() % 10;
@@ -58,7 +53,7 @@ bool Combat::UpdateTutorial(bool& InCombat, Player& MC, Enemy& target) //WIP
 
 		int chP = _getch();
 		system("cls");
-		switch (chP) { //select action
+		switch (ChoseAction(MC, target, 1)) { //select action
 		case '1':
 			//Include Player Moveset
 			MC.ShowPlayerMoves();

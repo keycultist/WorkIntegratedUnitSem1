@@ -107,7 +107,7 @@ void PlayerInput(Player& MC) {
 int main()
 {
     Renderer render;
-    render.drawASCII("e");
+    render.drawASCII("TitleScreenUIString");
 
     srand(time(0));
     Player MC;
