@@ -53,7 +53,7 @@ private:
 
 public:
     DivineIntervention();
-    God getRandomGod() const;
+    God getRandomGod() const;  // Changed to correct function name
     void applyEffect(God god, Entity& player, Entity& enemy) const;
 };
 
