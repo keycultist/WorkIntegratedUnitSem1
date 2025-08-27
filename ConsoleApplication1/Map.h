@@ -84,7 +84,7 @@ public:
     Room* detectPlayerRoom(int playerX, int playerY);
     void renderCurrentRoom(Room* room, char** roomBoard, int boardSize, Player& MC);
     bool isPlayerInRoom(int playerX, int playerY, const Room& room);
-    void switchToRoomView(int playerX, int playerY, Player& MC, Shop& shop);
+    void switchToRoomView(int playerX, int playerY, Player& MC, Shop& shop, bool& FinishShopping);
 
     Room* getRoomById(int roomId);
     Room* getRoomByIndex(int index);

@@ -156,6 +156,7 @@ int main()
     bool RUNNINGHORSE = true;
     bool InsideRoom = false;
     bool Clearcheck = false;
+    bool FinishShopping = false;
     while (RUNNINGHORSE) {
         //RUNNINGHORSE = GameRunning(MC, *Enemies[0], GMap, InsideRoom);
         auto startTime = std::chrono::high_resolution_clock::now();
@@ -180,11 +181,12 @@ int main()
                 system("cls");
                 Clearcheck = true;
             }
-            GMap.switchToRoomView(MC.GetPlayerPosX(), MC.GetPlayerPosY(), MC, shop);
+            GMap.switchToRoomView(MC.GetPlayerPosX(), MC.GetPlayerPosY(), MC, shop, FinishShopping);
         }
         else {
             GMap.renderMapWithFOV(MC, 40, 20);
             Clearcheck = false;
+            FinishShopping = false;
         }
 
         // 5. Wait until next frame (~16ms for ~60 FPS)
