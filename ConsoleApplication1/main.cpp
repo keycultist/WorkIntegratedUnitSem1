@@ -25,7 +25,7 @@ static void CheckEnemyPlayerCollision(Player& MC, Enemy& target)
     // Check if player touches enemy (collision)
     if (EnemyX == MC.GetPlayerPosX() && EnemyY == MC.GetPlayerPosY()) {
         // Enter combat with this enemy
-        Combat::InitCombat(MC, target);           //suspects that it can be solved by enemy inheiriting from entity class. checkenemy func not being called
+        Combat::InitCombat(MC, target);        
     }
 }
 
