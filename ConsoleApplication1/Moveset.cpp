@@ -127,7 +127,7 @@ void Moveset::EnemyInit(const std::string Class)
 		SetMove(Move("Bob's Black Hole", 1, 150, "BossMove"));
 
 		// if HP <= 1% then use this move.
-        SetMove(Move("Bob's Big Black Broad Bounteous Bountiful Black Breach", 1, 200, "DeathMove"));
+        SetMove(Move("Bob's Big Black Broad Bounteous Bountiful Black Beach Ball", 1, 200, "DeathMove"));
     }
     else if (Class == "DevilGene") {
 		SetMove(Move("Electric Wind God Fist.", 45, 1, "Physical"));
