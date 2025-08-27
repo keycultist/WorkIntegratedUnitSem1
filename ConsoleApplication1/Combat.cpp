@@ -545,6 +545,14 @@ void Combat::EnemyAttack(Player& MC, Enemy& target, int ChosenMove, bool Defend)
 			else {
 				DamageTaken += ((target.GetEnemyPower() + target.GetMoveSet().GetMove(ChosenMove).MoveStrength));
 			}
+
+			if (target.GetMoveSet().GetMove(ChosenMove).MoveType == "BossMove") {
+				std::cout << "An overwhelming sense of dread washes over you." << std::endl;
+			}
+
+			if (target.GetMoveSet().GetMove(ChosenMove).MoveType == "DeathMove") {
+				std::cout << "You feel nothing but malice." << std::endl;
+			}
 		}
 		//Physical/BossMove/DeathMove, scales power
 		else if (target.GetMoveSet().GetMove(ChosenMove).MoveType == "Magical") {
