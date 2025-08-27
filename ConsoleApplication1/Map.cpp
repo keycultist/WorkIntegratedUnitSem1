@@ -158,9 +158,9 @@ void Map::fillBoardPlayer(char** Board, int sizeX, int sizeY, Player& MC) {
 
     int playerX = MC.GetPlayerPosX();
     int playerY = MC.GetPlayerPosY();
-    if (playerX >= 0 && playerX < sizeX && playerY >= 0 && playerY < sizeY) {
+    /*if (playerX >= 0 && playerX < sizeX && playerY >= 0 && playerY < sizeY) {
         Board[playerY][playerX] = 'P';
-    }
+    }*/
 }
 
 void Map::drawBoard(char** Board, int sizeX, int sizeY)
@@ -325,7 +325,7 @@ void Map::renderCurrentRoom(Room* room, char** roomBoard, int boardSize, Player&
     std::cout << frameBuffer;
 }
 
-void Map::switchToRoomView(int playerX, int playerY, Player& MC, Shop& shop) {
+void Map::switchToRoomView(int playerX, int playerY, Player& MC, Shop& shop, bool& FinishShopping) {
     Room* playerRoom = detectPlayerRoom(playerX, playerY);
     
     if (playerRoom) {
@@ -338,7 +338,12 @@ void Map::switchToRoomView(int playerX, int playerY, Player& MC, Shop& shop) {
         std::cout << "Entered " << getRoomTypeName(playerRoom->type) << " room!" << std::endl;
         //drawBoard(innerPtrs, 256, 256);  // Show just this room
         if (playerRoom->type == RoomType::SHOP) {
-            shop.DrawShopUI();
+            if (!FinishShopping) {
+                std::cout << shop.DrawShopUI() << std::endl;
+                shop.PromptPlayerShopInteraction();
+                FinishShopping = true;
+                system("cls");
+            }
         }
     } else {
         std::cout << "Player is in a corridor or empty space." << std::endl;

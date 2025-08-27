@@ -107,8 +107,17 @@ void PlayerInput(Player& MC) {
 int main()
 {
     Renderer render;
-    render.drawASCII("TitleScreenUIString");
+    int StartGame = false;
+    while (!StartGame) {
+        render.drawASCII("TitleScreenUIString");
 
+        int chP = _getch();
+        if (chP == 13) {
+            StartGame = true;
+        }
+        system("cls");
+    }
+    system("cls");
     srand(time(0));
     Player MC;
     Item items;
@@ -132,21 +141,29 @@ int main()
     GMap.CreateNewFloor(6, MC);
     //GMap.RequestFloorUpdate(MC);
 
-    //system("cls");
+    system("cls");
     ////Kombat Tutorial Insert Here
     //std::cout << "Guardsman: Welcome to the Abyss, let's make sure you're up to the challenge." << std::endl;
     //std::cout << "Guardsman: There are some Grunts here, show me what you can do." << std::endl;
-    //Combat::InitCombat(MC, *Enemies[0]);
+    //Combat::InitTutorialCombat(MC, *Enemies[0]);
+    //if (MC.GetHP() > 0) {
+    //    delete Enemies[0];
+    //    Enemies[0] = nullptr;
+    //}
 
-    int chP = _getch();
     system("cls");
 
     bool RUNNINGHORSE = true;
     bool InsideRoom = false;
     bool Clearcheck = false;
+    bool FinishShopping = false;
     while (RUNNINGHORSE) {
         //RUNNINGHORSE = GameRunning(MC, *Enemies[0], GMap, InsideRoom);
         auto startTime = std::chrono::high_resolution_clock::now();
+
+        if (MC.GetHP() <= 0) {
+            RUNNINGHORSE = false;
+        }
 
         // 1. Handle input if any
         PlayerInput(MC);
@@ -164,11 +181,12 @@ int main()
                 system("cls");
                 Clearcheck = true;
             }
-            GMap.switchToRoomView(MC.GetPlayerPosX(), MC.GetPlayerPosY(), MC, shop);
+            GMap.switchToRoomView(MC.GetPlayerPosX(), MC.GetPlayerPosY(), MC, shop, FinishShopping);
         }
         else {
             GMap.renderMapWithFOV(MC, 40, 20);
             Clearcheck = false;
+            FinishShopping = false;
         }
 
         // 5. Wait until next frame (~16ms for ~60 FPS)
@@ -178,9 +196,6 @@ int main()
         if (elapsed.count() < frameDelay)
             std::this_thread::sleep_for(std::chrono::milliseconds(frameDelay) - elapsed);
     }
-
-    //...
-    Combat::InitCombat(MC, *Enemies[0]);
     //When init combat
     //if (Collide) {
         //Combat::InitCombat(MC, CollidedEnemy);

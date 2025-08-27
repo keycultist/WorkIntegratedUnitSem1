@@ -39,9 +39,6 @@ bool Combat::UpdateTutorial(bool& InCombat, Player& MC, Enemy& target) //WIP
 	int RunChance = rand() % 10;
 	int DivInt = 0;
 	while (!turnEnd) {
-		std::cout << "You are fighting a: " << target.GetEnemyClass() << std::endl;
-		std::cout << target.GetEnemyHP() << "HP" << std::endl;
-		std::cout << "What will you do?" << std::endl;
 		DivInt = rand() % 100 + 1;
 		if (DivInt <= 30) {
 			DivInter.applyEffect(DivInter.getRandomGod(), MC, target);
@@ -50,16 +47,11 @@ bool Combat::UpdateTutorial(bool& InCombat, Player& MC, Enemy& target) //WIP
 		Defend = false;
 		RunChance = rand() % 10;
 		turnEnd = false;
-
-		int chP = _getch();
-		system("cls");
+		int chP;
 		switch (ChoseAction(MC, target, 1)) { //select action
-		case '1':
-			//Include Player Moveset
-			MC.ShowPlayerMoves();
-			chP = _getch();
+		case 1:
 			system("cls");
-			switch (chP) {
+			switch (ChoseAction(MC, target, 2)) {
 			case '1':
 				ChosenMove = 1;
 				break;
@@ -73,24 +65,25 @@ bool Combat::UpdateTutorial(bool& InCombat, Player& MC, Enemy& target) //WIP
 				ChosenMove = 4;
 				break;
 			default:
+				ChosenMove = 1;
 				break;
 			}
 			Combat::PlayerAttack(MC, target, ChosenMove - 1);
 			chP = _getch();
 			turnEnd = true;
 			break;
-		case '2':
+		case 2:
 			std::cout << "Prepaired to Defend" << std::endl;
 			Defend = true;
 			chP = _getch();
 			turnEnd = true;
 			break;
-		case '3':
+		case 3:
 			MC.UpdateInventoryPlayerStats();
 			std::cout << MC.GetInventory().DrawInventoryUI() << std::endl;
 			std::cout << "Use an item? Y/N" << std::endl;
 			chP = _getch();
-			if (chP == 'y') {
+			if (chP == 'y' || chP == 'Y') {
 				MC.GetInventory().PromptPlayerUseItem();
 				MC.UpdatePlayerStatsInventory();
 				turnEnd = true;
@@ -99,7 +92,7 @@ bool Combat::UpdateTutorial(bool& InCombat, Player& MC, Enemy& target) //WIP
 				turnEnd = false;
 			}
 			break;
-		case '4':
+		case 4:
 			if (RunChance >= 8) {
 				std::cout << "Successfuly Ran Away" << std::endl;
 				return true;
@@ -179,9 +172,6 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 	int RunChance = rand() % 10;
 	int DivInt = 0;
 	while (!turnEnd) {
-		std::cout << "You are fighting a: " << target.GetEnemyClass() << std::endl;
-		std::cout << target.GetEnemyHP() << "HP" << std::endl;
-		std::cout << "What will you do?" << std::endl;
 		DivInt = rand() % 100 + 1;
 		if (DivInt <= 30) {
 			DivInter.applyEffect(DivInter.getRandomGod(), MC, target);
@@ -257,10 +247,9 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 		turnEnd = false;
 		int chP;
 		switch (ChoseAction(MC, target, 1)) { //select action
-		case '1':
+		case 1:
 			//Include Player Moveset
 			//MC.ShowPlayerMoves();
-			chP = _getch();
 			system("cls");
 			switch (ChoseAction(MC, target, 2)) {
 			case '1':
@@ -276,19 +265,20 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 				ChosenMove = 4;
 				break;
 			default:
+				ChosenMove = 1;
 				break;
 			}
 			Combat::PlayerAttack(MC, target, ChosenMove - 1);
 			chP = _getch();
 			turnEnd = true;
 			break;
-		case '2':
+		case 2:
 			std::cout << "Prepaired to Defend" << std::endl;
 			Defend = true;
 			chP = _getch();
 			turnEnd = true;
 			break;
-		case '3':
+		case 3:
 			MC.UpdateInventoryPlayerStats();
 			std::cout << MC.GetInventory().DrawInventoryUI() << std::endl;
 			std::cout << "Use an item? Y/N" << std::endl;
@@ -302,7 +292,7 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 				turnEnd = false;
 			}
 			break;
-		case '4':
+		case 4:
 			if (RunChance >= 8) {
 				std::cout << "Successfuly Ran Away" << std::endl;
 				return true;
@@ -319,7 +309,7 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 			}
 			chP = _getch();
 			break;
-		case 'h':
+		case 65:
 			std::cout << HORSEAscii << "\n";
 			turnEnd = true;
 			break;
@@ -389,40 +379,100 @@ int Combat::ChoseAction(Player& MC, Enemy& target, int stage)
 				"(3) Item   ",
 				"(4) Run    ",
 			};
-			c[0] += "<-";
+			c[0] += "<--";
 			tracker = 0;
 			while (ChosingAction) {
+				std::cout << "You are fighting a: " << target.GetEnemyClass() << std::endl;
+				std::cout << target.GetEnemyHP() << "HP" << std::endl;
+				std::cout << "What will you do?" << std::endl;
 				std::cout << c[0] << std::endl;
 				std::cout << c[1] << std::endl;
 				std::cout << c[2] << std::endl;
 				std::cout << c[3] << std::endl;
 				chP = _getch();
+				std::cout << (int)chP << std::endl;
 				system("cls");
 				switch (chP) {
 				case 'w':
 				case 'W':
-					c[tracker].erase(12);
+					c[tracker].erase(11);
 					if (tracker == 0) {
 						tracker = 3;
 					}
 					else {
 						tracker -= 1;
 					}
-					c[tracker] += "<-";
+					c[tracker] += "<--";
 					break;
 				case 's':
 				case 'S':
-					c[tracker].erase(12);
+					c[tracker].erase(11);
 					if (tracker == 3) {
 						tracker = 0;
 					}
 					else {
 						tracker += 1;
 					}
-					c[tracker] += "<-";
+					c[tracker] += "<--";
 					break;
-				case '13':
-					return (tracker + 1);
+				case 13:
+					ChosingAction = false;
+					return tracker + 1;
+				case 'h':
+					ChosingAction = false;
+					return 65;
+				default:
+					break;
+				}
+			}
+		}
+
+		if (stage == 2) {
+			std::string c[4] = {
+				'[' + MC.GetMoveSet().GetMove(0).MoveName + "] Strength: (" + std::to_string(MC.GetMoveSet().GetMove(0).MoveStrength) + ") Hits: (" + std::to_string(MC.GetMoveSet().GetMove(0).Hits) + ") Type: " + MC.GetMoveSet().GetMove(0).MoveType,
+				'[' + MC.GetMoveSet().GetMove(1).MoveName + "] Strength: (" + std::to_string(MC.GetMoveSet().GetMove(1).MoveStrength) + ") Hits: (" + std::to_string(MC.GetMoveSet().GetMove(1).Hits) + ") Type: " + MC.GetMoveSet().GetMove(1).MoveType,
+				'[' + MC.GetMoveSet().GetMove(2).MoveName + "] Strength: (" + std::to_string(MC.GetMoveSet().GetMove(2).MoveStrength) + ") Hits: (" + std::to_string(MC.GetMoveSet().GetMove(2).Hits) + ") Type: " + MC.GetMoveSet().GetMove(2).MoveType,
+				'[' + MC.GetMoveSet().GetMove(3).MoveName + "] Strength: (" + std::to_string(MC.GetMoveSet().GetMove(3).MoveStrength) + ") Hits: (" + std::to_string(MC.GetMoveSet().GetMove(3).Hits) + ") Type: " + MC.GetMoveSet().GetMove(3).MoveType,
+			};
+			c[0] += " <--";
+			tracker = 0;
+			while (ChosingAction) {
+				std::cout << "Choose your move" << std::endl;
+				std::cout << target.GetEnemyHP() << "HP" << std::endl;
+				std::cout << "What will you do?" << std::endl;
+				std::cout << c[0] << std::endl;
+				std::cout << c[1] << std::endl;
+				std::cout << c[2] << std::endl;
+				std::cout << c[3] << std::endl;
+				chP = _getch();
+				std::cout << (int)chP << std::endl;
+				system("cls");
+				switch (chP) {
+				case 'w':
+				case 'W':
+					c[tracker].erase(c[tracker].find(" <--"));
+					if (tracker == 0) {
+						tracker = 3;
+					}
+					else {
+						tracker -= 1;
+					}
+					c[tracker] += " <--";
+					break;
+				case 's':
+				case 'S':
+					c[tracker].erase(c[tracker].find(" <--"));
+					if (tracker == 3) {
+						tracker = 0;
+					}
+					else {
+						tracker += 1;
+					}
+					c[tracker] += " <--";
+					break;
+				case 13:
+					ChosingAction = false;
+					return tracker + 1;
 				default:
 					break;
 				}
