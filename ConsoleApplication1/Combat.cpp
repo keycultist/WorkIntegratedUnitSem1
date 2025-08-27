@@ -25,7 +25,6 @@ void Combat::InitCombat(Player& MC, Enemy& target)
 
 void Combat::InitTutorialCombat(Player& MC, Enemy& target) //WIP
 {
-	std::cout << "Welcome to the Abyss, combat here is turn-based and enemies will spawn randomly inside." << std::endl;
 	int chP = _getch();
 	system("cls");
 	srand(time(NULL));
@@ -79,7 +78,7 @@ bool Combat::UpdateTutorial(bool& InCombat, Player& MC, Enemy& target) //WIP
 			turnEnd = true;
 			break;
 		case 2:
-			std::cout << "Prepaired to Defend" << std::endl;
+			std::cout << "Prepared to Defend" << std::endl;
 			Defend = true;
 			chP = _getch();
 			turnEnd = true;
@@ -279,7 +278,7 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 			turnEnd = true;
 			break;
 		case 2:
-			std::cout << "Prepaired to Defend" << std::endl;
+			std::cout << "Prepared to Defend" << std::endl;
 			Defend = true;
 			chP = _getch();
 			turnEnd = true;
