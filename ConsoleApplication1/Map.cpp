@@ -11,6 +11,7 @@ theres still stuff to do like actually generating the enemy spawns and etc, but 
 #include "Enemy.h"
 #include "Shop.h"
 #include "Combat.h"
+#include "conio.h"
 #define NOMINMAX
 #include <windows.h> 
 
@@ -848,4 +849,53 @@ Enemy* Map::getEnemyAtPosition(int x, int y) {
         }
     }
     return nullptr;
+}
+
+bool Map::checkForCombat(Room* room, Player& MC) {
+    if (!room || room->enemiesCleared) {
+        return false;
+    }
+
+    Enemy* enemyAtPlayerPos = getEnemyAtPosition(MC.GetPlayerPosX(), MC.GetPlayerPosY());
+
+    if (enemyAtPlayerPos && enemyAtPlayerPos->GetEnemyHP() > 0) {
+        std::string enemyClass = enemyAtPlayerPos->GetEnemyClass();
+
+        if (enemyClass == "OneWingedAngel" || enemyClass == "JovialChaos" || enemyClass == "Bob" || enemyClass == "Susanoo" || enemyClass == "DevilGene") {
+            std::cout << "\n!!! TRUE BOSS ENCOUNTER !!!" << std::endl;
+            std::cout << "The final challenge awaits..." << std::endl;
+        }
+        else if (enemyClass == "ColorCleaver" || enemyClass == "DarkSilence" || enemyClass == "ManiKatti" || enemyClass == "AzureResonance") {
+            std::cout << "\n!!! MINIBOSS ENCOUNTER !!!" << std::endl;
+            std::cout << "A powerful guardian blocks your path..." << std::endl;
+        }
+        else {
+            std::cout << "\nEnemy encountered: " << enemyClass << "!" << std::endl;
+        }
+
+        std::cout << "Press any key to engage!" << std::endl;
+        int chP = _getch();
+        system("cls");
+
+        Combat combat;
+        combat.InitCombat(MC, *enemyAtPlayerPos);
+
+        if (enemyAtPlayerPos->GetEnemyHP() <= 0) {
+            removeDefeatedEnemies();
+
+            if (enemyClass == "OneWingedAngel" || enemyClass == "JovialChaos") {
+                std::cout << "\n!!! TRUE BOSS DEFEATED !!!" << std::endl;
+                std::cout << "Victory is yours!" << std::endl;
+            }
+            else if (enemyClass == "Guardian Elite") {
+                std::cout << "\n!!! MINIBOSS DEFEATED !!!" << std::endl;
+                std::cout << "The guardian has fallen!" << std::endl;
+            }
+        }
+        isRoomEnemiesCleared(room);
+
+        return true;
+    }
+
+    return false;
 }
