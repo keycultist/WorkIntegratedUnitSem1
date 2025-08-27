@@ -106,7 +106,7 @@ void clearConsole() {
 int main()
 {
     Renderer render;
-    render.drawASCII
+    render.drawASCII();
 
     srand(time(0));
     Player MC;

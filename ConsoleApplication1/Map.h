@@ -4,6 +4,7 @@
 #include <vector>
 #include "Renderer.h"
 #include "Player.h"
+#include "Enemy.h"
 #include <map>
 
 enum class RoomType {
@@ -49,12 +50,15 @@ private:
     std::vector<Room> rooms;    
     std::map<int, Room*> roomLookup;  
     Room* currentRoom;                 
-    int nextRoomId;      
+    int nextRoomId;     
+    bool minibossGenerated = false; 
+    bool trueBossGenerated = false;
+    Room* minibossRoom = nullptr;
+    Room* trueBossRoom = nullptr;
 
     void generateEnemiesForRoom(Room& room, int difficulty);
     void generateEnemyForRoom(Enemy& enemy, const Room& room, int difficulty, int enemyIndex);
     void setEnemyEquipment(Enemy& enemy, const std::string& enemyClass, int difficulty);
-
 protected:
 
 public:
@@ -73,8 +77,7 @@ public:
 
     void generateRoom(const Room& room, char** board, int boardSizeX, int boardSizeY);
     void generateLargeRoom(const Room& room);  // Uses InnerRoom for big rooms
-
-
+    
     Room* detectPlayerRoom(int playerX, int playerY);
     void renderCurrentRoom(Room* room, char** roomBoard, int boardSize, Player& MC);
     bool isPlayerInRoom(int playerX, int playerY, const Room& room);
@@ -110,6 +113,16 @@ public:
     std::vector<Enemy*> getEnemiesInRoom(Room* room);
     bool isRoomEnemiesCleared(Room* room);
     bool checkForCombat(Room* room, Player& MC);
+    Room* getMinibossRoom() { return minibossRoom; }
+    Room* getTrueBossRoom() { return trueBossRoom; }
+    bool hasMiniboss() { return minibossGenerated; }
+    bool hasTrueBoss() { return trueBossGenerated; }
+
+    void generateBossForRoom(Enemy& enemy, const std::string& bossType, int difficulty);
+    Room* renderEnemiesOnBoard(char** Board, int sizeX, int sizeY);
+	char getEnemyDisplayChar(const Enemy& enemy);
+    void removeDefeatedEnemies();
+	Enemy* getEnemyAtPosition(int x, int y);
 
     void renderMapWithFOV(Player& MC, int viewWidth, int viewHeight);
 };

@@ -6,7 +6,7 @@ public:
     
     virtual void drawBoard(char** board, int sizeX, int sizeY);
 
-	virtual void drawASCII(std::string asciiArt);
+	virtual void drawASCII();
 protected:
 
 private:
