@@ -13,31 +13,14 @@ Shop::Shop() {
 		ShopSlotItemName[i] = "";
 		ShopSlotItemDescription[i] = "";
 		ShopSlotItemCost[i] = 0;
-		ShopBoughtConsumablesList[i] = "-";
 	}
 
-	for (int i = 0; i < 22; i++) {
-		ShopItemList[i];
-		ShopItemDescriptionList[i];
-		ShopItemCostList[i];
-		ShopItemTypeList[i];
-	}
-
-	ShopPlayerCurrency = 0;
-	ShopPlayerClass = "";
-
-	for (int i = 0; i < 7; i++) {
-		ShopWeaponList[i];
-	}
-
-	ShopPlayerEquippedWeapon = "Splintered Wood Sword";
-	ShopPlayerEquippedArmor = "Ragged Clothing";
 }
 
 
 
 
-void Shop::SetShopItemSlot() {
+void Shop::SetShopItemSlot(Player& MC, Item& items) {
 	for (int i = 0; i < 3; i++) {
 		int rng = rand() % 1000; // 0.1% each number
 
@@ -60,7 +43,7 @@ void Shop::SetShopItemSlot() {
 
 
 
-		switch (ShopFloor) {
+		switch (MC.GetCurrentDifficulty() + 1) {
 		case 1: // floor 1 [81.9% common / 15% uncommon / 3% rare / 0.1% secret]
 
 			// common
@@ -251,58 +234,14 @@ void Shop::SetShopItemSlot() {
 
 		}
 
-		ShopSlotItemName[i] = ShopItemList[ShopSlotIndex];
-		ShopSlotItemDescription[i] = ShopItemDescriptionList[ShopSlotIndex];
-		ShopSlotItemCost[i] = ShopItemCostList[ShopSlotIndex];
-		ShopSlotItemType[i] = ShopItemTypeList[ShopSlotIndex];
+		ShopSlotItemName[i] = items.GetItemListIndex(ShopSlotIndex);
+		ShopSlotItemDescription[i] = items.GetItemDescriptionListIndex(ShopSlotIndex);
+		ShopSlotItemCost[i] = items.GetItemCostListIndex(ShopSlotIndex);
+		ShopSlotItemType[i] = items.GetItemTypeListIndex(ShopSlotIndex);
 		ItemIsInStock[i] = true;
 	}
 }
 
-
-
-
-
-void Shop::SetShopPlayerClass(const std::string& c) {
-	ShopPlayerClass = c;
-}
-
-std::string Shop::GetShopPlayerClass() {
-	return ShopPlayerClass;
-}
-
-void Shop::SetPlayerCurrency(int c) {
-	ShopPlayerCurrency = c;
-}
-
-int Shop::GetPlayerCurrency() {
-	return ShopPlayerCurrency;
-}
-
-
-
-
-
-
-void Shop::SetShopItemListIndex(std::string items, int index) {
-	ShopItemList[index] = items;
-}
-
-void Shop::SetShopItemDescriptionListIndex(std::string descriptions, int index) {
-	ShopItemDescriptionList[index] = descriptions;
-}
-
-void Shop::SetShopItemCostListIndex(int costs, int index) {
-	ShopItemCostList[index] = costs;
-}
-
-void Shop::SetShopItemTypeListIndex(std::string types, int index) {
-	ShopItemTypeList[index] = types;
-}
-
-void Shop::SetShopFloor(int floor) {
-	ShopFloor = floor;
-}
 
 void Shop::SetPlayerIsShopping(bool a) {
 	PlayerIsShopping = a;
@@ -311,115 +250,6 @@ void Shop::SetPlayerIsShopping(bool a) {
 bool Shop::GetPlayerIsShopping() {
 	return PlayerIsShopping;
 }
-
-
-
-
-void Shop::SetShopPlayerBaseHP(int hp) {
-	ShopPlayerBaseHP = hp;
-}
-
-void Shop::SetShopPlayerNewHP(int hp) {
-	ShopPlayerNewHP = hp;
-}
-
-void Shop::SetShopPlayerNewPower(int power) {
-	ShopPlayerNewPower = power;
-}
-
-int Shop::GetShopPlayerNewHP() {
-	return ShopPlayerNewHP;
-}
-
-int Shop::GetShopPlayerNewPower() {
-	return ShopPlayerNewPower;
-}
-
-
-
-
-
-
-void Shop::SetShopWeaponListIndex(std::string name, int index) {
-	ShopWeaponList[index] = name;
-}
-
-
-
-
-void Shop::SetShopWeaponPowerList() {
-	ShopWeaponPowerList[0] = 1;
-	ShopWeaponPowerList[1] = 2;
-	ShopWeaponPowerList[2] = 4;
-	ShopWeaponPowerList[3] = 7;
-	ShopWeaponPowerList[4] = 13;
-	ShopWeaponPowerList[5] = 20;
-	ShopWeaponPowerList[6] = 35;
-}
-
-void Shop::SetShopArmorHPList() {
-	ShopArmorHPList[0] = 25;
-	ShopArmorHPList[1] = 50;
-	ShopArmorHPList[2] = 90;
-	ShopArmorHPList[3] = 175;
-	ShopArmorHPList[4] = 250;
-}
-
-void Shop::SetShopArmorDefList() {
-	ShopArmorDefList[0] = 5;
-	ShopArmorDefList[1] = 12;
-	ShopArmorDefList[2] = 22;
-	ShopArmorDefList[3] = 35;
-	ShopArmorDefList[4] = 50;
-}
-
-
-
-
-
-std::string Shop::GetShopPlayerEquippedWeapon() {
-	return ShopPlayerEquippedWeapon;
-}
-
-
-
-std::string Shop::GetShopPlayerEquippedArmor() {
-	return ShopPlayerEquippedArmor;
-}
-
-
-
-int Shop::GetShopFloor() {
-	return ShopFloor;
-}
-
-
-
-void Shop::SetConsumablesListIndex(std::string name, int index) {
-	ShopBoughtConsumablesList[index] = name;
-}
-
-
-std::string Shop::GetConsumablesListIndex(int index) {
-	return ShopBoughtConsumablesList[index];
-}
-
-
-
-
-void Shop::SetInventoryConsumableListIndex(std::string name, int index) {
-	InventoryConsumableList[index] = name;
-
-}
-
-
-
-
-
-
-
-
-
 
 
 
@@ -515,7 +345,7 @@ void Shop::SplitDescriptionString(std::string description) {
 
 
 
-std::string Shop::DrawShopUI() {
+std::string Shop::DrawShopUI(Player& MC, Item& items, Inventory& inv) {
 	std::ostringstream ShopUIString;
 
 	ShopUIString.str("");
@@ -563,8 +393,9 @@ std::string Shop::DrawShopUI() {
 		}
 
 		if (ShopSlotItemType[0] == "Weapon") {
-			if (ShopPlayerClass == "Warrior" || ShopPlayerClass == "Hunter" || ShopPlayerClass == "Assassin" || ShopPlayerClass == "Berserker") {
-				descline[0] = "A fine weapon choice. May it fell great foes under your wield.";
+			if (MC.GetPlayerClass() == "Warrior" || MC.GetPlayerClass() == "Hunter" || MC.GetPlayerClass() == "Assassin" || MC.GetPlayerClass() == "Berserker") {
+				descline[0] = "A fine weapon choice. May it fell great foes under your";
+				descline[1] = "wield.";
 			}
 			else {
 				descline[0] = "A wise choice. May the Elder Sages guide your arcanism.";
@@ -591,7 +422,7 @@ std::string Shop::DrawShopUI() {
 	for (int i = 0; i < 60 - descline[0].length(); i++) {
 		ShopUIString << " ";
 	}
-	ShopUIString << "  |```|_             F" << std::to_string(ShopFloor) + "             _|```|\n";
+	ShopUIString << "  |```|_             F" << std::to_string(MC.GetCurrentDifficulty() + 1) + "             _|```|\n";
 
 	// description line 2
 	ShopUIString << "|`````| " << descline[1];
@@ -672,8 +503,9 @@ std::string Shop::DrawShopUI() {
 		}
 
 		if (ShopSlotItemType[1] == "Weapon") {
-			if (ShopPlayerClass == "Warrior" || ShopPlayerClass == "Hunter" || ShopPlayerClass == "Assassin" || ShopPlayerClass == "Berserker") {
-				descline[0] = "A fine weapon choice. May it fell great foes under your wield.";
+			if (MC.GetPlayerClass() == "Warrior" || MC.GetPlayerClass() == "Hunter" || MC.GetPlayerClass() == "Assassin" || MC.GetPlayerClass() == "Berserker") {
+				descline[0] = "A fine weapon choice. May it fell great foes under your";
+				descline[1] = "wield.";
 			}
 			else {
 				descline[0] = "A wise choice. May the Elder Sages guide your arcanism.";
@@ -787,8 +619,9 @@ std::string Shop::DrawShopUI() {
 		}
 
 		if (ShopSlotItemType[2] == "Weapon") {
-			if (ShopPlayerClass == "Warrior" || ShopPlayerClass == "Hunter" || ShopPlayerClass == "Assassin" || ShopPlayerClass == "Berserker") {
-				descline[0] = "A fine weapon choice. May it fell great foes under your wield.";
+			if (MC.GetPlayerClass() == "Warrior" || MC.GetPlayerClass() == "Hunter" || MC.GetPlayerClass() == "Assassin" || MC.GetPlayerClass() == "Berserker") {
+				descline[0] = "A fine weapon choice. May it fell great foes under your";
+				descline[1] = "wield.";
 			}
 			else {
 				descline[0] = "A wise choice. May the Elder Sages guide your arcanism.";
@@ -876,49 +709,47 @@ std::string Shop::DrawShopUI() {
 
 
 
-void Shop::EquipBoughtWeapon(int slot) {
+void Shop::EquipBoughtWeapon(Player& MC, Item& items, int slot) {
 	// check which weapon
 	for (int i = 1; i < 7; i++) {
 		//std::cout << "shop slot item name : " << ShopSlotItemName[slot] << std::endl;
 		//std::cout << "warrior weapon name : " << ShopWarriorWeaponList[i] << std::endl;
-
-		if (ShopSlotItemName[slot] == ShopWeaponList[i]) {
-			ShopPlayerNewPower = ShopWeaponPowerList[i];
-			ShopPlayerEquippedWeapon = ShopWeaponList[i];
+		
+		if (ShopSlotItemName[slot] == items.GetWeaponListIndex(i)) {
+			MC.SetPlayerEquippedWeapon(items.GetWeaponListIndex(i));
 		}
 
 	}
 
 
-	std::cout << "player new power: " << ShopPlayerNewPower << std::endl;
+	//std::cout << "player new power: " << ShopPlayerNewPower << std::endl;
 
 }
 
 
-void Shop::EquipBoughtArmor(int slot) {
+void Shop::EquipBoughtArmor(Player& MC, Item& items, int slot) {
 	// check which armor
 	for (int i = 0; i < 5; i++) {
 		//std::cout << "shop slot item name: " << ShopSlotItemName[slot] << std::endl;
 		//std::cout << "armor name: " << ShopItemList[5 * i + 1] << std::endl;
 
-		if (ShopSlotItemName[slot] == ShopItemList[5 * i + 1]) {
-			ShopPlayerNewHP = ShopPlayerBaseHP + ShopArmorHPList[i];
-			ShopPlayerEquippedArmor = ShopItemList[5 * i + 1];
+		if (ShopSlotItemName[slot] == items.GetItemListIndex(5 * i + 1)) {
+			MC.SetPlayerEquippedArmor(items.GetItemListIndex(5 * i + 1));
 		}
 
-		std::cout << "player new hp: " << ShopPlayerNewHP << std::endl;
+		//std::cout << "player new hp: " << ShopPlayerNewHP << std::endl;
 	}
 }
 
 
-void Shop::BoughtConsumables(int slot) {
+void Shop::BoughtConsumables(Item& items, int slot) {
 	// check which consumable
 	for (int i = 0; i < 4; i++) { // 4 rarities of consumables
 		for (int j = 0; j < 3; j++) { // 3 types of consumables
 			//std::cout << "shop slot item name: " << ShopSlotItemName[slot] << std::endl;
 			//std::cout << "consumable name: " << ShopItemList[(5 * i) + (j + 2)] << std::endl;
 
-			if (ShopSlotItemName[slot] == ShopItemList[(5 * i) + (j + 2)]) {
+			if (ShopSlotItemName[slot] == items.GetItemListIndex((5 * i) + (j + 2))) {
 
 				for (int k = 0; k < 3; k++) {
 					if (ShopBoughtConsumablesList[k] == "-") {
@@ -949,16 +780,16 @@ void Shop::BoughtConsumables(int slot) {
 
 
 
-int Shop::PromptPlayerShopInteraction() {
+int Shop::PromptPlayerShopInteraction(Player& MC, Item& items, Inventory& inv) {
 
-	std::cout << "Current Funds: " << ShopPlayerCurrency << "\n" << std::endl;
+	std::cout << "Current Gold: " << MC.GetCurrency() << " G\n" << std::endl;
 	std::cout << "(1) Buy Item 1\n(2) Buy Item 2\n(3) Buy Item 3\n(4) Exit Shop\n" << std::endl;
 	std::cin >> PlayerShopChoice;
 	// consumable inv space check
 	bool PlayerHasInventorySpace = false;
 
 	for (int i = 0; i < 10; i++) {
-		if (InventoryConsumableList[i] == "-") {
+		if (inv.GetInventoryConsumablesIndex(i) == "-") {
 			PlayerHasInventorySpace = true;
 		}
 	}
@@ -974,6 +805,7 @@ int Shop::PromptPlayerShopInteraction() {
 	// if leave shop
 	else if (PlayerShopChoice == 4) {
 		PlayerIsShopping = false;
+		return 0;
 	}
 
 	else if (ShopSlotItemType[PlayerShopChoice - 1] == "Consumable" && PlayerHasInventorySpace == false) {
@@ -983,27 +815,36 @@ int Shop::PromptPlayerShopInteraction() {
 
 
 	// if purchasable, check for purchase
-	else if (ShopPlayerCurrency >= ShopSlotItemCost[PlayerShopChoice - 1] && ItemIsInStock[PlayerShopChoice - 1]) {
+	else if (MC.GetCurrency() >= ShopSlotItemCost[PlayerShopChoice - 1] && ItemIsInStock[PlayerShopChoice - 1]) {
 		std::cout << ShopSlotItemName[PlayerShopChoice - 1] << " Purchased!\n" << std::endl;
 
-		ShopPlayerCurrency -= ShopSlotItemCost[PlayerShopChoice - 1];
+		MC.SetCurrency(MC.GetCurrency() - ShopSlotItemCost[PlayerShopChoice - 1]);
 		ItemIsInStock[PlayerShopChoice - 1] = false;
 
 
 		// equip
 
 		//std::cout << "shop slot weapon type: " << ShopSlotItemType[0] << std::endl;
+
+		std::cout << "wall 1" << std::endl;
 		if (ShopSlotItemType[PlayerShopChoice - 1] == "Weapon") {
-			EquipBoughtWeapon(PlayerShopChoice - 1);
+			std::cout << "wall 2" << std::endl;
+			EquipBoughtWeapon(MC, items, PlayerShopChoice - 1);
+			std::cout << "wall 3" << std::endl;
 		}
 
 		if (ShopSlotItemType[PlayerShopChoice - 1] == "Armor") {
-			EquipBoughtArmor(PlayerShopChoice - 1);
+			EquipBoughtArmor(MC, items, PlayerShopChoice - 1);
 		}
 
 
 		if (ShopSlotItemType[PlayerShopChoice - 1] == "Consumable") {
-			BoughtConsumables(PlayerShopChoice - 1);
+			for (int i = 0; i < 10; i++) {
+				if (inv.GetInventoryConsumablesIndex(i) == "-") {
+					inv.SetInventoryConsumables(ShopSlotItemName[PlayerShopChoice - 1], i);
+				}
+				break;
+			}
 		}
 
 	}
@@ -1016,7 +857,7 @@ int Shop::PromptPlayerShopInteraction() {
 	}
 
 	// if not enough money
-	else if (ShopPlayerCurrency < ShopSlotItemCost[PlayerShopChoice - 1]) {
+	else if (MC.GetCurrency() < ShopSlotItemCost[PlayerShopChoice - 1]) {
 		std::cout << "Insufficient Funds\n" << std::endl;
 	}
 
@@ -1025,5 +866,5 @@ int Shop::PromptPlayerShopInteraction() {
 
 
 
-	return 0;
+	return 1;
 }

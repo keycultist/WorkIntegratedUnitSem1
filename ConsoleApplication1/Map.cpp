@@ -17,12 +17,15 @@ theres still stuff to do like actually generating the enemy spawns and etc, but 
 
 using namespace std;
 
-void Map::CreateNewFloor(int Difficulty, Player& MC) {
+void Map::CreateNewFloor(int Difficulty, Player& MC, Shop& shop) {
     // Setup pointer arrays
     char* floorPtrs[128];
     char* innerPtrs[256];
     for (int i = 0; i < 128; ++i) floorPtrs[i] = FloorGrid[i];
     for (int i = 0; i < 256; ++i) innerPtrs[i] = InnerRoom[i];
+
+    //Init Shop
+    shop.SetShopItemSlot(MC, MC.GetInventory().GetItem());
 
     // Clear both boards
     fillBoard(floorPtrs, 128, 128, MC);
@@ -33,6 +36,10 @@ void Map::CreateNewFloor(int Difficulty, Player& MC) {
     roomLookup.clear();
     currentRoom = nullptr;
     nextRoomId = 1;
+    minibossGenerated = false;
+    trueBossGenerated = false;
+    minibossRoom = nullptr;
+    trueBossRoom = nullptr;
 
     // Create all possible positions
     std::vector<std::pair<int, int>> allPositions;
@@ -78,42 +85,38 @@ void Map::CreateNewFloor(int Difficulty, Player& MC) {
             roomType = RoomType::SMALL;
         }
 
-        // Create Enemies in rooms.
-        for (auto& room : rooms) {
-            generateEnemiesForRoom(room, Difficulty);
-        }
-
         roomPlans.push_back({ allPositions[positionIndex++], roomType });
     }
 
     // The last room is always a shop
     roomPlans.push_back({ allPositions[positionIndex], RoomType::SHOP });
 
-    // Generate all planned rooms
+    // Generate all planned rooms AND their enemies
     for (int i = 0; i < roomPlans.size(); ++i) {
         Room newRoom(nextRoomId++, roomPlans[i].first.first, roomPlans[i].first.second, roomPlans[i].second);
         rooms.push_back(newRoom);
         roomLookup[newRoom.id] = &rooms.back();
 
-        // Use InnerRoom for large rooms, FloorGrid for others. (self explanatory)
+        // Use InnerRoom for large rooms, FloorGrid for others
         if (newRoom.type == RoomType::LARGE) {
             generateLargeRoom(newRoom);
         }
         else {
             generateRoom(newRoom, floorPtrs, 128, 128);
         }
+
+        // NOW generate enemies for this room (after the room is fully created)
+        generateEnemiesForRoom(rooms.back(), Difficulty);
     }
 
     std::cout << "Generated " << numRooms << " rooms (last room is shop)" << std::endl;
 
-    // Verify the last room is a shop so we can be capitalist pigs
+    // Verify the last room is a shop
     Room* lastRoom = getLastRoom();
     if (lastRoom && lastRoom->type == RoomType::SHOP) {
         std::cout << "Final shop is room #" << lastRoom->id << " at ("
             << lastRoom->x << "," << lastRoom->y << ")" << std::endl;
     }
-
-
 }
 
 
@@ -252,38 +255,6 @@ bool Map::isPlayerInRoom(int playerX, int playerY, const Room& room) {
 }
 
 void Map::renderCurrentRoom(Room* room, char** roomBoard, int boardSize, Player& MC) {
-    //if (!room) return;
-
-    //fillBoard(roomBoard, boardSize, boardSize, MC);
-    //std::cout << "AAAAAAAAAAAAAAA" << std::endl;
-
-    //int scale = 8;  // Scale factor for detailed view
-    //int scaledWidth = room->width * scale;
-    //int scaledHeight = room->height * scale;
-    //int centerX = boardSize / 2;
-    //int centerY = boardSize / 2;
-
-    //// Render scaled-up version centered on roomBoard
-    //for (int x = 0; x < scaledWidth; ++x) {
-    //    for (int y = 0; y < scaledHeight; ++y) {
-    //        int roomBoardX = centerX - scaledWidth / 2 + x;
-    //        int roomBoardY = centerY - scaledHeight / 2 + y;
-
-    //        if (roomBoardX >= 0 && roomBoardX < boardSize && roomBoardY >= 0 && roomBoardY < boardSize) {
-    //            // Determine what this scaled pixel should be
-    //            int originalX = x / scale;
-    //            int originalY = y / scale;
-
-    //            if (originalX == 0 || originalX == room->width - 1 || originalY == 0 || originalY == room->height - 1) {
-    //                roomBoard[roomBoardX][roomBoardY] = '#';  // Wall
-    //            }
-    //            else {
-    //                roomBoard[roomBoardX][roomBoardY] = room->floorChar;  // Floor
-    //            }
-    //        }
-    //    }
-    //}
-
     if (!room) return;
 
     int w = room->width;
@@ -302,13 +273,32 @@ void Map::renderCurrentRoom(Room* room, char** roomBoard, int boardSize, Player&
         }
     }
 
-    // Calculate player position relative to room top-left
-    int localX = MC.GetPlayerPosX() - (room->x - room->width / 2);
-    int localY = MC.GetPlayerPosY() - (room->y - room->height / 2);
+    // Calculate room bounds in world coordinates
+    int roomLeftX = room->x - room->width / 2;
+    int roomTopY = room->y - room->height / 2;
 
-    // Clamp to interior
-    if (localX >= 1 && localX < w - 1 && localY >= 1 && localY < h - 1) {
-        roomBoardLC[localY][localX] = 'P';
+    // Add enemies to the room view
+    for (const auto& enemy : room->enemies) {
+        if (enemy.GetEnemyHP() > 0) {
+            // Convert world coordinates to local room coordinates
+            int localEnemyX = enemy.GetEnemyPosX() - roomLeftX;
+            int localEnemyY = enemy.GetEnemyPosY() - roomTopY;
+
+            // Check if enemy is within room bounds
+            if (localEnemyX >= 0 && localEnemyX < w &&
+                localEnemyY >= 0 && localEnemyY < h) {
+                roomBoardLC[localEnemyY][localEnemyX] = getEnemyDisplayChar(enemy);
+            }
+        }
+    }
+
+    // Calculate player position relative to room top-left
+    int localPlayerX = MC.GetPlayerPosX() - roomLeftX;
+    int localPlayerY = MC.GetPlayerPosY() - roomTopY;
+
+    // Add player (player overrides enemy if they're on same tile)
+    if (localPlayerX >= 0 && localPlayerX < w && localPlayerY >= 0 && localPlayerY < h) {
+        roomBoardLC[localPlayerY][localPlayerX] = 'P';
     }
 
     // Build frame buffer string
@@ -316,6 +306,25 @@ void Map::renderCurrentRoom(Room* room, char** roomBoard, int boardSize, Player&
     frameBuffer += "Room View:\n";
     for (const auto& row : roomBoardLC) {
         frameBuffer += row + "\n";
+    }
+
+    // Add enemy info
+    frameBuffer += "\nEnemies in room:\n";
+    int aliveEnemies = 0;
+    for (const auto& enemy : room->enemies) {
+        if (enemy.GetEnemyHP() > 0) {
+            aliveEnemies++;
+            char enemyChar = getEnemyDisplayChar(enemy);
+            frameBuffer += enemyChar;
+            frameBuffer += " - ";
+            frameBuffer += enemy.GetEnemyClass();
+            frameBuffer += " (HP: ";
+            frameBuffer += std::to_string(enemy.GetEnemyHP());
+            frameBuffer += ")\n";
+        }
+    }
+    if (aliveEnemies == 0) {
+        frameBuffer += "Room cleared!\n";
     }
 
     // Move cursor to top-left and print
@@ -338,11 +347,19 @@ void Map::switchToRoomView(int playerX, int playerY, Player& MC, Shop& shop, boo
         std::cout << "Entered " << getRoomTypeName(playerRoom->type) << " room!" << std::endl;
         //drawBoard(innerPtrs, 256, 256);  // Show just this room
         if (playerRoom->type == RoomType::SHOP) {
-            if (!FinishShopping) {
-                std::cout << shop.DrawShopUI() << std::endl;
-                shop.PromptPlayerShopInteraction();
-                FinishShopping = true;
-                system("cls");
+            //
+            shop.SetShopItemSlot(MC, MC.GetInventory().GetItem());
+            while (!FinishShopping) {
+                shop.SetPlayerIsShopping(true);
+                std::cout << shop.DrawShopUI(MC, MC.GetInventory().GetItem(), MC.GetInventory()) << std::endl;
+                if (shop.PromptPlayerShopInteraction(MC, MC.GetInventory().GetItem(), MC.GetInventory()) == 0) {
+                    FinishShopping = true;
+                    system("cls");
+                }
+                else {
+                    FinishShopping = false;
+                    system("cls");
+                }
             }
         }
     } else {
@@ -489,20 +506,25 @@ void Map::renderMapWithFOV(Player& MC, int viewWidth, int viewHeight) {
             int mapX = topLeftX + x;
             int mapY = topLeftY + y;
 
-            if (mapX == MC.GetPlayerPosX() && mapY == MC.GetPlayerPosY())
+            if (mapX == MC.GetPlayerPosX() && mapY == MC.GetPlayerPosY()) {
                 frameBuffer += 'P';
-            else
-                frameBuffer += FloorGrid[mapY][mapX];
+            }
+            else {
+                // Check if there's an enemy at this position
+                Enemy* enemyAtPos = getEnemyAtPosition(mapX, mapY);
+                if (enemyAtPos && enemyAtPos->GetEnemyHP() > 0) {
+                    frameBuffer += getEnemyDisplayChar(*enemyAtPos);
+                }
+                else {
+                    frameBuffer += FloorGrid[mapY][mapX];
+                }
+            }
         }
         frameBuffer += "|\n";
     }
     frameBuffer += '+';
     for (int x = 0; x < viewWidth; ++x) frameBuffer += '-';
     frameBuffer += "+\n";
-    frameBuffer += "Current Position: ";
-    frameBuffer += std::to_string(MC.GetPlayerPosX());
-    frameBuffer += ',';
-    frameBuffer += std::to_string(MC.GetPlayerPosY());
 
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     COORD topLeft = { 0,0 };
@@ -510,6 +532,7 @@ void Map::renderMapWithFOV(Player& MC, int viewWidth, int viewHeight) {
 
     std::cout << frameBuffer;
 }
+
 
 void Map::generateEnemiesForRoom(Room& room, int difficulty) {
     room.enemies.clear();
@@ -520,34 +543,49 @@ void Map::generateEnemiesForRoom(Room& room, int difficulty) {
         return;
     }
 
-    // Handle miniboss placement (every floor)
+    // Handle miniboss placement (every floor) - but don't return early!
+    bool isMinibossRoom = false;
     if (!minibossGenerated && (room.type == RoomType::TREASURE ||
         room.type == RoomType::MEDIUM ||
         room.type == RoomType::LARGE)) {
         Enemy miniboss;
         generateBossForRoom(miniboss, "Miniboss", difficulty);
+
+        // Position the miniboss at room center
+        miniboss.SetEnemyPos(room.x, room.y);
+
         room.enemies.push_back(miniboss);
         minibossGenerated = true;
         minibossRoom = &room;
+        isMinibossRoom = true;
+
         std::cout << "Generated MINIBOSS in " << getRoomTypeName(room.type)
-            << " room #" << room.id << std::endl;
-        return;
+            << " room #" << room.id << " at (" << room.x << "," << room.y << ")" << std::endl;
+
+        // Don't return here - we can still add regular enemies!
     }
 
-    if (difficulty >= 7) {
-        if (!trueBossGenerated && (isLastRoom(&room) && room.type != RoomType::SHOP ||
-            room.type == RoomType::LARGE)) {
+    // Handle true boss (difficulty 7+)
+    if (difficulty >= 7 && !trueBossGenerated && !isMinibossRoom) {
+        if ((isLastRoom(&room) && room.type != RoomType::SHOP) ||
+            room.type == RoomType::LARGE) {
             Enemy trueBoss;
             generateBossForRoom(trueBoss, "TrueBoss", difficulty);
+
+            // Position the true boss at room center
+            trueBoss.SetEnemyPos(room.x, room.y);
+
             room.enemies.push_back(trueBoss);
             trueBossGenerated = true;
             trueBossRoom = &room;
+
             std::cout << "Generated TRUE BOSS in " << getRoomTypeName(room.type)
-                << " room #" << room.id << std::endl;
-            return;
+                << " room #" << room.id << " at (" << room.x << "," << room.y << ")" << std::endl;
+            return; // True boss rooms only have the boss
         }
     }
 
+    // Determine max regular enemies for this room type
     int maxEnemies = 0;
     switch (room.type) {
     case RoomType::SMALL:
@@ -567,24 +605,41 @@ void Map::generateEnemiesForRoom(Room& room, int difficulty) {
         break;
     }
 
-    // At difficulty 7+, reduce regular enemy spawns slightly to balance with bosses
+    // Reduce regular enemies if there's already a miniboss
+    if (isMinibossRoom) {
+        maxEnemies = std::max(0, maxEnemies - 1);
+    }
+
+    // At difficulty 7+, reduce regular enemy spawns slightly
     if (difficulty >= 7) {
         maxEnemies = std::max(1, maxEnemies - 1);
     }
 
-    // Random number of enemies (0 to maxEnemies)
-    int numEnemies = std::rand() % (maxEnemies + 1);
+    // FIXED: Ensure at least 1 enemy in non-boss rooms (unless it's a miniboss room)
+    int numEnemies;
+    if (maxEnemies <= 0) {
+        numEnemies = 0;
+    }
+    else if (isMinibossRoom) {
+        // Miniboss rooms can have 0-maxEnemies additional enemies
+        numEnemies = std::rand() % (maxEnemies + 1);
+    }
+    else {
+        // Regular rooms always have at least 1 enemy
+        numEnemies = 1 + (std::rand() % maxEnemies);
+    }
 
-    // Generate enemies
+    // Generate regular enemies
     for (int i = 0; i < numEnemies; ++i) {
         Enemy newEnemy;
         generateEnemyForRoom(newEnemy, room, difficulty, i);
         room.enemies.push_back(newEnemy);
     }
 
-    if (numEnemies > 0) {
-        std::cout << "Generated " << numEnemies << " enemies for "
-            << getRoomTypeName(room.type) << " room #" << room.id << std::endl;
+    if (numEnemies > 0 || isMinibossRoom) {
+        std::cout << "Generated " << numEnemies << " regular enemies";
+        if (isMinibossRoom) std::cout << " + 1 miniboss";
+        std::cout << " for " << getRoomTypeName(room.type) << " room #" << room.id << std::endl;
     }
 }
 
@@ -665,12 +720,117 @@ void Map::generateEnemyForRoom(Enemy& enemy, const Room& room, int difficulty, i
     enemy.SetEnemyCurrency(baseCurrency);
     enemy.SetEnemyLvl(difficulty + 1);
 
-    // Position within room
-    int enemyX = room.x + (std::rand() % (room.width - 2)) - (room.width / 2) + 1;
-    int enemyY = room.y + (std::rand() % (room.height - 2)) - (room.height / 2) + 1;
+    // FIXED: Position within room interior only, and validate it's on a floor tile
+    int halfW = room.width / 2;
+    int halfH = room.height / 2;
+    int attempts = 0;
+    int enemyX, enemyY;
+
+    do {
+        // Calculate interior bounds (avoid walls)
+        enemyX = room.x - halfW + 1 + (std::rand() % (room.width - 2));
+        enemyY = room.y - halfH + 1 + (std::rand() % (room.height - 2));
+        attempts++;
+
+        // Safety check to avoid infinite loop
+        if (attempts > 50) {
+            // Fallback to room center if we can't find a good spot
+            enemyX = room.x;
+            enemyY = room.y;
+            break;
+        }
+    } while (enemyX < 0 || enemyX >= 128 || enemyY < 0 || enemyY >= 128 ||
+        (FloorGrid[enemyY][enemyX] != room.floorChar &&
+            FloorGrid[enemyY][enemyX] != '.' &&
+            FloorGrid[enemyY][enemyX] != '$' &&
+            FloorGrid[enemyY][enemyX] != 'B'));
+
     enemy.SetEnemyPos(enemyX, enemyY);
 
     setEnemyEquipment(enemy, chosenClass, difficulty);
+
+    // Debug output
+    std::cout << "Placed " << chosenClass << " at (" << enemyX << "," << enemyY
+        << ") in room at (" << room.x << "," << room.y << ")" << std::endl;
+}
+
+void Map::generateBossForRoom(Enemy& enemy, const std::string& bossType, int difficulty) {
+    enemy.InitEnemy();
+
+    if (bossType == "Miniboss") {
+        int bossChoice = std::rand() % 4;
+
+        switch (bossChoice) {
+        case 0:
+            enemy.SetEnemyClass("ColorCleaver");
+            break; 
+        case 1:
+            enemy.SetEnemyClass("DarkSilence");
+            break;
+        case 2:
+            enemy.SetEnemyClass("ManiKatti");
+            break;
+        case 3:
+            enemy.SetEnemyClass("AzureResonance");
+            break;
+        }
+
+        // Enhanced miniboss stats
+        int baseHP = 80 + (difficulty * 20);
+        int basePower = 12 + (difficulty * 3);
+
+        enemy.SetEnemyMaxHP(baseHP);
+        enemy.SetEnemyHP(baseHP);
+        enemy.SetEnemyPower(basePower);
+        enemy.SetEnemyCritChance(15 + difficulty);
+        enemy.SetEnemyXP(50 + difficulty * 10);
+        enemy.SetEnemyCurrency(25 + difficulty * 5);
+        enemy.SetEnemyLvl(difficulty + 3);
+
+        setEnemyEquipment(enemy, enemy.GetEnemyClass(), difficulty);
+
+        std::cout << "MINIBOSS STATS: " << enemy.GetEnemyClass()
+            << " (HP: " << enemy.GetEnemyMaxHP()
+            << ", Power: " << enemy.GetEnemyPower() << ")" << std::endl;
+    }
+    else if (bossType == "TrueBoss") {
+        int bossChoice = std::rand() % 5;
+
+        switch (bossChoice) {
+        case 0:
+            enemy.SetEnemyClass("OneWingedAngel");
+            break;
+        case 1:
+            enemy.SetEnemyClass("JovialChaos");
+            break;
+        case 2:
+            enemy.SetEnemyClass("Bob");
+            break;
+        case 3:
+            enemy.SetEnemyClass("DevilGene");
+            break;
+        case 4:
+            enemy.SetEnemyClass("Susanoo");
+            break;
+        }
+
+        int baseHP = 200 + (difficulty * 50);
+        int basePower = 25 + (difficulty * 5);
+
+        enemy.SetEnemyMaxHP(baseHP);
+        enemy.SetEnemyHP(baseHP);
+        enemy.SetEnemyPower(basePower);
+        enemy.SetEnemyCritChance(25 + difficulty);
+        enemy.SetEnemyXP(200 + difficulty * 20);
+        enemy.SetEnemyCurrency(100 + difficulty * 15);
+        enemy.SetEnemyLvl(difficulty + 5);
+
+        setEnemyEquipment(enemy, enemy.GetEnemyClass(), difficulty);
+
+        std::cout << "TRUE BOSS STATS: " << enemy.GetEnemyClass()
+            << " (HP: " << enemy.GetEnemyMaxHP()
+            << ", Power: " << enemy.GetEnemyPower() << ")" << std::endl;
+    }
 }
 
 void Map::setEnemyEquipment(Enemy& enemy, const std::string& enemyClass, int difficulty)
@@ -742,54 +902,6 @@ void Map::setEnemyEquipment(Enemy& enemy, const std::string& enemyClass, int dif
     else {
         enemy.SetEnemyEquippedWeapon("None");
         enemy.SetEnemyEquippedArmor("None");
-    }
-}
-
-void Map::generateBossForRoom(Enemy& enemy, const std::string& bossType, int difficulty) {
-    enemy.InitEnemy();
-
-    if (bossType == "Miniboss") {
-        int bossChoice = std::rand() % 3;
-
-        switch (bossChoice) {
-        case 0:
-            enemy.SetEnemyClass("ColorCleaver");
-        case 1:
-            enemy.SetEnemyClass("DarkSilence");
-        case 2:
-            enemy.SetEnemyClass("ManiKatti");
-        case 3:
-            enemy.SetEnemyClass("AzureResonance");
-        }
-
-        setEnemyEquipment(enemy, enemy.GetEnemyClass(), difficulty);
-
-        std::cout << "MINIBOSS GENERATED: " << enemy.GetEnemyClass()
-            << " (HP: " << enemy.GetEnemyMaxHP()
-            << ", Power: " << enemy.GetEnemyPower() << ")" << std::endl;
-    }
-    else if (bossType == "TrueBoss") {
-        // True boss stats - matches your existing boss classes
-        int bossChoice = std::rand() % 4; // Choose between the two boss types
-
-        switch (bossChoice) {
-        case 0:
-            enemy.SetEnemyClass("OneWingedAngel");
-        case 1:
-            enemy.SetEnemyClass("JovialChaos");
-        case 2:
-            enemy.SetEnemyClass("Bob");
-        case 3:
-            enemy.SetEnemyClass("DevilGene");
-        case 4:
-            enemy.SetEnemyClass("Susanoo");
-        }
-
-        setEnemyEquipment(enemy, enemy.GetEnemyClass(), difficulty);
-
-        std::cout << "TRUE BOSS GENERATED: " << enemy.GetEnemyClass()
-            << " (HP: " << enemy.GetEnemyMaxHP()
-            << ", Power: " << enemy.GetEnemyPower() << ")" << std::endl;
     }
 }
 

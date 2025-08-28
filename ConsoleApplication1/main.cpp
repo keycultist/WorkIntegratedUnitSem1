@@ -17,6 +17,7 @@
 #include "Shop.h"
 #include "Renderer.h"
 #include "Item.h"
+#include "Sound.h"
 
 static void CheckEnemyPlayerCollision(Player& MC, Enemy& target)
 {
@@ -60,10 +61,26 @@ void PlayerInput(Player& MC) {
 
 
         switch (key) {
-        case 'w': MC.PUpMove(); break;
-        case 's': MC.PDownMove(); break;
-        case 'a': MC.PLeftMove(); break;
-        case 'd': MC.PRightMove(); break;
+        case 'w': 
+            MC.PUpMove(); 
+            break;
+        case 's': 
+            MC.PDownMove(); 
+            break;
+        case 'a': 
+            MC.PLeftMove(); 
+            break;
+        case 'd': 
+            MC.PRightMove(); 
+            break;
+        case 'i':
+        case 'e':
+            MC.UpdateInventoryPlayerStats();
+            std::cout << MC.GetInventory().DrawInventoryUI() << std::endl;
+            std::cout << "Press any key to exit" << std::endl;
+            int chP = _getch();
+            MC.UpdatePlayerStatsInventory();
+            system("cls");
         }
     }
 }
@@ -128,8 +145,8 @@ int main()
     Item items;
     Shop shop;
     MC.InitPlayer();
-    items.SetItemPlayerClass(MC.GetPlayerClass());
-    items.SetItemList();
+    MC.GetInventory().GetItem().SetItemPlayerClass(MC.GetPlayerClass());
+    MC.GetInventory().GetItem().SetItemList(); MC.GetInventory().GetItem().SetItemDescriptionList(); MC.GetInventory().GetItem().SetItemCostList(); MC.GetInventory().GetItem().SetItemTypeList(); MC.GetInventory().GetItem().SetEquipmentStatsList(); MC.GetInventory().GetItem().SetWeaponList(); items.SetWeaponList();
     // init player's inventory
     Enemy* Enemies[10]{};
     for (int i = 0; i < 10; i++) {
@@ -143,16 +160,21 @@ int main()
 
     Map GMap;
     if (debugEnd) {
-        GMap.CreateNewFloor(6, MC);
+        MC.SetCurrentDifficulty(6);
+        GMap.CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
     }
     else {
-        GMap.CreateNewFloor(0, MC);
+        MC.SetCurrentDifficulty(0);
+        GMap.CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
     }
     //GMap.RequestFloorUpdate(MC);
+
+    // GMap.RequestFloorUpdate(MC);
 
     system("cls");
     //Kombat Tutorial Insert Here
     std::cout << "Guardsman: Welcome to the Abyss, let's make sure you're up to the challenge." << std::endl;
+    int chP = _getch();
     std::cout << std::endl;
     std::cout << "Guardsman: There are some Grunts here, show me what you can do." << std::endl;
     Combat::InitTutorialCombat(MC, *Enemies[0]);
@@ -184,6 +206,7 @@ int main()
         // 3. Update game state
         InsideRoom = (GMap.detectPlayerRoom(MC.GetPlayerPosX(), MC.GetPlayerPosY()) != nullptr);
 
+
         // 4. Render
         if (InsideRoom) {
             if (!Clearcheck) {
@@ -192,6 +215,12 @@ int main()
                 Clearcheck = true;
             }
             GMap.switchToRoomView(MC.GetPlayerPosX(), MC.GetPlayerPosY(), MC, shop, FinishShopping);
+        
+            Room* currentRoom = GMap.detectPlayerRoom(MC.GetPlayerPosX(), MC.GetPlayerPosY());
+
+            if (GMap.checkForCombat(currentRoom, MC)) {
+				std::cout << "All enemies efcw in this room!" << std::endl;
+            }
         }
         else {
             GMap.renderMapWithFOV(MC, 50, 25);

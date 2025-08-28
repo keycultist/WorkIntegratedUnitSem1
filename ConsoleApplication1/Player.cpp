@@ -288,10 +288,10 @@ void Player::InitPlayer()
         SetPlayerWeaponPower(0);
         SetPlayerArmorHP(0);
         SetPlayerArmorDefence(0);
-        SetPlayerCurrency(0);
+        SetPlayerCurrency(3233230);
         SetPlayerDefence(0);
         SetPlayerKarma(50);
-        SetCurrentDifficulty(1);
+        SetCurrentDifficulty(0);
         system("cls");
         moveset.PlayerInit(GetPlayerClass());
         ShowPlayerStats();
