@@ -33,6 +33,10 @@ void Map::CreateNewFloor(int Difficulty, Player& MC) {
     roomLookup.clear();
     currentRoom = nullptr;
     nextRoomId = 1;
+    minibossGenerated = false;
+    trueBossGenerated = false;
+    minibossRoom = nullptr;
+    trueBossRoom = nullptr;
 
     // Create all possible positions
     std::vector<std::pair<int, int>> allPositions;
@@ -78,42 +82,38 @@ void Map::CreateNewFloor(int Difficulty, Player& MC) {
             roomType = RoomType::SMALL;
         }
 
-        // Create Enemies in rooms.
-        for (auto& room : rooms) {
-            generateEnemiesForRoom(room, Difficulty);
-        }
-
         roomPlans.push_back({ allPositions[positionIndex++], roomType });
     }
 
     // The last room is always a shop
     roomPlans.push_back({ allPositions[positionIndex], RoomType::SHOP });
 
-    // Generate all planned rooms
+    // Generate all planned rooms AND their enemies
     for (int i = 0; i < roomPlans.size(); ++i) {
         Room newRoom(nextRoomId++, roomPlans[i].first.first, roomPlans[i].first.second, roomPlans[i].second);
         rooms.push_back(newRoom);
         roomLookup[newRoom.id] = &rooms.back();
 
-        // Use InnerRoom for large rooms, FloorGrid for others. (self explanatory)
+        // Use InnerRoom for large rooms, FloorGrid for others
         if (newRoom.type == RoomType::LARGE) {
             generateLargeRoom(newRoom);
         }
         else {
             generateRoom(newRoom, floorPtrs, 128, 128);
         }
+
+        // NOW generate enemies for this room (after the room is fully created)
+        generateEnemiesForRoom(rooms.back(), Difficulty);
     }
 
     std::cout << "Generated " << numRooms << " rooms (last room is shop)" << std::endl;
 
-    // Verify the last room is a shop so we can be capitalist pigs
+    // Verify the last room is a shop
     Room* lastRoom = getLastRoom();
     if (lastRoom && lastRoom->type == RoomType::SHOP) {
         std::cout << "Final shop is room #" << lastRoom->id << " at ("
             << lastRoom->x << "," << lastRoom->y << ")" << std::endl;
     }
-
-
 }
 
 
@@ -489,10 +489,19 @@ void Map::renderMapWithFOV(Player& MC, int viewWidth = 40, int viewHeight = 20) 
             int mapX = topLeftX + x;
             int mapY = topLeftY + y;
 
-            if (mapX == MC.GetPlayerPosX() && mapY == MC.GetPlayerPosY())
+            if (mapX == MC.GetPlayerPosX() && mapY == MC.GetPlayerPosY()) {
                 frameBuffer += 'P';
-            else
-                frameBuffer += FloorGrid[mapY][mapX];
+            }
+            else {
+                // Check if there's an enemy at this position
+                Enemy* enemyAtPos = getEnemyAtPosition(mapX, mapY);
+                if (enemyAtPos && enemyAtPos->GetEnemyHP() > 0) {
+                    frameBuffer += getEnemyDisplayChar(*enemyAtPos);
+                }
+                else {
+                    frameBuffer += FloorGrid[mapY][mapX];
+                }
+            }
         }
         frameBuffer += "|\n";
     }
@@ -665,12 +674,38 @@ void Map::generateEnemyForRoom(Enemy& enemy, const Room& room, int difficulty, i
     enemy.SetEnemyCurrency(baseCurrency);
     enemy.SetEnemyLvl(difficulty + 1);
 
-    // Position within room
-    int enemyX = room.x + (std::rand() % (room.width - 2)) - (room.width / 2) + 1;
-    int enemyY = room.y + (std::rand() % (room.height - 2)) - (room.height / 2) + 1;
+    // FIXED: Position within room interior only, and validate it's on a floor tile
+    int halfW = room.width / 2;
+    int halfH = room.height / 2;
+    int attempts = 0;
+    int enemyX, enemyY;
+
+    do {
+        // Calculate interior bounds (avoid walls)
+        enemyX = room.x - halfW + 1 + (std::rand() % (room.width - 2));
+        enemyY = room.y - halfH + 1 + (std::rand() % (room.height - 2));
+        attempts++;
+
+        // Safety check to avoid infinite loop
+        if (attempts > 50) {
+            // Fallback to room center if we can't find a good spot
+            enemyX = room.x;
+            enemyY = room.y;
+            break;
+        }
+    } while (enemyX < 0 || enemyX >= 128 || enemyY < 0 || enemyY >= 128 ||
+        (FloorGrid[enemyY][enemyX] != room.floorChar &&
+            FloorGrid[enemyY][enemyX] != '.' &&
+            FloorGrid[enemyY][enemyX] != '$' &&
+            FloorGrid[enemyY][enemyX] != 'B'));
+
     enemy.SetEnemyPos(enemyX, enemyY);
 
     setEnemyEquipment(enemy, chosenClass, difficulty);
+
+    // Debug output
+    std::cout << "Placed " << chosenClass << " at (" << enemyX << "," << enemyY
+        << ") in room at (" << room.x << "," << room.y << ")" << std::endl;
 }
 
 void Map::setEnemyEquipment(Enemy& enemy, const std::string& enemyClass, int difficulty)
