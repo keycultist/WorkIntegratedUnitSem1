@@ -591,7 +591,7 @@ std::string Shop::DrawShopUI(Player& MC, Item& items, Inventory& inv) {
 	for (int i = 0; i < 60 - descline[0].length(); i++) {
 		ShopUIString << " ";
 	}
-	ShopUIString << "  |```|_             F" << std::to_string(ShopFloor) + "             _|```|\n";
+	ShopUIString << "  |```|_             F" << std::to_string(MC.GetCurrentDifficulty()) + "             _|```|\n";
 
 	// description line 2
 	ShopUIString << "|`````| " << descline[1];
