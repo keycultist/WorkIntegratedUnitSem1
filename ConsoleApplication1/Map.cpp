@@ -1096,11 +1096,11 @@ void Map::validateMinibossState() {
     std::cout << "minibossKilled: " << minibossKilled << std::endl;
     std::cout << "minibossPtr valid: " << (minibossPtr != nullptr) << std::endl;
     std::cout << "minibossRoom valid: " << (minibossRoom != nullptr) << std::endl;
-
+    
     // Count actual miniboss enemies in all rooms
     int minibossCount = 0;
     Enemy* foundMiniboss = nullptr;
-
+    
     for (auto& room : rooms) {
         for (auto& enemy : room.enemies) {
             if (enemy.GetEnemyHP() > 0) {
@@ -1109,22 +1109,22 @@ void Map::validateMinibossState() {
                     cls == "ManiKatti" || cls == "AzureResonance") {
                     minibossCount++;
                     foundMiniboss = &enemy;
-                    std::cout << "Found alive miniboss: " << cls << " at ("
-                        << enemy.GetEnemyPosX() << "," << enemy.GetEnemyPosY()
-                        << ") in room " << room.id << std::endl;
+                    std::cout << "Found alive miniboss: " << cls << " at (" 
+                              << enemy.GetEnemyPosX() << "," << enemy.GetEnemyPosY() 
+                              << ") in room " << room.id << std::endl;
                 }
             }
         }
     }
-
+    
     std::cout << "Total alive minibosses found: " << minibossCount << std::endl;
-
+    
     // Fix stale pointer if needed
     if (minibossGenerated && !minibossKilled && minibossCount > 0 && !minibossPtr) {
         minibossPtr = foundMiniboss;
         std::cout << "Fixed stale miniboss pointer!" << std::endl;
     }
-
+    
     std::cout << "=================================" << std::endl;
 }
 
