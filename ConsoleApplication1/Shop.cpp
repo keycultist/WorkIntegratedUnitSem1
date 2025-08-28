@@ -984,7 +984,7 @@ int Shop::PromptPlayerShopInteraction(Player& MC, Item& items, Inventory& inv) {
 	else if (MC.GetCurrency() >= ShopSlotItemCost[PlayerShopChoice - 1] && ItemIsInStock[PlayerShopChoice - 1]) {
 		std::cout << ShopSlotItemName[PlayerShopChoice - 1] << " Purchased!\n" << std::endl;
 
-		MC.GetCurrency() -= ShopSlotItemCost[PlayerShopChoice - 1];
+		MC.SetCurrency(MC.GetCurrency() - ShopSlotItemCost[PlayerShopChoice - 1]);
 		ItemIsInStock[PlayerShopChoice - 1] = false;
 
 
