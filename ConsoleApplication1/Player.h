@@ -26,6 +26,8 @@ private:
 	int PlayerKarma;
 	int CurrentDifficulty;
 
+	int baseXP;
+
 	Moveset moveset;
 	Inventory inventory;
 
@@ -50,6 +52,8 @@ public:
 	void SetPlayerKarma(int Karma);
 	void SetCurrentDifficulty(int Difficulty);
 
+	void SetbaseXP(int baseXP);
+
 	std::string GetPlayerClass(void) const;
 	int GetPlayerMaxHP(void) const;
 	int GetPlayerHP(void) const;
@@ -68,6 +72,9 @@ public:
 	int GetPlayerDefence(void) const;
 	int GetPlayerKarma(void) const;
 	int GetCurrentDifficulty(void) const;
+
+	int GetbaseXP(void) const;
+
 	Moveset& GetMoveSet();
 	Inventory& GetInventory();
 
@@ -78,7 +85,7 @@ public:
 	void InitPlayer();
 	void ShowPlayerStats() const;
 	void ShowPlayerMoves() const;
-	void LevelUpCheck();
+	void LevelUpCheck(Player& MC);
 	void LevelUp();
 	void ListMovesToReplace();
 
