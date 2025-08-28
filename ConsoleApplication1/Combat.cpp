@@ -120,6 +120,7 @@ bool Combat::UpdateTutorial(bool& InCombat, Player& MC, Enemy& target) //WIP
 			break;
 		}
 		system("cls");
+		DrawCombatUI(MC, target, "Action");
 	}
 	if (target.GetEnemyHP() <= 0) { //Enemy death check
 		std::cout << "Enemy Defeated! Gained XP!" << std::endl;
@@ -139,6 +140,7 @@ bool Combat::UpdateTutorial(bool& InCombat, Player& MC, Enemy& target) //WIP
 		std::cout << "Enemy's turn" << std::endl;
 		int chP = _getch();
 		system("cls");
+		DrawCombatUI(MC, target, "Action");
 		int EnemyMoveChoice = target.DecisionMatrix(MC.GetPlayerHP(), MC.GetPlayerPower() > 0);
 		// Include Enemy Moveset
 		switch (EnemyMoveChoice) {
@@ -328,6 +330,7 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 			break;
 		}
 		system("cls");
+		DrawCombatUI(MC, target, "Action");
 	}
 	if (target.GetEnemyHP() <= 0) { //Enemy death check
 		std::cout << "Enemy Defeated! Gained XP!" << std::endl;
@@ -368,6 +371,7 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 		Combat::EnemyAttack(MC, target, EnemyMoveChoice, Defend);
 		chP = _getch();
 		system("cls");
+		DrawCombatUI(MC, target, "Action");
 	}
 	if (MC.GetPlayerHP() <= 0) { //Player death check
 		std::cout << "Player Defeated! You Lose!" << std::endl;
