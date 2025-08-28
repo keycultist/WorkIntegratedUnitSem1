@@ -1227,7 +1227,7 @@ void Combat::DrawCombatUI(Player& MC, Enemy& target, std::string scene) {
 		// moveset type, desc line 2
 		CombatUIString += "|`:| Strength: ";
 
-		CombatUIString += MC.GetMoveSet().GetMove(tracker).MoveStrength;
+		CombatUIString += std::to_string(MC.GetMoveSet().GetMove(tracker).MoveStrength);
 		for (int i = 0; i < 7 - std::to_string(MC.GetMoveSet().GetMove(tracker).MoveStrength).length(); i++) {
 			CombatUIString += " ";
 		}
@@ -1269,7 +1269,7 @@ void Combat::DrawCombatUI(Player& MC, Enemy& target, std::string scene) {
 		// moveset hits, desc line 2
 		CombatUIString += "|`:| Hits: ";
 
-		CombatUIString += MC.GetMoveSet().GetMove(tracker).Hits;
+		CombatUIString += std::to_string(MC.GetMoveSet().GetMove(tracker).Hits);
 		for (int i = 0; i < 11 - std::to_string(MC.GetMoveSet().GetMove(tracker).Hits).length(); i++) {
 			CombatUIString += " ";
 		}
