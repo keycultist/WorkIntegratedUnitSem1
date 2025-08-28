@@ -397,6 +397,7 @@ int Combat::ChoseAction(Player& MC, Enemy& target, int stage)
 				std::cout << c[1] << std::endl;
 				std::cout << c[2] << std::endl;
 				std::cout << c[3] << std::endl;
+				DrawCombatUI(MC, target, "Action");
 				chP = _getch();
 				std::cout << (int)chP << std::endl;
 				system("cls");
@@ -1262,8 +1263,8 @@ void Combat::DrawCombatUI(Player& MC, Enemy& target, std::string scene) {
 		// moveset hits, desc line 2
 		CombatUIString += "|`:| Hits: ";
 
-		CombatUIString += MC.GetMoveSet().GetMove(Combat::GetTracker()).Hits;
-		for (int i = 0; i < 11 - std::to_string(MC.GetMoveSet().GetMove(Combat::GetTracker()).Hits).length(); i++) {
+		CombatUIString += MC.GetMoveSet().GetMove(tracker).Hits;
+		for (int i = 0; i < 11 - std::to_string(MC.GetMoveSet().GetMove(tracker).Hits).length(); i++) {
 			CombatUIString += " ";
 		}
 		CombatUIString += " |:|    ";
