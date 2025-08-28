@@ -239,21 +239,21 @@ int main()
                     RUNNINGHORSE = false;
                 }
 
-                if (GMap.checkForCombat(currentRoom, MC, shop)) {
-                    if (GMap.checkMinibossKilled()) {
-                        // Force progression to next floor
-                        std::cout << "The Abyss forces you deeper..." << std::endl;
-                        int chP = _getch();
-                        system("cls");
+      //          if (GMap.checkForCombat(currentRoom, MC, shop)) {
+      //              if (GMap.checkMinibossKilled()) {
+      //                  // Force progression to next floor
+      //                  std::cout << "The Abyss forces you deeper..." << std::endl;
+      //                  int chP = _getch();
+      //                  system("cls");
 
-						GMap.removeDefeatedEnemies();
-						GMap.removeDefeatedRoamingEnemies();
-						GMap.clearAllRoamingEnemies();
+						//GMap.removeDefeatedEnemies();
+						//GMap.removeDefeatedRoamingEnemies();
+						//GMap.clearAllRoamingEnemies();
 
-                        MC.SetCurrentDifficulty(MC.GetCurrentDifficulty() + 1);
-                        GMap.CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
-                    }
-                }
+      //                  MC.SetCurrentDifficulty(MC.GetCurrentDifficulty() + 1);
+      //                  GMap.CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
+      //              }
+      //          }
             }
 
 
