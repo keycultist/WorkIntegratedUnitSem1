@@ -394,16 +394,16 @@ int Combat::ChoseAction(Player& MC, Enemy& target, int stage)
 			c[0] += "<--";
 			tracker = 0;
 			while (ChosingAction) {
-				std::cout << "You are fighting a: " << target.GetEnemyClass() << std::endl;
+				/*std::cout << "You are fighting a: " << target.GetEnemyClass() << std::endl;
 				std::cout << target.GetEnemyHP() << "HP" << std::endl;
 				std::cout << "What will you do?" << std::endl;
 				std::cout << c[0] << std::endl;
 				std::cout << c[1] << std::endl;
 				std::cout << c[2] << std::endl;
-				std::cout << c[3] << std::endl;
+				std::cout << c[3] << std::endl;*/
 				DrawCombatUI(MC, target, "Action");
 				chP = _getch();
-				std::cout << (int)chP << std::endl;
+				//std::cout << (int)chP << std::endl;
 				system("cls");
 				switch (chP) {
 				case 'w':
@@ -450,15 +450,16 @@ int Combat::ChoseAction(Player& MC, Enemy& target, int stage)
 			c[0] += " <--";
 			tracker = 0;
 			while (ChosingAction) {
-				std::cout << "Choose your move" << std::endl;
+				/*std::cout << "Choose your move" << std::endl;
 				std::cout << target.GetEnemyHP() << "HP" << std::endl;
 				std::cout << "What will you do?" << std::endl;
 				std::cout << c[0] << std::endl;
 				std::cout << c[1] << std::endl;
 				std::cout << c[2] << std::endl;
-				std::cout << c[3] << std::endl;
+				std::cout << c[3] << std::endl;*/
+				DrawCombatUI(MC, target, "Moveset");
 				chP = _getch();
-				std::cout << (int)chP << std::endl;
+				//std::cout << (int)chP << std::endl;
 				system("cls");
 				switch (chP) {
 				case 'w':
