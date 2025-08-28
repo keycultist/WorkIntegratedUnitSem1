@@ -74,13 +74,13 @@ bool Combat::UpdateTutorial(bool& InCombat, Player& MC, Enemy& target) //WIP
 				ChosenMove = 1;
 				break;
 			}
-			DrawCombatUI(MC, target, "Action");
+			DrawCombatUI(MC, target, "Action", 0);
 			Combat::PlayerAttack(MC, target, ChosenMove - 1);
 			chP = _getch();
 			turnEnd = true;
 			break;
 		case 2:
-			DrawCombatUI(MC, target, "Action");
+			DrawCombatUI(MC, target, "Action", 0);
 			std::cout << "Prepared to Defend" << std::endl;
 			Defend = true;
 			chP = _getch();
@@ -101,7 +101,7 @@ bool Combat::UpdateTutorial(bool& InCombat, Player& MC, Enemy& target) //WIP
 			}
 			break;
 		case 4:
-			DrawCombatUI(MC, target, "Action");
+			DrawCombatUI(MC, target, "Action", 0);
 			if (RunChance >= 8) {
 				std::cout << "Successfuly Ran Away" << std::endl;
 				return true;
@@ -281,13 +281,13 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 				ChosenMove = 1;
 				break;
 			}
-			DrawCombatUI(MC, target, "Action");
+			DrawCombatUI(MC, target, "Action", 0);
 			Combat::PlayerAttack(MC, target, ChosenMove - 1);
 			chP = _getch();
 			turnEnd = true;
 			break;
 		case 2:
-			DrawCombatUI(MC, target, "Action");
+			DrawCombatUI(MC, target, "Action", 0);
 			std::cout << "Prepared to Defend" << std::endl;
 			Defend = true;
 			chP = _getch();
@@ -308,7 +308,7 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 			}
 			break;
 		case 4:
-			DrawCombatUI(MC, target, "Action");
+			DrawCombatUI(MC, target, "Action", 0);
 			if (RunChance >= 8) {
 				std::cout << "Successfuly Ran Away" << std::endl;
 				return true;

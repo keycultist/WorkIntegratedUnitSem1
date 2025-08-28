@@ -1434,7 +1434,7 @@ Enemy* Map::getTrueboss() {
     return nullptr;
 }
 
-bool Map::checkMinibossKilled() {
+bool Map::checkTruebossKilled() {
     if (trueBossGenerated && !truebossKilled && truebossPtr) {
         if (truebossPtr->GetEnemyHP() <= 0) {
             truebossKilled = true;
@@ -1444,7 +1444,7 @@ bool Map::checkMinibossKilled() {
     return false;
 }
 
-void Map::resetMinibossStatus() {
+void Map::resetTruebossStatus() {
     trueBossGenerated = false;
     truebossKilled = false;
     trueBossRoom = nullptr;
