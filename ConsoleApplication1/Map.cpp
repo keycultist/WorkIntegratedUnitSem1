@@ -560,12 +560,10 @@ void Map::generateEnemiesForRoom(Room& room, int difficulty) {
     room.enemies.clear();
     room.enemiesCleared = false;
 
-    // Don't spawn enemies in shops or corridors
     if (room.type == RoomType::SHOP || room.type == RoomType::CORRIDOR) {
         return;
     }
 
-    // Handle miniboss placement (every floor) - but don't return early!
     bool isMinibossRoom = false;
     if (!minibossGenerated && (room.type == RoomType::TREASURE ||
         room.type == RoomType::MEDIUM ||
@@ -573,7 +571,6 @@ void Map::generateEnemiesForRoom(Room& room, int difficulty) {
         Enemy miniboss;
         generateBossForRoom(miniboss, "Miniboss", difficulty);
 
-        // Position the miniboss at room center
         miniboss.SetEnemyPos(room.x, room.y);
 
         room.enemies.push_back(miniboss);
@@ -583,8 +580,6 @@ void Map::generateEnemiesForRoom(Room& room, int difficulty) {
 
         std::cout << "Generated MINIBOSS in " << getRoomTypeName(room.type)
             << " room #" << room.id << " at (" << room.x << "," << room.y << ")" << std::endl;
-
-        // Don't return here - we can still add regular enemies!
     }
 
     // Handle true boss (difficulty 7+)
@@ -594,7 +589,6 @@ void Map::generateEnemiesForRoom(Room& room, int difficulty) {
             Enemy trueBoss;
             generateBossForRoom(trueBoss, "TrueBoss", difficulty);
 
-            // Position the true boss at room center
             trueBoss.SetEnemyPos(room.x, room.y);
 
             room.enemies.push_back(trueBoss);
@@ -603,11 +597,10 @@ void Map::generateEnemiesForRoom(Room& room, int difficulty) {
 
             std::cout << "Generated TRUE BOSS in " << getRoomTypeName(room.type)
                 << " room #" << room.id << " at (" << room.x << "," << room.y << ")" << std::endl;
-            return; // True boss rooms only have the boss
+            return;
         }
     }
 
-    // Determine max regular enemies for this room type
     int maxEnemies = 0;
     switch (room.type) {
     case RoomType::SMALL:
@@ -627,31 +620,25 @@ void Map::generateEnemiesForRoom(Room& room, int difficulty) {
         break;
     }
 
-    // Reduce regular enemies if there's already a miniboss
     if (isMinibossRoom) {
         maxEnemies = std::max(0, maxEnemies - 1);
     }
 
-    // At difficulty 7+, reduce regular enemy spawns slightly
     if (difficulty >= 7) {
         maxEnemies = std::max(1, maxEnemies - 1);
     }
 
-    // FIXED: Ensure at least 1 enemy in non-boss rooms (unless it's a miniboss room)
     int numEnemies;
     if (maxEnemies <= 0) {
         numEnemies = 0;
     }
     else if (isMinibossRoom) {
-        // Miniboss rooms can have 0-maxEnemies additional enemies
         numEnemies = std::rand() % (maxEnemies + 1);
     }
     else {
-        // Regular rooms always have at least 1 enemy
         numEnemies = 1 + (std::rand() % maxEnemies);
     }
 
-    // Generate regular enemies
     for (int i = 0; i < numEnemies; ++i) {
         Enemy newEnemy;
         generateEnemyForRoom(newEnemy, room, difficulty, i);
@@ -668,14 +655,12 @@ void Map::generateEnemiesForRoom(Room& room, int difficulty) {
 void Map::generateEnemyForRoom(Enemy& enemy, const Room& room, int difficulty, int enemyIndex) {
     enemy.InitEnemy();
 
-    // Base stats scaling with difficulty
     int baseHP = 40;
     int basePower = 5;
     int baseCrit = 5;
     int baseXP = 10;
     int baseCurrency = 5;
 
-    // Room type modifiers
     float hpMultiplier = 1.0f;
     float powerMultiplier = 1.0f;
 
@@ -698,7 +683,6 @@ void Map::generateEnemyForRoom(Enemy& enemy, const Room& room, int difficulty, i
     int finalHP = static_cast<int>(baseHP * hpMultiplier);
     int finalPower = static_cast<int>(basePower * powerMultiplier);
 
-    // Choose enemy class based on difficulty
     std::vector<std::string> enemyClasses;
     enemyClasses.push_back("Grunt");
 
@@ -742,21 +726,17 @@ void Map::generateEnemyForRoom(Enemy& enemy, const Room& room, int difficulty, i
     enemy.SetEnemyCurrency(baseCurrency);
     enemy.SetEnemyLvl(difficulty + 1);
 
-    // FIXED: Position within room interior only, and validate it's on a floor tile
     int halfW = room.width / 2;
     int halfH = room.height / 2;
     int attempts = 0;
     int enemyX, enemyY;
 
     do {
-        // Calculate interior bounds (avoid walls)
         enemyX = room.x - halfW + 1 + (std::rand() % (room.width - 2));
         enemyY = room.y - halfH + 1 + (std::rand() % (room.height - 2));
         attempts++;
 
-        // Safety check to avoid infinite loop
         if (attempts > 50) {
-            // Fallback to room center if we can't find a good spot
             enemyX = room.x;
             enemyY = room.y;
             break;
@@ -797,7 +777,6 @@ void Map::generateBossForRoom(Enemy& enemy, const std::string& bossType, int dif
             break;
         }
 
-        // Enhanced miniboss stats
         int baseHP = 80 + (difficulty * 20);
         int basePower = 12 + (difficulty * 3);
 
@@ -968,7 +947,6 @@ bool Map::isRoomEnemiesCleared(Room* room) {
 
 void Map::removeDefeatedEnemies() {
     for (auto& room : rooms) {
-        // Remove enemies with HP <= 0 from the vector
         room.enemies.erase(
             std::remove_if(room.enemies.begin(), room.enemies.end(),
                 [](const Enemy& enemy) { return enemy.GetEnemyHP() <= 0; }),
@@ -978,7 +956,6 @@ void Map::removeDefeatedEnemies() {
 }
 
 Enemy* Map::getEnemyAtPosition(int x, int y) {
-    // Check room enemies first
     for (auto& room : rooms) {
         for (auto& enemy : room.enemies) {
             if (enemy.GetEnemyHP() > 0 &&
@@ -989,7 +966,6 @@ Enemy* Map::getEnemyAtPosition(int x, int y) {
         }
     }
 
-    // Check roaming enemies
     return getRoamingEnemyAtPosition(x, y);
 }
 bool Map::checkForCombat(Room* room, Player& MC) {
@@ -1044,9 +1020,9 @@ bool Map::checkForCombat(Room* room, Player& MC) {
 void Map::generateRoamingEnemies(int difficulty) {
     roamingEnemies.clear();
 
-    // Determine number of roaming enemies based on difficulty
-    int numRoamingEnemies = 3 + (difficulty);  // 2-5 enemies typically
-    if (numRoamingEnemies > 10) numRoamingEnemies = 10;  // Cap at 8
+
+    int numRoamingEnemies = 3 + (difficulty); 
+    if (numRoamingEnemies > 10) numRoamingEnemies = 10;
 
     std::cout << "Generating " << numRoamingEnemies << " roaming enemies..." << std::endl;
 
@@ -1085,7 +1061,6 @@ void Map::generateRoamingEnemy(Enemy& enemy, int difficulty) {
 
     setEnemyEquipment(enemy, chosenClass, difficulty);
 
-    // Position enemy in corridor space (not in any room)
     int attempts = 0;
     int enemyX, enemyY;
 
@@ -1095,14 +1070,13 @@ void Map::generateRoamingEnemy(Enemy& enemy, int difficulty) {
         attempts++;
 
         if (attempts > 100) {
-            // Fallback to a known corridor spot
             enemyX = 64;
             enemyY = 64;
             break;
         }
     } while (enemyX < 0 || enemyX >= 128 || enemyY < 0 || enemyY >= 128 ||
-        FloorGrid[enemyY][enemyX] != ' ' ||  // Only spawn in empty space
-        isPositionInAnyRoom(enemyX, enemyY)); // Don't spawn inside rooms
+        FloorGrid[enemyY][enemyX] != ' ' ||
+        isPositionInAnyRoom(enemyX, enemyY));
 
     enemy.SetEnemyPos(enemyX, enemyY);
 
