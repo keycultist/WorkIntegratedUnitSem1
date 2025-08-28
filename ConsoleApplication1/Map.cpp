@@ -12,6 +12,7 @@ theres still stuff to do like actually generating the enemy spawns and etc, but 
 #include "Shop.h"
 #include "Combat.h"
 #include "conio.h"
+#include <queue>
 #define NOMINMAX
 #include <windows.h> 
 
@@ -109,6 +110,11 @@ void Map::CreateNewFloor(int Difficulty, Player& MC, Shop& shop) {
         generateEnemiesForRoom(rooms.back(), Difficulty);
     }
 
+    // NOW ggenerate roaming enemies for this floor (after all rooms are created)
+    generateRoamingEnemies(Difficulty);
+
+    enemyMoveCounter = 0; // initialize movecounter
+
     std::cout << "Generated " << numRooms << " rooms (last room is shop)" << std::endl;
 
     // Verify the last room is a shop
@@ -121,6 +127,7 @@ void Map::CreateNewFloor(int Difficulty, Player& MC, Shop& shop) {
 
 
 void Map::renderEnemiesOnBoard(char** Board, int sizeX, int sizeY) {
+    // Render room enemies
     for (const auto& room : rooms) {
         for (const auto& enemy : room.enemies) {
             if (enemy.GetEnemyHP() > 0) {
@@ -134,7 +141,21 @@ void Map::renderEnemiesOnBoard(char** Board, int sizeX, int sizeY) {
             }
         }
     }
+
+    // Render roaming enemies
+    for (const auto& enemy : roamingEnemies) {
+        if (enemy.GetEnemyHP() > 0) {
+            int enemyX = enemy.GetEnemyPosX();
+            int enemyY = enemy.GetEnemyPosY();
+
+            if (enemyX >= 0 && enemyX < sizeX && enemyY >= 0 && enemyY < sizeY) {
+                char enemyChar = 'R';  // 'R' for roaming enemies
+                Board[enemyY][enemyX] = enemyChar;
+            }
+        }
+    }
 }
+
 
 
 
@@ -336,14 +357,14 @@ void Map::renderCurrentRoom(Room* room, char** roomBoard, int boardSize, Player&
 
 void Map::switchToRoomView(int playerX, int playerY, Player& MC, Shop& shop, bool& FinishShopping) {
     Room* playerRoom = detectPlayerRoom(playerX, playerY);
-    
+
     if (playerRoom) {
         // Use InnerRoom as the isolated room view
         char* innerPtrs[256];
         for (int i = 0; i < 256; ++i) innerPtrs[i] = InnerRoom[i];
-        
+
         renderCurrentRoom(playerRoom, innerPtrs, 256, MC);
-        
+
         std::cout << "Entered " << getRoomTypeName(playerRoom->type) << " room!" << std::endl;
         //drawBoard(innerPtrs, 256, 256);  // Show just this room
         if (playerRoom->type == RoomType::SHOP) {
@@ -362,7 +383,8 @@ void Map::switchToRoomView(int playerX, int playerY, Player& MC, Shop& shop, boo
                 }
             }
         }
-    } else {
+    }
+    else {
         std::cout << "Player is in a corridor or empty space." << std::endl;
     }
 
@@ -763,7 +785,7 @@ void Map::generateBossForRoom(Enemy& enemy, const std::string& bossType, int dif
         switch (bossChoice) {
         case 0:
             enemy.SetEnemyClass("ColorCleaver");
-            break; 
+            break;
         case 1:
             enemy.SetEnemyClass("DarkSilence");
             break;
@@ -956,6 +978,7 @@ void Map::removeDefeatedEnemies() {
 }
 
 Enemy* Map::getEnemyAtPosition(int x, int y) {
+    // Check room enemies first
     for (auto& room : rooms) {
         for (auto& enemy : room.enemies) {
             if (enemy.GetEnemyHP() > 0 &&
@@ -965,9 +988,10 @@ Enemy* Map::getEnemyAtPosition(int x, int y) {
             }
         }
     }
-    return nullptr;
-}
 
+    // Check roaming enemies
+    return getRoamingEnemyAtPosition(x, y);
+}
 bool Map::checkForCombat(Room* room, Player& MC) {
     if (!room || room->enemiesCleared) {
         return false;
@@ -1015,4 +1039,370 @@ bool Map::checkForCombat(Room* room, Player& MC) {
     }
 
     return false;
+}
+
+void Map::generateRoamingEnemies(int difficulty) {
+    roamingEnemies.clear();
+
+    // Determine number of roaming enemies based on difficulty
+    int numRoamingEnemies = 3 + (difficulty);  // 2-5 enemies typically
+    if (numRoamingEnemies > 10) numRoamingEnemies = 10;  // Cap at 8
+
+    std::cout << "Generating " << numRoamingEnemies << " roaming enemies..." << std::endl;
+
+    for (int i = 0; i < numRoamingEnemies; ++i) {
+        Enemy roamingEnemy;
+        generateRoamingEnemy(roamingEnemy, difficulty);
+        roamingEnemies.push_back(roamingEnemy);
+    }
+}
+
+void Map::generateRoamingEnemy(Enemy& enemy, int difficulty) {
+    enemy.InitEnemy();
+
+    int baseHP = 25 + (difficulty * 8);
+    int basePower = 3 + (difficulty * 2);
+
+    std::vector<std::string> roamingClasses = { "Grunt", "Rogue" };
+
+    if (difficulty >= 2) {
+        roamingClasses.push_back("Necromancer");
+    }
+    if (difficulty >= 3) {
+        roamingClasses.push_back("Silent");
+    }
+
+    std::string chosenClass = roamingClasses[std::rand() % roamingClasses.size()];
+
+    enemy.SetEnemyClass(chosenClass);
+    enemy.SetEnemyMaxHP(baseHP);
+    enemy.SetEnemyHP(baseHP);
+    enemy.SetEnemyPower(basePower);
+    enemy.SetEnemyCritChance(5);
+    enemy.SetEnemyXP(8);
+    enemy.SetEnemyCurrency(3);
+    enemy.SetEnemyLvl(difficulty);
+
+    setEnemyEquipment(enemy, chosenClass, difficulty);
+
+    // Position enemy in corridor space (not in any room)
+    int attempts = 0;
+    int enemyX, enemyY;
+
+    do {
+        enemyX = std::rand() % 128;
+        enemyY = std::rand() % 128;
+        attempts++;
+
+        if (attempts > 100) {
+            // Fallback to a known corridor spot
+            enemyX = 64;
+            enemyY = 64;
+            break;
+        }
+    } while (enemyX < 0 || enemyX >= 128 || enemyY < 0 || enemyY >= 128 ||
+        FloorGrid[enemyY][enemyX] != ' ' ||  // Only spawn in empty space
+        isPositionInAnyRoom(enemyX, enemyY)); // Don't spawn inside rooms
+
+    enemy.SetEnemyPos(enemyX, enemyY);
+
+    std::cout << "Roaming " << chosenClass << " placed at ("
+        << enemyX << "," << enemyY << ")" << std::endl;
+}
+
+bool Map::isPositionInAnyRoom(int x, int y) {
+    for (const auto& room : rooms) {
+        if (isPlayerInRoom(x, y, room)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+std::vector<Enemy*> Map::getRoamingEnemies() {
+    std::vector<Enemy*> alivePtrs;
+    for (auto& enemy : roamingEnemies) {
+        if (enemy.GetEnemyHP() > 0) {
+            alivePtrs.push_back(&enemy);
+        }
+    }
+    return alivePtrs;
+}
+
+void Map::removeDefeatedRoamingEnemies() {
+    roamingEnemies.erase(
+        std::remove_if(roamingEnemies.begin(), roamingEnemies.end(),
+            [](const Enemy& enemy) { return enemy.GetEnemyHP() <= 0; }),
+        roamingEnemies.end()
+    );
+}
+
+Enemy* Map::getRoamingEnemyAtPosition(int x, int y) {
+    for (auto& enemy : roamingEnemies) {
+        if (enemy.GetEnemyHP() > 0 &&
+            enemy.GetEnemyPosX() == x &&
+            enemy.GetEnemyPosY() == y) {
+            return &enemy;
+        }
+    }
+    return nullptr;
+}
+
+bool Map::checkForRoamingCombat(Player& MC) {
+    Enemy* roamingEnemy = getRoamingEnemyAtPosition(MC.GetPlayerPosX(), MC.GetPlayerPosY());
+
+    if (roamingEnemy && roamingEnemy->GetEnemyHP() > 0) {
+        std::cout << "\nRoaming enemy encountered: " << roamingEnemy->GetEnemyClass() << "!" << std::endl;
+        std::cout << "Press any key to engage!" << std::endl;
+        int chP = _getch();
+        system("cls");
+
+        Combat combat;
+        combat.InitCombat(MC, *roamingEnemy);
+
+        if (roamingEnemy->GetEnemyHP() <= 0) {
+            removeDefeatedRoamingEnemies();
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+std::vector<std::pair<int, int>> Map::findPathAStar(int startX, int startY, int goalX, int goalY, int maxDistance) {
+    std::vector<std::pair<int, int>> path;
+
+    if (startX == goalX && startY == goalY) {
+        return path;
+    }
+
+    if (calculateManhattanDistance(startX, startY, goalX, goalY) > maxDistance) {
+        return path;
+    }
+
+    std::priority_queue<AStarNode> openSet;
+
+    std::vector<std::vector<bool>> closedSet(128, std::vector<bool>(128, false));
+
+    std::vector<std::unique_ptr<AStarNode>> nodeStorage;
+
+    std::vector<std::vector<AStarNode*>> nodeGrid(128, std::vector<AStarNode*>(128, nullptr));
+
+    auto startNode = std::make_unique<AStarNode>(startX, startY);
+    startNode->gCost = 0;
+    startNode->hCost = calculateHeuristic(startX, startY, goalX, goalY);
+    startNode->fCost = startNode->hCost;
+
+    AStarNode* startPtr = startNode.get();
+    nodeGrid[startY][startX] = startPtr;
+    nodeStorage.push_back(std::move(startNode));
+    openSet.push(*startPtr);
+
+    int nodesEvaluated = 0;
+    const int MAX_NODES = 200;
+
+    while (!openSet.empty() && nodesEvaluated < MAX_NODES) {
+        AStarNode current = openSet.top();
+        openSet.pop();
+        nodesEvaluated++;
+
+        if (closedSet[current.y][current.x]) {
+            continue;
+        }
+
+        closedSet[current.y][current.x] = true;
+
+        if (current.x == goalX && current.y == goalY) {
+            AStarNode* pathNode = nodeGrid[current.y][current.x];
+            while (pathNode && pathNode->parent) {
+                path.push_back({ pathNode->x, pathNode->y });
+                pathNode = pathNode->parent;
+            }
+
+            std::reverse(path.begin(), path.end());
+            return path;
+        }
+
+        int directions[4][2] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
+
+        for (int i = 0; i < 4; ++i) {
+            int newX = current.x + directions[i][0];
+            int newY = current.y + directions[i][1];
+
+            if (!isValidPathPosition(newX, newY) || closedSet[newY][newX]) {
+                continue;
+            }
+
+            int tentativeGCost = nodeGrid[current.y][current.x]->gCost + 1;
+
+            AStarNode* neighborNode = nodeGrid[newY][newX];
+
+            if (!neighborNode) {
+                auto newNode = std::make_unique<AStarNode>(newX, newY);
+                newNode->gCost = tentativeGCost;
+                newNode->hCost = calculateHeuristic(newX, newY, goalX, goalY);
+                newNode->fCost = newNode->gCost + newNode->hCost;
+                newNode->parent = nodeGrid[current.y][current.x];
+
+                neighborNode = newNode.get();
+                nodeGrid[newY][newX] = neighborNode;
+                nodeStorage.push_back(std::move(newNode));
+
+                openSet.push(*neighborNode);
+            }
+            else if (tentativeGCost < neighborNode->gCost) {
+                neighborNode->gCost = tentativeGCost;
+                neighborNode->fCost = neighborNode->gCost + neighborNode->hCost;
+                neighborNode->parent = nodeGrid[current.y][current.x];
+
+                openSet.push(*neighborNode);
+            }
+        }
+    }
+
+    return path;
+}
+
+void Map::moveEnemyTowardsPlayer(Enemy& enemy, int playerX, int playerY) {
+    int enemyX = enemy.GetEnemyPosX();
+    int enemyY = enemy.GetEnemyPosY();
+
+    // Calculate Manhattan distance to player
+    int currentDistance = calculateManhattanDistance(enemyX, enemyY, playerX, playerY);
+
+    // Don't move if already adjacent to player (let combat handle it)
+    if (currentDistance <= 1) {
+        return;
+    }
+
+    // Don't chase if player is too far away (avoid cross-map chasing)
+    if (currentDistance > 15) {
+        return;
+    }
+
+    int bestX = enemyX;
+    int bestY = enemyY;
+    int bestDistance = currentDistance;
+
+    int directions[4][2] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
+
+    for (int i = 0; i < 4; ++i) {
+        int newX = enemyX + directions[i][0];
+        int newY = enemyY + directions[i][1];
+
+        if (isValidEnemyPosition(newX, newY)) {
+            int newDistance = calculateManhattanDistance(newX, newY, playerX, playerY);
+
+            if (newDistance < bestDistance) {
+                bestX = newX;
+                bestY = newY;
+                bestDistance = newDistance;
+            }
+        }
+    }
+
+    if (bestX != enemyX || bestY != enemyY) {
+        enemy.SetEnemyPos(bestX, bestY);
+    }
+}
+
+int Map::calculateManhattanDistance(int x1, int y1, int x2, int y2) {
+    return abs(x1 - x2) + abs(y1 - y2);
+}
+
+bool Map::isValidEnemyPosition(int x, int y) {
+    if (x < 0 || x >= 128 || y < 0 || y >= 128) {
+        return false;
+    }
+
+    if (FloorGrid[y][x] == '#') {
+        return false;
+    }
+
+    if (isPositionInAnyRoom(x, y)) {
+        return false;
+    }
+
+    for (const auto& otherEnemy : roamingEnemies) {
+        if (otherEnemy.GetEnemyHP() > 0 &&
+            otherEnemy.GetEnemyPosX() == x &&
+            otherEnemy.GetEnemyPosY() == y) {
+            return false;
+        }
+    }
+
+    return (FloorGrid[y][x] == ' ' || FloorGrid[y][x] == '.');
+}
+
+void Map::moveEnemyTowardsPlayerAStar(Enemy& enemy, int playerX, int playerY) {
+    int enemyX = enemy.GetEnemyPosX();
+    int enemyY = enemy.GetEnemyPosY();
+
+    int currentDistance = calculateManhattanDistance(enemyX, enemyY, playerX, playerY);
+
+    // Don't move if already adjacent
+    if (currentDistance <= 1) {
+        return;
+    }
+
+    std::vector<std::pair<int, int>> path = findPathAStar(enemyX, enemyY, playerX, playerY, 15);
+
+    if (!path.empty()) {
+        int nextX = path[0].first;
+        int nextY = path[0].second;
+
+        if (isValidEnemyPosition(nextX, nextY)) {
+            enemy.SetEnemyPos(nextX, nextY);
+
+            std::cout << "Enemy " << enemy.GetEnemyClass()
+                << " following A* path to (" << nextX << "," << nextY
+                << ") towards player at (" << playerX << "," << playerY << ")" << std::endl;
+        }
+    }
+    else {
+        moveEnemyTowardsPlayer(enemy, playerX, playerY);
+    }
+}
+
+int Map::calculateHeuristic(int x1, int y1, int x2, int y2) {
+  
+    return abs(x1 - x2) + abs(y1 - y2);
+}
+
+bool Map::isValidPathPosition(int x, int y) {
+
+    if (x < 0 || x >= 128 || y < 0 || y >= 128) {
+        return false;
+    }
+
+
+    if (FloorGrid[y][x] == '#') {
+        return false;
+    }
+
+
+    if (isPositionInAnyRoom(x, y)) {
+        return false;
+    }
+
+
+    return (FloorGrid[y][x] == ' ' || FloorGrid[y][x] == '.');
+}
+
+void Map::updateRoamingEnemyAI(Player& MC) {
+    enemyMoveCounter++;
+
+    if (enemyMoveCounter >= 3) {
+        enemyMoveCounter = 0;
+
+        int playerX = MC.GetPlayerPosX();
+        int playerY = MC.GetPlayerPosY();
+
+        for (auto& enemy : roamingEnemies) {
+            if (enemy.GetEnemyHP() > 0) {
+                moveEnemyTowardsPlayerAStar(enemy, playerX, playerY);
+            }
+        }
+    }
 }

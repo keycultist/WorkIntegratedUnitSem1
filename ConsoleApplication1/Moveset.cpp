@@ -33,7 +33,7 @@ int Moveset::size() const {
 
 void Moveset::EnemyInit(const std::string Class)
 {
-
+    
     //SetMove(Move("MOVE NAME", STRENGTH, HITS, "TYPE"));
 
     //Add enemy movesets

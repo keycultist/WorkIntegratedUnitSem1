@@ -201,7 +201,7 @@ int main()
         PlayerInput(MC);
 
         // 2. Update enemies
-        //updateEnemies();
+        GMap.updateRoamingEnemyAI(MC);
 
         // 3. Update game state
         InsideRoom = (GMap.detectPlayerRoom(MC.GetPlayerPosX(), MC.GetPlayerPosY()) != nullptr);
@@ -234,6 +234,13 @@ int main()
         int frameDelay = 1000 / 30; // 30 FPS
         if (elapsed.count() < frameDelay)
             std::this_thread::sleep_for(std::chrono::milliseconds(frameDelay) - elapsed);
+    }
+
+    if (!InsideRoom) {
+        // Check for roaming enemy combat when outside rooms
+        if (GMap.checkForRoamingCombat(MC)) {
+            // Combat happened, continue
+        }
     }
     //When init combat
     //if (Collide) {
