@@ -119,5 +119,17 @@
     <Media Include="SwordSound.wav">
       <Filter>Resource Files</Filter>
     </Media>
+    <Media Include="MagicSound.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="MagicSound2.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="SummonSound.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="SwordSound2.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
   </ItemGroup>
 </Project>
