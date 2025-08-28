@@ -60,10 +60,25 @@ void PlayerInput(Player& MC) {
 
 
         switch (key) {
-        case 'w': MC.PUpMove(); break;
-        case 's': MC.PDownMove(); break;
-        case 'a': MC.PLeftMove(); break;
-        case 'd': MC.PRightMove(); break;
+        case 'w': 
+            MC.PUpMove(); 
+            break;
+        case 's': 
+            MC.PDownMove(); 
+            break;
+        case 'a': 
+            MC.PLeftMove(); 
+            break;
+        case 'd': 
+            MC.PRightMove(); 
+            break;
+        case 'i':
+            MC.UpdateInventoryPlayerStats();
+            std::cout << MC.GetInventory().DrawInventoryUI() << std::endl;
+            std::cout << "Press any key to exit" << std::endl;
+            int chP = _getch();
+            MC.UpdatePlayerStatsInventory();
+            system("cls");
         }
     }
 }
