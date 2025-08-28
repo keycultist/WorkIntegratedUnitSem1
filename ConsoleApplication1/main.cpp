@@ -263,6 +263,7 @@ int main()
                 GMap.renderMapWithFOV(MC, 50, 25);
                 Clearcheck = false;
                 FinishShopping = false;
+                system("cls");
             }
 
             GMap.renderMapWithFOV(MC, 50, 25);

@@ -358,7 +358,7 @@ void Player::LevelUpCheck()
             std::cout << std::endl;
             std::cout << "Level up! You are now level " << GetPlayerLvl() << "!" << std::endl;
 
-            baseXP += 18;
+            baseXP += 25;
         }
     }
     else if (GetPlayerLvl() < 11 && GetPlayerClass() == "Conduit") {
@@ -372,7 +372,7 @@ void Player::LevelUpCheck()
             LevelUp();
 
             if (GetPlayerLvl() < 10) {
-                baseXP += 18;
+                baseXP += 25;
             }
             else {
                 baseXP += 100;
