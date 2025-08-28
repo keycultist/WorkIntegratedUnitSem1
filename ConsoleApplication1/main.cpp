@@ -235,13 +235,16 @@ int main()
             Room* currentRoom = GMap.detectPlayerRoom(MC.GetPlayerPosX(), MC.GetPlayerPosY());
 
             if (GMap.checkForCombat(currentRoom, MC)) {
-                if (GMap.checkMinibossKilled()) {
-                    //MC.SetCurrentDifficulty(MC.GetCurrentDifficulty() + 1);
-                    //GMap.CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
-                    MC.SetCurrentDifficulty(MC.GetCurrentDifficulty() + 1);
-                    MC.SetPlayerPos(0, 0);
-                    GMap.CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
-                }
+                //if (GMap.checkMinibossKilled()) {
+                //    //MC.SetCurrentDifficulty(MC.GetCurrentDifficulty() + 1);
+                //    //GMap.CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
+                //    MC.SetCurrentDifficulty(MC.GetCurrentDifficulty() + 1);
+                //    MC.SetPlayerPos(0, 0);
+                //    GMap.CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
+                //    GMap.renderMapWithFOV(MC, 50, 25);
+                //    Clearcheck = false;
+                //    FinishShopping = false;
+                //}
 
                 if (GMap.checkTruebossKilled()) {
                     RUNNINGHORSE = false;
@@ -251,6 +254,17 @@ int main()
 
         }
         else {
+            if (GMap.checkMinibossKilled()) {
+                //MC.SetCurrentDifficulty(MC.GetCurrentDifficulty() + 1);
+                //GMap.CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
+                MC.SetCurrentDifficulty(MC.GetCurrentDifficulty() + 1);
+                MC.SetPlayerPos(0, 0);
+                GMap.CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
+                GMap.renderMapWithFOV(MC, 50, 25);
+                Clearcheck = false;
+                FinishShopping = false;
+            }
+
             GMap.renderMapWithFOV(MC, 50, 25);
             Clearcheck = false;
             FinishShopping = false;

@@ -526,6 +526,10 @@ void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
 		//Dark Type, -15% maxHP
 		if (MC.GetMoveSet().GetMove(ChosenMove).MoveType == "Ritual") {
 			std::cout << "Consumed " << MC.GetMoveSet().GetMove(ChosenMove).MoveStrength << " Max HP" << std::endl;
+			MC.SetPlayerMaxHP(MC.GetPlayerMaxHP() - MC.GetMoveSet().GetMove(ChosenMove).MoveStrength);
+			if (MC.GetPlayerHP() > MC.GetPlayerMaxHP()) {
+				MC.SetPlayerHP(MC.GetPlayerMaxHP());
+			}
 		}
 		// Ritual Type, -MaxHP once, ignores hits.
 		for (int i = 0; i < MC.GetMoveSet().GetMove(ChosenMove).Hits; i++) {
@@ -540,10 +544,6 @@ void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
 			// Summon Type, adds move power to total power
 			else if (MC.GetMoveSet().GetMove(ChosenMove).MoveType == "Ritual") {
 				std::cout << MC.GetPlayerClass() << " used " << MC.GetMoveSet().GetMove(ChosenMove).MoveName << std::endl;
-				MC.SetPlayerMaxHP(MC.GetPlayerMaxHP() - MC.GetMoveSet().GetMove(ChosenMove).MoveStrength);
-				if (MC.GetPlayerHP() > MC.GetPlayerMaxHP()) {
-					MC.SetPlayerHP(MC.GetPlayerMaxHP());
-				}
 				target.SetEnemyHP(target.GetEnemyHP() - MC.GetMoveSet().GetMove(ChosenMove).MoveStrength);
 				std::cout << "Dealt: " << (MC.GetMoveSet().GetMove(ChosenMove).MoveStrength) << " damage." << std::endl;
 			}
