@@ -250,7 +250,7 @@ void Events::handleTalkingChestEvent(Player& MC) {
     if (choice == 1) {
         // Player chooses to talk to the chest
         MC.SetPlayerKarma(MC.GetPlayerKarma() + 10);  // Gain karma, maybe gain certain stat increases? magic power increase?
-        MC.SetPlayerPower(MC.GetPlayerPower() + 10);
+        MC.SetPlayerPower(MC.GetPlayerPower() + 2);
         std::cout << "You chose to talk to the chest" << std::endl;
         std::cout << "You find yourself having a pleasant and knowledge-filled conversation with the chest" << std::endl;
         std::cout << "Karma increased by 10! Current karma: " << MC.GetPlayerKarma() << std::endl;
@@ -288,7 +288,7 @@ void Events::handleSpectralEntityEvent(Player& MC) {
         std::cout << "You chose to burn the strawdoll, you felt a slight chill run down your spine but your gold bag getting heavier" << std::endl;
         std::cout << "The entity hummed lowly. \"Lets see if your sacrifice will prove useful down the road..\"" << std::endl;
         std::cout << "Karma decreased by 10! Current karma: " << MC.GetPlayerKarma() << std::endl;
-        MC.SetPlayerCurrency(MC.GetPlayerCurrency() + 50);
+        MC.SetPlayerCurrency(MC.GetPlayerCurrency() + 5);
         std::cout << "You have... " << MC.GetPlayerCurrency() << " gold coins.";
     }
     else {
@@ -350,7 +350,7 @@ void Events::handleHunchedBackGoblinEvent(Player& MC) {
             std::transform(answer.begin(), answer.end(), answer.begin(), ::tolower);
             if (answer == "cold" || answer == "a cold") {
                 std::cout << "The goblin glares. \"You... you cheated! Still, correct.\"\n";
-                MC.SetPlayerCurrency(MC.GetPlayerCurrency() + 10);
+                MC.SetPlayerCurrency(MC.GetPlayerCurrency() + 5);
             }
             else {
                 std::cout << "The goblin dances with glee. \"Wrong! The answer was 'a cold'.\"\n";
@@ -388,7 +388,7 @@ void Events::handleMageKarmaTestEvent(Player& MC) {
         std::cout << "You chose to test your karma" << std::endl;
         if (MC.GetPlayerKarma() >= 70) {
             std::cout << "\"Ahh..a karma worthy of respect, may your path stay true..the dungeon always watches\"" << std::endl;
-            MC.SetPlayerCurrency(MC.GetPlayerCurrency() + 10);
+            MC.SetPlayerCurrency(MC.GetPlayerCurrency() + 5);
             std::cout << "Your reward... " << MC.GetPlayerCurrency() << " gold coins.";
             
         }
@@ -430,7 +430,7 @@ void Events::handleGoblinJesterEvent(Player& MC) {
         // Player chooses NOT to fight the goblin
         std::cout << "You chose NOT to fight the goblin" << std::endl;
         std::cout << "The goblin quickly darts around the room gleefully before making his exit" << std::endl;
-        MC.SetPlayerCurrency(MC.GetPlayerCurrency() - 10);
+        MC.SetPlayerCurrency(MC.GetPlayerCurrency() - 5);
         std::cout << "You have... " << MC.GetPlayerCurrency() << " gold coins.";
     }
 
@@ -541,7 +541,7 @@ void Events::handleLockpickingEvent(Player& MC) {
             if (duration.count() < 800) { // if player clicks enter within 0.8 seconds, they succeed
                 success = true;
                 std::cout << "Perfect! The lock clicks open!" << std::endl;
-                MC.SetPlayerCurrency(MC.GetPlayerCurrency() + 25);
+                MC.SetPlayerCurrency(MC.GetPlayerCurrency() + 10);
                 std::cout << "You found 25 gold pieces!" << std::endl;
                 std::cout << "You have... " << MC.GetPlayerCurrency() << " gold coins.";
             }
@@ -617,7 +617,7 @@ void Events::handleMemoryRuneEvent(Player& MC) {
     // check if correct
     if (playerInput == sequence) {
         std::cout << "\nPerfect! The ancient magic rewards you!" << std::endl;
-        int reward = sequenceLength * 8;
+        int reward = sequenceLength + 1;
         MC.SetPlayerCurrency(MC.GetPlayerCurrency() + reward);
         std::cout << "You gained " << reward << " gold!" << std::endl;
     }
