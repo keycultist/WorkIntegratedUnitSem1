@@ -134,7 +134,7 @@ bool Combat::UpdateTutorial(bool& InCombat, Player& MC, Enemy& target) //WIP
 		else {
 			MC.SetPlayerXP(MC.GetPlayerXP() + target.GetEnemyXP());
 		}
-		MC.LevelUpCheck();
+		MC.LevelUpCheck(MC);
 		int chP = _getch();
 		system("cls");
 		return true;
