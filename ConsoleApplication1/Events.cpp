@@ -547,7 +547,7 @@ void Events::handleLockpickingEvent(int& PlayerCurrency) {
 
         if (!success) { //player runs out of attempts
             std::cout << "The lockpick breaks! The chest remains sealed." << std::endl;
-            
+
         }
     }
 }
@@ -610,12 +610,12 @@ void Events::handleMemoryRuneEvent(int& PlayerCurrency) {
     if (playerInput == sequence) {
         std::cout << "\nPerfect! The ancient magic rewards you!" << std::endl;
         int reward = sequenceLength * 8;
-       //player gains gold
+        //player gains gold
         std::cout << "You gained " << reward << " gold!" << std::endl;
     }
     else {
         std::cout << "\nWrong sequence! The runes burn your mind!" << std::endl;
-       //player loses health maybe?
+        //player loses health maybe?
         std::cout << "You lose 3 HP!" << std::endl;
     }
 }
