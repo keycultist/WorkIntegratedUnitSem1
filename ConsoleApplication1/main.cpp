@@ -235,8 +235,8 @@ int main()
             Room* currentRoom = GMap.detectPlayerRoom(MC.GetPlayerPosX(), MC.GetPlayerPosY());
 
             if (GMap.checkForCombat(currentRoom, MC, shop)) {
-                if (GMap.checkTruebossKilled()) {
-                    RUNNINGHORSE = false;
+                if (GMap.checkTruebossKilled() || GMap.isTrueBossKilled() ) {
+                    // RUNNINGHORSE = false;
                 }
 
       //          if (GMap.checkForCombat(currentRoom, MC, shop)) {
@@ -259,7 +259,7 @@ int main()
 
         }
         else {
-            if (GMap.isMinibossKilled()) {
+            if (GMap.isMinibossKilled() || GMap.checkMinibossKilled()) {
                 //MC.SetCurrentDifficulty(MC.GetCurrentDifficulty() + 1);
                 //GMap.CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
                 MC.SetCurrentDifficulty(MC.GetCurrentDifficulty() + 1);
