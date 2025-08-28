@@ -168,6 +168,8 @@ int main()
     }
     //GMap.RequestFloorUpdate(MC);
 
+    // GMap.RequestFloorUpdate(MC);
+
     system("cls");
     //Kombat Tutorial Insert Here
     std::cout << "Guardsman: Welcome to the Abyss, let's make sure you're up to the challenge." << std::endl;
@@ -203,6 +205,7 @@ int main()
         // 3. Update game state
         InsideRoom = (GMap.detectPlayerRoom(MC.GetPlayerPosX(), MC.GetPlayerPosY()) != nullptr);
 
+
         // 4. Render
         if (InsideRoom) {
             if (!Clearcheck) {
@@ -211,6 +214,12 @@ int main()
                 Clearcheck = true;
             }
             GMap.switchToRoomView(MC.GetPlayerPosX(), MC.GetPlayerPosY(), MC, shop, FinishShopping);
+        
+            Room* currentRoom = GMap.detectPlayerRoom(MC.GetPlayerPosX(), MC.GetPlayerPosY());
+
+            if (GMap.checkForCombat(currentRoom, MC)) {
+				std::cout << "All enemies efcw in this room!" << std::endl;
+            }
         }
         else {
             GMap.renderMapWithFOV(MC, 50, 25);
