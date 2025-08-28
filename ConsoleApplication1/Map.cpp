@@ -778,7 +778,7 @@ void Map::generateBossForRoom(Enemy& enemy, const std::string& bossType, int dif
             break;
         }
 
-        int baseHP = 80 + (difficulty * 20);
+        int baseHP = 150 + (difficulty * 20);
         int basePower = 12 + (difficulty * 3);
 
         enemy.SetEnemyMaxHP(baseHP);
@@ -816,7 +816,7 @@ void Map::generateBossForRoom(Enemy& enemy, const std::string& bossType, int dif
             break;
         }
 
-        int baseHP = 200 + (difficulty * 50);
+        int baseHP = 500 + (difficulty * 50);
         int basePower = 25 + (difficulty * 5);
 
         enemy.SetEnemyMaxHP(baseHP);
