@@ -246,6 +246,10 @@ int main()
                         int chP = _getch();
                         system("cls");
 
+						GMap.removeDefeatedEnemies();
+						GMap.removeDefeatedRoamingEnemies();
+						GMap.clearAllRoamingEnemies();
+
                         MC.SetCurrentDifficulty(MC.GetCurrentDifficulty() + 1);
                         GMap.CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
                     }

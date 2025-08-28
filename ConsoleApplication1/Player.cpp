@@ -270,6 +270,14 @@ void Player::InitPlayer()
             SetPlayerCritChance(50);
             SetPlayerEquippedWeapon("None");
             break;
+        case 69430:
+            SetPlayerClass("Debug");
+            SetPlayerMaxHP(200);
+            SetPlayerHP(200);
+            SetPlayerPower(10);
+            SetPlayerCritChance(50);
+            SetPlayerEquippedWeapon("None");
+            break;
         default:
             SetPlayerClass("Warrior");
             SetPlayerMaxHP(100);
