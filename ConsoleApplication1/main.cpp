@@ -272,6 +272,8 @@ int main()
             FinishShopping = false;
         }
 
+
+
         // 6. Wait until next frame (~16ms for ~60 FPS)
         auto endTime = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double, std::milli> elapsed = endTime - startTime;

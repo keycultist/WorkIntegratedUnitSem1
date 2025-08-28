@@ -133,9 +133,9 @@ void Map::CreateNewFloor(int Difficulty, Player& MC, Shop& shop) {
 
 void Map::renderEnemiesOnBoard(char** Board, int sizeX, int sizeY) {
     // Render room enemies
-    for (const auto& room : rooms) {
-        for (const auto& enemy : room.enemies) {
-            if (enemy.GetEnemyHP() > 0) {
+    for (auto& room : rooms) {
+        for (auto& enemy : room.enemies) {
+            if (enemy.GetEnemyHP() > 0 && enemy.GetEnemyMaxHP() > 0) {
                 int enemyX = enemy.GetEnemyPosX();
                 int enemyY = enemy.GetEnemyPosY();
 
@@ -147,14 +147,13 @@ void Map::renderEnemiesOnBoard(char** Board, int sizeX, int sizeY) {
         }
     }
 
-    // Render roaming enemies
-    for (const auto& enemy : roamingEnemies) {
-        if (enemy.GetEnemyHP() > 0) {
+    for (auto& enemy : roamingEnemies) {
+        if (enemy.GetEnemyHP() > 0 && enemy.GetEnemyMaxHP() > 0) {
             int enemyX = enemy.GetEnemyPosX();
             int enemyY = enemy.GetEnemyPosY();
 
             if (enemyX >= 0 && enemyX < sizeX && enemyY >= 0 && enemyY < sizeY) {
-                char enemyChar = getEnemyDisplayChar(enemy);  // Fixed this line
+                char enemyChar = getEnemyDisplayChar(enemy);
                 Board[enemyY][enemyX] = enemyChar;
             }
         }
@@ -913,13 +912,20 @@ void Map::setEnemyEquipment(Enemy& enemy, const std::string& enemyClass, int dif
 }
 
 char Map::getEnemyDisplayChar(const Enemy& enemy) {
+    // Don't display dead enemies
+    if (enemy.GetEnemyHP() <= 0) {
+        return ' '; // Return space instead of enemy char
+    }
+
     std::string enemyClass = enemy.GetEnemyClass();
 
     // Boss characters
-    if (enemyClass == "OneWingedAngel" || enemyClass == "JovialChaos" || enemyClass == "Bob" || enemyClass == "Susanoo" || enemyClass == "DevilGene") {
+    if (enemyClass == "OneWingedAngel" || enemyClass == "JovialChaos" ||
+        enemyClass == "Bob" || enemyClass == "Susanoo" || enemyClass == "DevilGene") {
         return '?';
     }
-    else if (enemyClass == "ColorCleaver" || enemyClass == "DarkSilence" || enemyClass == "ManiKatti" || enemyClass == "AzureResonance") {
+    else if (enemyClass == "ColorCleaver" || enemyClass == "DarkSilence" ||
+        enemyClass == "ManiKatti" || enemyClass == "AzureResonance") {
         return 'M';
     }
     else {
@@ -964,15 +970,21 @@ void Map::removeDefeatedEnemies() {
 Enemy* Map::getEnemyAtPosition(int x, int y) {
     for (auto& room : rooms) {
         for (auto& enemy : room.enemies) {
-            if (enemy.GetEnemyHP() > 0 &&
-                enemy.GetEnemyPosX() == x &&
-                enemy.GetEnemyPosY() == y) {
+            if (enemy.GetEnemyHP() > 0 && enemy.GetEnemyMaxHP() > 0 &&
+                enemy.GetEnemyPosX() == x && enemy.GetEnemyPosY() == y) {
                 return &enemy;
             }
         }
     }
 
-    return getRoamingEnemyAtPosition(x, y);
+    for (auto& enemy : roamingEnemies) {
+        if (enemy.GetEnemyHP() > 0 && enemy.GetEnemyMaxHP() > 0 &&
+            enemy.GetEnemyPosX() == x && enemy.GetEnemyPosY() == y) {
+            return &enemy;
+        }
+    }
+
+    return nullptr;
 }
 
 bool Map::checkForCombat(Room* room, Player& MC) {
@@ -987,7 +999,6 @@ bool Map::checkForCombat(Room* room, Player& MC) {
 
         // Check if this is the miniboss
         bool isMinibossFight = (enemyAtPlayerPos == minibossPtr);
-        std::string enemyClass = enemyAtPlayerPos->GetEnemyClass();
 
         bool wasMinibossClass = (enemyClass == "ColorCleaver" ||
             enemyClass == "DarkSilence" ||
@@ -1017,6 +1028,13 @@ bool Map::checkForCombat(Room* room, Player& MC) {
 
         Combat combat;
         combat.InitCombat(MC, *enemyAtPlayerPos);
+
+        // IMMEDIATE cleanup after combat - don't wait
+        removeDefeatedEnemies();
+        removeDefeatedRoamingEnemies();
+
+        // Check room status
+        isRoomEnemiesCleared(room);
 
         // Check if miniboss was killed
         if (isMinibossFight && checkMinibossKilled()) {
@@ -1162,9 +1180,9 @@ bool Map::checkForRoamingCombat(Player& MC) {
         Combat combat;
         combat.InitCombat(MC, *roamingEnemy);
 
-        if (roamingEnemy->GetEnemyHP() <= 0) {
-            removeDefeatedRoamingEnemies();
-        }
+        // IMMEDIATE cleanup
+        removeDefeatedRoamingEnemies();
+        removeDefeatedEnemies();
 
         return true;
     }
