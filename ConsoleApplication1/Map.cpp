@@ -44,8 +44,7 @@ void Map::CreateNewFloor(int Difficulty, Player& MC, Shop& shop) {
 
 	// Clear miniboss and true boss status
     resetMinibossStatus();
-    trueBossGenerated = false;
-    trueBossRoom = nullptr;
+	resetTruebossStatus();
 
     // Create all possible positions
     std::vector<std::pair<int, int>> allPositions;
@@ -570,7 +569,8 @@ void Map::generateEnemiesForRoom(Room& room, int difficulty) {
     bool isMinibossRoom = false;
     if (!minibossGenerated && (room.type == RoomType::TREASURE ||
         room.type == RoomType::MEDIUM ||
-        room.type == RoomType::LARGE)) {
+        room.type == RoomType::LARGE || room.type == RoomType::SMALL)) {
+
         Enemy miniboss;
         generateBossForRoom(miniboss, "Miniboss", difficulty);
 
