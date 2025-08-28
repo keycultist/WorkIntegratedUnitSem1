@@ -316,6 +316,8 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 			break;
 		case 65:
 			std::cout << HORSEAscii << "\n";
+			MC.SetPlayerXP(MC.GetPlayerXP() + 1000);
+			target.SetEnemyHP(0);
 			turnEnd = true;
 			break;
 		default:
