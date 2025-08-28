@@ -158,10 +158,12 @@ int main()
 
     Map GMap;
     if (debugEnd) {
-        GMap.CreateNewFloor(6, MC, shop);
+        MC.SetCurrentDifficulty(6);
+        GMap.CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
     }
     else {
-        GMap.CreateNewFloor(0, MC, shop);
+        MC.SetCurrentDifficulty(0);
+        GMap.CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
     }
     //GMap.RequestFloorUpdate(MC);
 

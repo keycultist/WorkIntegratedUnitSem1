@@ -291,7 +291,7 @@ void Player::InitPlayer()
         SetPlayerCurrency(3233230);
         SetPlayerDefence(0);
         SetPlayerKarma(50);
-        SetCurrentDifficulty(1);
+        SetCurrentDifficulty(0);
         system("cls");
         moveset.PlayerInit(GetPlayerClass());
         ShowPlayerStats();
