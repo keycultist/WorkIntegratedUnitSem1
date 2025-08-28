@@ -87,7 +87,7 @@ void Events::EventTriggered(Player& MC) {
             int PlayerHP = PlayerHP + 5;
         }
         if (eventIndex == 17) {
-            handleBrokenPuppetEvent(PlayerKarma);
+            handleBrokenPuppetEvent(MC);
         }
         else {
             std::cout << minorEvents[eventIndex] << std::endl;
@@ -119,10 +119,10 @@ void Events::EventTriggered(Player& MC) {
             handleSuspiciousFrog2Event(MC);
         }
         if (eventIndex == 30) {
-            handleLockpickingEvent(PlayerCurrency);
+            handleLockpickingEvent(MC);
         }
         if (eventIndex == 31) {
-            handleMemoryRuneEvent(PlayerCurrency);
+            handleMemoryRuneEvent(MC);
         }
         else {
             std::cout << mediumEvents[eventIndex] << std::endl;

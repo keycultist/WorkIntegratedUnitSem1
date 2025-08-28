@@ -29,6 +29,9 @@ public:
     void handleMageKarmaTestEvent(Player& MC);
     void handleGoblinJesterEvent(Player& MC);
     void handleSuspiciousFrog2Event(Player& MC);
+	void handleBrokenPuppetEvent(Player& MC);
+    void handleLockpickingEvent(Player& MC);
+	void handleMemoryRuneEvent(Player& MC);
 };
 
 #endif // EVENTS_H
