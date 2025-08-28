@@ -987,6 +987,12 @@ bool Map::checkForCombat(Room* room, Player& MC) {
 
         // Check if this is the miniboss
         bool isMinibossFight = (enemyAtPlayerPos == minibossPtr);
+        std::string enemyClass = enemyAtPlayerPos->GetEnemyClass();
+
+        bool wasMinibossClass = (enemyClass == "ColorCleaver" ||
+            enemyClass == "DarkSilence" ||
+            enemyClass == "ManiKatti" ||
+            enemyClass == "AzureResonance");
 
         if (enemyClass == "OneWingedAngel" || enemyClass == "JovialChaos" || enemyClass == "Bob" || enemyClass == "Susanoo" || enemyClass == "DevilGene") {
             std::cout << "\n!!! TRUE BOSS ENCOUNTER !!!" << std::endl;
@@ -1023,6 +1029,15 @@ bool Map::checkForCombat(Room* room, Player& MC) {
         }
 
         isRoomEnemiesCleared(room);
+
+        if ((isMinibossFight || wasMinibossClass) && enemyAtPlayerPos->GetEnemyHP() <= 0) {
+            if (minibossGenerated && !minibossKilled) {
+                minibossKilled = true;
+                std::cout << "\n!!! MINIBOSS DEFEATED !!!" << std::endl;
+                std::cout << "The guardian has fallen! You feel the Abyss shift around you..." << std::endl;
+                return true;
+            }
+        }
 
         return true;
     }
