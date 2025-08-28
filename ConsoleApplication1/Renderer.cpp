@@ -67,11 +67,19 @@ void Renderer::drawASCII(std::string asciiArt) {
     };
     //Add more art here liek the format above
 
+    const char* DivineInterventionSagacityString = R"(
+
+    )";
 
     if (asciiArt == "TitleScreenUIString") {
         std::cout << TitleScreenUIString << std::endl;
     }
     //Add more activation here
+
+    if (asciiArt == "DivineInterventionSagacity") {
+        std::cout << DivineInterventionSagacityString << std::endl;
+    }
+
     else {
         std::cout << asciiArt << std::endl;
     }

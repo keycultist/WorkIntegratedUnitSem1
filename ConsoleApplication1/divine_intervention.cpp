@@ -7,6 +7,7 @@
 #include <vector>
 #include <cstdlib>
 #include <ctime>
+#include "Renderer.h"
 
 int DivineIntervention::randomInt(int min, int max) const {    //randomInt picks a random whole number between two numbers
     return min + (rand() % (max - min + 1));      // +1 to include max in the range
