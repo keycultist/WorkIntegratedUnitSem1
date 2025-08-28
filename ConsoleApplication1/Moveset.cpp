@@ -33,7 +33,7 @@ int Moveset::size() const {
 
 void Moveset::EnemyInit(const std::string Class)
 {
-
+    
     //SetMove(Move("MOVE NAME", STRENGTH, HITS, "TYPE"));
 
     //Add enemy movesets
@@ -176,7 +176,7 @@ void Moveset::PlayerInit(const std::string Class)
         SetMove(Move("Slam", 4, 1, "Physical"));
     }
     else if (Class == "Mage") {
-        SetMove(Move("Ice Barrage", 1, 4, "Magical"));
+        SetMove(Move("Ice Barrage", 1, 2, "Magical"));
         SetMove(Move("Staff Slam", 2, 1, "Physical"));
     }
     else if (Class == "Hunter") {
@@ -194,7 +194,7 @@ void Moveset::PlayerInit(const std::string Class)
         SetMove(Move("Fillet", 4, 3, "Physical"));
     }
     else if (Class == "Berserker") {
-        SetMove(Move("Ravenge", 0, 1, "Physical"));
+        SetMove(Move("Ravage", 0, 1, "Physical"));
     }
     else if (Class == "Conduit") {
         SetMove(Move("Omnislash", 3, 7, "Physical"));

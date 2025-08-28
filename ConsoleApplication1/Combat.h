@@ -19,7 +19,8 @@ public:
 	static int ChoseAction(Player& MC, Enemy& target, int stage);
 	static void PlayerAttack(Player& MC, Enemy& target, int ChosenMove);
 	static void EnemyAttack(Player& MC, Enemy& target, int ChosenMove, bool Defend);
+	static void PlaySoundOPA(Player& MC, int ChosenMove);
 
-	static void DrawCombatUI(Player& MC, Enemy& target, std::string scene);
+	static void DrawCombatUI(Player& MC, Enemy& target, std::string scene, int controltypechosen);
 };
 
