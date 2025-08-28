@@ -343,9 +343,9 @@ void Map::switchToRoomView(int playerX, int playerY, Player& MC, Shop& shop, boo
         if (playerRoom->type == RoomType::SHOP) {
             if (!FinishShopping) {
                 std::cout << shop.DrawShopUI(MC, MC.GetInventory().GetItem(), MC.GetInventory()) << std::endl;
-                shop.PromptPlayerShopInteraction();
-                FinishShopping = true;
-                system("cls");
+                shop.PromptPlayerShopInteraction(MC, MC.GetInventory().GetItem(), MC.GetInventory());
+                //FinishShopping = true;
+                //system("cls");
             }
         }
     } else {

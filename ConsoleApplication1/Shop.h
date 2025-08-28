@@ -76,10 +76,10 @@ public:
 
 	// methods
 	std::string DrawShopUI(Player& MC, Item& items, Inventory& inv);
-	int PromptPlayerShopInteraction();
-	void EquipBoughtWeapon(int slot);
-	void EquipBoughtArmor(int slot);
-	void BoughtConsumables(int slot);
+	int PromptPlayerShopInteraction(Player& MC, Item& items, Inventory& inv);
+	void EquipBoughtWeapon(Player& MC, Item& items, int slot);
+	void EquipBoughtArmor(Player& MC, Item& items, int slot);
+	void BoughtConsumables(Item& items, int slot);
 	void SplitDescriptionString(std::string description);
 };
 

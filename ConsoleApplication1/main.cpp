@@ -129,7 +129,7 @@ int main()
     Shop shop;
     MC.InitPlayer();
     MC.GetInventory().GetItem().SetItemPlayerClass(MC.GetPlayerClass());
-    MC.GetInventory().GetItem().SetItemList(); MC.GetInventory().GetItem().SetItemDescriptionList(); MC.GetInventory().GetItem().SetItemCostList(); MC.GetInventory().GetItem().SetItemTypeList();
+    MC.GetInventory().GetItem().SetItemList(); MC.GetInventory().GetItem().SetItemDescriptionList(); MC.GetInventory().GetItem().SetItemCostList(); MC.GetInventory().GetItem().SetItemTypeList(); MC.GetInventory().GetItem().SetEquipmentStatsList();
     // init player's inventory
     Enemy* Enemies[10]{};
     for (int i = 0; i < 10; i++) {

@@ -200,6 +200,40 @@ void Item::SetWeaponList() {
 	}
 }
 
+void Item::SetEquipmentStatsList() {
+	WeaponPowerList[0] = 1;
+	WeaponPowerList[1] = 2;
+	WeaponPowerList[2] = 4;
+	WeaponPowerList[3] = 7;
+	WeaponPowerList[4] = 13;
+	WeaponPowerList[5] = 20;
+	WeaponPowerList[6] = 35;
+	
+	ArmorHPList[0] = 25;
+	ArmorHPList[1] = 50;
+	ArmorHPList[2] = 90;
+	ArmorHPList[3] = 175;
+	ArmorHPList[4] = 250;
+	
+	ArmorDefList[0] = 5;
+	ArmorDefList[1] = 12;
+	ArmorDefList[2] = 22;
+	ArmorDefList[3] = 35;
+	ArmorDefList[4] = 50;
+}
+
+int Item::GetWeaponPowerListIndex(int index) {
+	return WeaponPowerList[index];
+}
+
+int Item::GetArmorHPListIndex(int index) {
+	return ArmorHPList[index];
+}
+
+int Item::GetArmorDefListIndex(int index) {
+	return ArmorDefList[index];
+}
+
 void Item::SetItemDescriptionList() {
 	static const std::string ClasslessItemDescriptionList[17] = {
 		// commons

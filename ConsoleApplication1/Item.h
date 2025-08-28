@@ -18,6 +18,9 @@ protected:
 	std::string BerserkerWeaponList[7];
 	std::string SummonerWeaponList[7];
 	std::string RitualistWeaponList[7];
+	int WeaponPowerList[7];
+	int ArmorHPList[7];
+	int ArmorDefList[7];
 
 
 public:
@@ -30,6 +33,7 @@ public:
 	void SetItemCostList();
 	void SetItemTypeList();
 	void SetWeaponList();
+	void SetEquipmentStatsList();
 
 	// getter
 	std::string GetItemPlayerClass();
@@ -45,5 +49,8 @@ public:
 	std::string GetBerserkerWeaponListIndex(int index);
 	std::string GetSummonerWeaponListIndex(int index);
 	std::string GetRitualistWeaponListIndex(int index);
+	int GetWeaponPowerListIndex(int index);
+	int GetArmorHPListIndex(int index);
+	int GetArmorDefListIndex(int index);
 };
 
