@@ -1339,7 +1339,7 @@ void Map::moveEnemyTowardsPlayerAStar(Enemy& enemy, int playerX, int playerY) {
     int currentDistance = calculateManhattanDistance(enemyX, enemyY, playerX, playerY);
 
     // Don't move if already adjacent
-    if (currentDistance <= 1) {
+    if (currentDistance <= 0) {
         return;
     }
 
