@@ -160,12 +160,14 @@ bool Combat::UpdateTutorial(bool& InCombat, Player& MC, Enemy& target) //WIP
 		Combat::EnemyAttack(MC, target, EnemyMoveChoice, Defend);
 		chP = _getch();
 		system("cls");
-		return false;
 	}
 	if (MC.GetPlayerHP() <= 0) { //Player death check
 		std::cout << "Player Defeated! You Lose!" << std::endl;
 		system("cls");
 		return true;
+	}
+	else {
+		return false;
 	}
 }
 
@@ -366,12 +368,14 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 		Combat::EnemyAttack(MC, target, EnemyMoveChoice, Defend);
 		chP = _getch();
 		system("cls");
-		return false;
 	}
 	if (MC.GetPlayerHP() <= 0) { //Player death check
 		std::cout << "Player Defeated! You Lose!" << std::endl;
 		system("cls");
 		return true;
+	}
+	else {
+		return false;
 	}
 }
 
