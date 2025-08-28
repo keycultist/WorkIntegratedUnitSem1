@@ -1349,22 +1349,14 @@ void Map::moveEnemyTowardsPlayerAStar(Enemy& enemy, int playerX, int playerY) {
 
         if (nextX == playerX && nextY == playerY) {
             enemy.SetEnemyPos(nextX, nextY);
-
-            std::cout << "Enemy " << enemy.GetEnemyClass()
-                << " moves into combat position at (" << nextX << "," << nextY << ")" << std::endl;
         }
         else {
             if (isValidEnemyPosition(nextX, nextY)) {
                 enemy.SetEnemyPos(nextX, nextY);
-
-                std::cout << "Enemy " << enemy.GetEnemyClass()
-                    << " following A* path to (" << nextX << "," << nextY
-                    << ") towards player at (" << playerX << "," << playerY << ")" << std::endl;
             }
         }
     }
     else {
-        std::cout << "No A* path found, using greedy movement" << std::endl;
         moveEnemyTowardsPlayer(enemy, playerX, playerY);
     }
 }
