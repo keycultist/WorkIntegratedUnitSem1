@@ -1,4 +1,5 @@
 #include "Events.h"
+#include "Combat.h"
 #include <iostream>
 #include <random>
 #include <chrono>
@@ -12,9 +13,7 @@ Events::Events() {
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
 }
 
-void Events::CombatEventTriggered()
-{
-}
+
 
 void Events::initializeEvents() {
     // Initialize Minor Events
@@ -60,7 +59,7 @@ void Events::initializeEvents() {
     };
 }
 
-void Events::EventTriggered(Player& MC) {
+void Events::EventTriggered(Player& MC, Enemy& target) {
     int eventTypeChance = std::rand() % 100 + 1;
 
     if (eventTypeChance <= 60) {
@@ -97,8 +96,8 @@ void Events::EventTriggered(Player& MC) {
         // 40% chance for Medium Event
         int eventIndex = std::rand() % mediumEvents.size();
 
-        if (eventIndex == 20) { //skeletal warrior
-            CombatEventTriggered();
+        if (eventIndex == 20) { 
+            Combat::InitCombat(MC, target);
         }
         if (eventIndex == 11) {
             handleSpectralEntityEvent(MC);
@@ -109,11 +108,11 @@ void Events::EventTriggered(Player& MC) {
         if (eventIndex == 13) {
             handleMageKarmaTestEvent(MC);
         }
-        if (eventIndex == 25) { //sleeping orc
-            CombatEventTriggered();
+        if (eventIndex == 25) { 
+            Combat::InitCombat(MC, target);
         }
-        if (eventIndex == 16) { //goblin jester
-            handleGoblinJesterEvent(MC);
+        if (eventIndex == 16) { 
+            handleGoblinJesterEvent(MC, target);
         }
         if (eventIndex == 18) { 
             handleSuspiciousFrog2Event(MC);
@@ -400,7 +399,7 @@ void Events::handleMageKarmaTestEvent(Player& MC) {
     std::cout << "After your interaction with the mage, you cant help but think that a lucky rock could help you in your future endeavours" << std::endl;
 }
 
-void Events::handleGoblinJesterEvent(Player& MC) {
+void Events::handleGoblinJesterEvent(Player& MC, Enemy& target) {
     std::cout << "A goblin dressed in jester attire steals your gold! Fight for your precious gold back or admit defeat and lose it!" << std::endl;
     std::cout << "\nWhat do you choose?" << std::endl;
     std::cout << "1. Fight the goblin" << std::endl;
@@ -418,7 +417,7 @@ void Events::handleGoblinJesterEvent(Player& MC) {
     if (choice == 1) {
         // Player chooses to fight the goblin
         std::cout << "You chose to fight the goblin" << std::endl;
-        CombatEventTriggered();
+        Combat::InitCombat(MC, target);
 
     }
     else {
