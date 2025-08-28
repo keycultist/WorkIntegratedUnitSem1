@@ -972,6 +972,7 @@ int Shop::PromptPlayerShopInteraction(Player& MC, Item& items, Inventory& inv) {
 	// if leave shop
 	else if (PlayerShopChoice == 4) {
 		PlayerIsShopping = false;
+		return 0;
 	}
 
 	else if (ShopSlotItemType[PlayerShopChoice - 1] == "Consumable" && PlayerHasInventorySpace == false) {
@@ -1028,5 +1029,5 @@ int Shop::PromptPlayerShopInteraction(Player& MC, Item& items, Inventory& inv) {
 
 
 
-	return 0;
+	return 1;
 }

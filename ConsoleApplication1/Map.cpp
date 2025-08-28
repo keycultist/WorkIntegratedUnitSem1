@@ -341,12 +341,17 @@ void Map::switchToRoomView(int playerX, int playerY, Player& MC, Shop& shop, boo
         std::cout << "Entered " << getRoomTypeName(playerRoom->type) << " room!" << std::endl;
         //drawBoard(innerPtrs, 256, 256);  // Show just this room
         if (playerRoom->type == RoomType::SHOP) {
-            if (!FinishShopping) {
+            while (!FinishShopping) {
                 shop.SetPlayerIsShopping(true);
                 std::cout << shop.DrawShopUI(MC, MC.GetInventory().GetItem(), MC.GetInventory()) << std::endl;
-                shop.PromptPlayerShopInteraction(MC, MC.GetInventory().GetItem(), MC.GetInventory());
-                //FinishShopping = true;
-                system("cls");
+                if (shop.PromptPlayerShopInteraction(MC, MC.GetInventory().GetItem(), MC.GetInventory()) == 0) {
+                    FinishShopping = true;
+                    system("cls");
+                }
+                else {
+                    FinishShopping = false;
+                    system("cls");
+                }
             }
         }
     } else {
