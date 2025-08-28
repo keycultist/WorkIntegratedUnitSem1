@@ -175,7 +175,10 @@ public:
     Enemy* getMiniboss();
     bool checkMinibossKilled();
     void resetMinibossStatus();
+    void debugMinibossPosition();
+    void validateMinibossState();
 
+    void validateEnemyPositions();
     Enemy* getTrueboss();
     bool checkTruebossKilled();
     void resetTruebossStatus();

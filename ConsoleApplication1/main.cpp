@@ -162,10 +162,12 @@ int main()
     if (debugEnd) {
         MC.SetCurrentDifficulty(6);
         GMap.CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
+        GMap.validateEnemyPositions();
     }
     else {
         MC.SetCurrentDifficulty(0);
         GMap.CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
+        GMap.validateEnemyPositions();
     }
     //GMap.RequestFloorUpdate(MC);
 
@@ -265,6 +267,7 @@ int main()
                 MC.SetCurrentDifficulty(MC.GetCurrentDifficulty() + 1);
                 MC.SetPlayerPos(0, 0);
                 GMap.CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
+                GMap.validateEnemyPositions();
                 GMap.clearAllRoamingEnemies();
                 GMap.renderMapWithFOV(MC, 50, 25);
                 Clearcheck = false;

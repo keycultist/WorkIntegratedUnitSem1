@@ -20,22 +20,25 @@ theres still stuff to do like actually generating the enemy spawns and etc, but 
 using namespace std;
 
 void Map::CreateNewFloor(int Difficulty, Player& MC, Shop& shop) {
-
     // Clear previous room data
     rooms.clear();
     roomLookup.clear();
     clearAllRoamingEnemies();
-	removeDefeatedEnemies();
+    removeDefeatedEnemies();
     removeDefeatedRoamingEnemies();
     currentRoom = nullptr;
     nextRoomId = 1;
-    minibossGenerated = false;
+
+    // CRITICAL FIX: Reset ALL miniboss state when creating new floor
+    minibossGenerated = false;  // This was missing!
     trueBossGenerated = false;
     minibossRoom = nullptr;
     trueBossRoom = nullptr;
     minibossKilled = false;
     truebossKilled = false;
-	roamingEnemies.clear();
+    minibossPtr = nullptr;      // Reset the pointer
+    truebossPtr = nullptr;      // Reset the pointer
+    roamingEnemies.clear();
 
     // Setup pointer arrays
     char* floorPtrs[128];
@@ -135,14 +138,15 @@ void Map::CreateNewFloor(int Difficulty, Player& MC, Shop& shop) {
 
 
 void Map::renderEnemiesOnBoard(char** Board, int sizeX, int sizeY) {
-    // Render room enemies
+    // Render room enemies - only if they're in their assigned room
     for (auto& room : rooms) {
         for (auto& enemy : room.enemies) {
             if (enemy.GetEnemyHP() > 0 && enemy.GetEnemyMaxHP() > 0) {
                 int enemyX = enemy.GetEnemyPosX();
                 int enemyY = enemy.GetEnemyPosY();
 
-                if (enemyX >= 0 && enemyX < sizeX && enemyY >= 0 && enemyY < sizeY) {
+                if (enemyX >= 0 && enemyX < sizeX && enemyY >= 0 && enemyY < sizeY &&
+                    isPlayerInRoom(enemyX, enemyY, room)) { // Verify enemy is in their room
                     char enemyChar = getEnemyDisplayChar(enemy);
                     Board[enemyY][enemyX] = enemyChar;
                 }
@@ -589,7 +593,7 @@ void Map::renderMapWithFOV(Player& MC, int viewWidth, int viewHeight) {
 void Map::generateEnemiesForRoom(Room& room, int difficulty) {
     room.enemies.clear();
     room.enemiesCleared = false;
-	clearAllRoamingEnemies();   
+    clearAllRoamingEnemies();
     removeDefeatedEnemies();
     removeDefeatedRoamingEnemies();
 
@@ -605,20 +609,86 @@ void Map::generateEnemiesForRoom(Room& room, int difficulty) {
         Enemy miniboss;
         generateBossForRoom(miniboss, "Miniboss", difficulty);
 
-        miniboss.SetEnemyPos(room.x, room.y);
+        // ROBUST FIX: Use mathematical bounds checking instead of FloorGrid validation
+        int halfW = room.width / 2;
+        int halfH = room.height / 2;
 
+        // Calculate valid interior bounds (inside walls)
+        int minX = room.x - halfW + 1;  // Left wall + 1
+        int maxX = room.x + halfW - 1;  // Right wall - 1  
+        int minY = room.y - halfH + 1;  // Top wall + 1
+        int maxY = room.y + halfH - 1;  // Bottom wall - 1
+
+        // Ensure bounds are within map limits
+        minX = std::max(0, minX);
+        maxX = std::min(127, maxX);
+        minY = std::max(0, minY);
+        maxY = std::min(127, maxY);
+
+        int attempts = 0;
+        int minibossX, minibossY;
+        bool validPosition = false;
+
+        do {
+            // Generate position within calculated bounds
+            minibossX = minX + (std::rand() % (maxX - minX + 1));
+            minibossY = minY + (std::rand() % (maxY - minY + 1));
+            attempts++;
+
+            // Check if position is valid (not on boundaries and within room)
+            if (minibossX >= minX && minibossX <= maxX &&
+                minibossY >= minY && minibossY <= maxY &&
+                minibossX >= 0 && minibossX < 128 &&
+                minibossY >= 0 && minibossY < 128) {
+
+                // Double-check it's actually inside the room mathematically
+                if (minibossX >= room.x - halfW + 1 && minibossX <= room.x + halfW - 1 &&
+                    minibossY >= room.y - halfH + 1 && minibossY <= room.y + halfH - 1) {
+                    validPosition = true;
+                }
+            }
+
+            if (attempts > 100) {
+                // Ultimate fallback - center of room
+                minibossX = room.x;
+                minibossY = room.y;
+
+                // Adjust center if it's too close to edges
+                if (minibossX <= 1) minibossX = 2;
+                if (minibossX >= 126) minibossX = 125;
+                if (minibossY <= 1) minibossY = 2;
+                if (minibossY >= 126) minibossY = 125;
+
+                validPosition = true;
+                std::cout << "WARNING: Miniboss placed at fallback position ("
+                    << minibossX << "," << minibossY << ")" << std::endl;
+            }
+
+        } while (!validPosition);
+
+        miniboss.SetEnemyPos(minibossX, minibossY);
         room.enemies.push_back(miniboss);
 
         // Set up miniboss tracking
         minibossGenerated = true;
         minibossRoom = &room;
-        minibossPtr = &room.enemies.back();  // Point to the miniboss we just added
+        minibossPtr = &room.enemies.back();
         isMinibossRoom = true;
 
         std::cout << "Generated MINIBOSS in " << getRoomTypeName(room.type)
-            << " room #" << room.id << " at (" << room.x << "," << room.y << ")" << std::endl;
-        std::cout << "[DEBUG] Miniboss generated at (" << miniboss.GetEnemyPosX() << "," << miniboss.GetEnemyPosY() << ") in room " << room.id << std::endl;
+            << " room #" << room.id << " at (" << minibossX << "," << minibossY << ")" << std::endl;
+        std::cout << "Room bounds: x[" << minX << "-" << maxX << "] y[" << minY << "-" << maxY << "]" << std::endl;
+
+        // VERIFICATION: Check if miniboss is actually in the room
+        if (!isPlayerInRoom(minibossX, minibossY, room)) {
+            std::cout << "ERROR: Miniboss placed outside room! Attempting correction..." << std::endl;
+
+            // Force place in room center
+            miniboss.SetEnemyPos(room.x, room.y);
+            std::cout << "Corrected miniboss position to room center: (" << room.x << "," << room.y << ")" << std::endl;
+        }
     }
+
 
     if (!minibossGenerated) {
         std::cout << "[ERROR] No miniboss was generated on this floor!" << std::endl;
@@ -991,15 +1061,25 @@ void Map::removeDefeatedEnemies() {
 }
 
 Enemy* Map::getEnemyAtPosition(int x, int y) {
+    // First check room enemies
     for (auto& room : rooms) {
         for (auto& enemy : room.enemies) {
             if (enemy.GetEnemyHP() > 0 && enemy.GetEnemyMaxHP() > 0 &&
                 enemy.GetEnemyPosX() == x && enemy.GetEnemyPosY() == y) {
+
+                // Debug output for miniboss
+                std::string enemyClass = enemy.GetEnemyClass();
+                if (enemyClass == "ColorCleaver" || enemyClass == "DarkSilence" ||
+                    enemyClass == "ManiKatti" || enemyClass == "AzureResonance") {
+                    std::cout << "Found miniboss " << enemyClass << " at position (" << x << "," << y << ")" << std::endl;
+                }
+
                 return &enemy;
             }
         }
     }
 
+    // Then check roaming enemies
     for (auto& enemy : roamingEnemies) {
         if (enemy.GetEnemyHP() > 0 && enemy.GetEnemyMaxHP() > 0 &&
             enemy.GetEnemyPosX() == x && enemy.GetEnemyPosY() == y) {
@@ -1008,6 +1088,44 @@ Enemy* Map::getEnemyAtPosition(int x, int y) {
     }
 
     return nullptr;
+}
+
+void Map::validateMinibossState() {
+    std::cout << "\n=== MINIBOSS STATE VALIDATION ===" << std::endl;
+    std::cout << "minibossGenerated: " << minibossGenerated << std::endl;
+    std::cout << "minibossKilled: " << minibossKilled << std::endl;
+    std::cout << "minibossPtr valid: " << (minibossPtr != nullptr) << std::endl;
+    std::cout << "minibossRoom valid: " << (minibossRoom != nullptr) << std::endl;
+
+    // Count actual miniboss enemies in all rooms
+    int minibossCount = 0;
+    Enemy* foundMiniboss = nullptr;
+
+    for (auto& room : rooms) {
+        for (auto& enemy : room.enemies) {
+            if (enemy.GetEnemyHP() > 0) {
+                std::string cls = enemy.GetEnemyClass();
+                if (cls == "ColorCleaver" || cls == "DarkSilence" ||
+                    cls == "ManiKatti" || cls == "AzureResonance") {
+                    minibossCount++;
+                    foundMiniboss = &enemy;
+                    std::cout << "Found alive miniboss: " << cls << " at ("
+                        << enemy.GetEnemyPosX() << "," << enemy.GetEnemyPosY()
+                        << ") in room " << room.id << std::endl;
+                }
+            }
+        }
+    }
+
+    std::cout << "Total alive minibosses found: " << minibossCount << std::endl;
+
+    // Fix stale pointer if needed
+    if (minibossGenerated && !minibossKilled && minibossCount > 0 && !minibossPtr) {
+        minibossPtr = foundMiniboss;
+        std::cout << "Fixed stale miniboss pointer!" << std::endl;
+    }
+
+    std::cout << "=================================" << std::endl;
 }
 
 bool Map::checkForCombat(Room* room, Player& MC, Shop& shop) {
@@ -1020,8 +1138,16 @@ bool Map::checkForCombat(Room* room, Player& MC, Shop& shop) {
         return false;
     }
 
-    // Check if this is the miniboss before combat
-    bool isMinibossFight = (enemyAtPlayerPos == minibossPtr);
+    // ROBUST MINIBOSS DETECTION - don't rely on stale pointers
+    std::string enemyClass = enemyAtPlayerPos->GetEnemyClass();
+    bool isMinibossClass = (enemyClass == "ColorCleaver" || enemyClass == "DarkSilence" ||
+        enemyClass == "ManiKatti" || enemyClass == "AzureResonance");
+
+    // Update miniboss pointer if we found a miniboss
+    if (isMinibossClass && minibossGenerated && !minibossKilled) {
+        minibossPtr = enemyAtPlayerPos;
+        std::cout << "Updated miniboss pointer for combat with " << enemyClass << std::endl;
+    }
 
     // Combat section
     Combat combat;
@@ -1029,11 +1155,7 @@ bool Map::checkForCombat(Room* room, Player& MC, Shop& shop) {
 
     // Check if enemy was defeated
     if (enemyAtPlayerPos->GetEnemyHP() <= 0) {
-        // Robust miniboss check: trigger if any miniboss-class enemy in the room is dead
-        std::string cls = enemyAtPlayerPos->GetEnemyClass();
-        bool isMinibossClass = (cls == "ColorCleaver" || cls == "DarkSilence" ||
-            cls == "ManiKatti" || cls == "AzureResonance");
-        if ((isMinibossFight || isMinibossClass) && !minibossKilled) {
+        if (isMinibossClass && !minibossKilled) {
             minibossKilled = true;
             std::cout << "\n!!! MINIBOSS DEFEATED !!!" << std::endl;
             std::cout << "The guardian has fallen! You feel the Abyss shift around you..." << std::endl;
@@ -1489,4 +1611,67 @@ void Map::resetTruebossStatus() {
 void Map::clearAllRoamingEnemies() {
     roamingEnemies.clear();
     std::cout << "All roaming enemies cleared from floor." << std::endl;
+}
+
+void Map::validateEnemyPositions() {
+    for (auto& room : rooms) {
+        for (auto& enemy : room.enemies) {
+            if (enemy.GetEnemyHP() > 0) {
+                int enemyX = enemy.GetEnemyPosX();
+                int enemyY = enemy.GetEnemyPosY();
+
+                // If enemy is not in their assigned room, relocate them
+                if (!isPlayerInRoom(enemyX, enemyY, room)) {
+                    std::cout << "Relocating misplaced enemy in room " << room.id << std::endl;
+
+                    int halfW = room.width / 2;
+                    int halfH = room.height / 2;
+                    int attempts = 0;
+                    int newX, newY;
+
+                    do {
+                        newX = room.x - halfW + 1 + (std::rand() % (room.width - 2));
+                        newY = room.y - halfH + 1 + (std::rand() % (room.height - 2));
+                        attempts++;
+
+                        if (attempts > 50) {
+                            newX = room.x;
+                            newY = room.y;
+                            break;
+                        }
+                    } while (newX < 0 || newX >= 128 || newY < 0 || newY >= 128 ||
+                        (FloorGrid[newY][newX] != room.floorChar &&
+                            FloorGrid[newY][newX] != '.' &&
+                            FloorGrid[newY][newX] != '$' &&
+                            FloorGrid[newY][newX] != 'B'));
+
+                    enemy.SetEnemyPos(newX, newY);
+                }
+            }
+        }
+    }
+}
+
+void Map::debugMinibossPosition() {
+    if (minibossPtr && minibossGenerated) {
+        int mbX = minibossPtr->GetEnemyPosX();
+        int mbY = minibossPtr->GetEnemyPosY();
+
+        std::cout << "\n=== MINIBOSS DEBUG ===" << std::endl;
+        std::cout << "Miniboss at: (" << mbX << "," << mbY << ")" << std::endl;
+        std::cout << "Miniboss room: " << (minibossRoom ? minibossRoom->id : -1) << std::endl;
+
+        if (minibossRoom) {
+            std::cout << "Room center: (" << minibossRoom->x << "," << minibossRoom->y << ")" << std::endl;
+            std::cout << "Room size: " << minibossRoom->width << "x" << minibossRoom->height << std::endl;
+
+            bool inRoom = isPlayerInRoom(mbX, mbY, *minibossRoom);
+            std::cout << "Is miniboss in room: " << (inRoom ? "YES" : "NO") << std::endl;
+
+            if (!inRoom) {
+                std::cout << "ERROR: Miniboss is outside its assigned room!" << std::endl;
+            }
+        }
+        std::cout << "===================" << std::endl;
+    }
 }
