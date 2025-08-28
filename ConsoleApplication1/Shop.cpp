@@ -782,7 +782,7 @@ void Shop::BoughtConsumables(Item& items, int slot) {
 
 int Shop::PromptPlayerShopInteraction(Player& MC, Item& items, Inventory& inv) {
 
-	std::cout << "Current Funds: " << MC.GetCurrency() << "\n" << std::endl;
+	std::cout << "Current Gold: " << MC.GetCurrency() << " G\n" << std::endl;
 	std::cout << "(1) Buy Item 1\n(2) Buy Item 2\n(3) Buy Item 3\n(4) Exit Shop\n" << std::endl;
 	std::cin >> PlayerShopChoice;
 	// consumable inv space check

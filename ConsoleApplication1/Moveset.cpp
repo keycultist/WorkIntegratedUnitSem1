@@ -176,7 +176,7 @@ void Moveset::PlayerInit(const std::string Class)
         SetMove(Move("Slam", 4, 1, "Physical"));
     }
     else if (Class == "Mage") {
-        SetMove(Move("Ice Barrage", 1, 4, "Magical"));
+        SetMove(Move("Ice Barrage", 1, 2, "Magical"));
         SetMove(Move("Staff Slam", 2, 1, "Physical"));
     }
     else if (Class == "Hunter") {
