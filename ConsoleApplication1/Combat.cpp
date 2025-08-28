@@ -1105,7 +1105,11 @@ void Combat::DrawCombatUI(Player& MC, Enemy& target, std::string scene) {
 		}
 		CombatUIString += "        |:| Foe ";
 		CombatUIString += target.GetEnemyClass();
-		CombatUIString += " stands before you.                                   |:`|\n";
+		CombatUIString += " stands before you.";
+		for (int i = 0; i < 56 - target.GetEnemyClass().length(); i++) {
+			CombatUIString += " ";
+		}
+		CombatUIString += "|:`|\n";
 
 
 
