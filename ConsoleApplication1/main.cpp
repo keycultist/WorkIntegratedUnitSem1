@@ -182,7 +182,16 @@ int main()
         delete Enemies[0];
         Enemies[0] = nullptr;
     }
-
+    system("cls");
+    std::cout << "Guardsman: Great job (even if you ran away)!." << std::endl;
+    chP = _getch();
+    std::cout << std::endl;
+    std::cout << "Guardsman: Be warned though, on each floor is is an enemy stronger than any other enemies(M)." << std::endl;
+    chP = _getch();
+    std::cout << std::endl;
+    std::cout << "Guardsman: Defeating these enemies will cause the Abyss to force you into the next floor, you have been warned." << std::endl;
+    chP = _getch();
+    std::cout << std::endl;
     system("cls");
 
     bool RUNNINGHORSE = true;
