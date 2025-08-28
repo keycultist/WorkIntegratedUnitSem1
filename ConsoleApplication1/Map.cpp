@@ -19,6 +19,23 @@ theres still stuff to do like actually generating the enemy spawns and etc, but 
 using namespace std;
 
 void Map::CreateNewFloor(int Difficulty, Player& MC, Shop& shop) {
+
+    // Clear previous room data
+    rooms.clear();
+    roomLookup.clear();
+    clearAllRoamingEnemies();
+	removeDefeatedEnemies();
+    removeDefeatedRoamingEnemies();
+    currentRoom = nullptr;
+    nextRoomId = 1;
+    minibossGenerated = false;
+    trueBossGenerated = false;
+    minibossRoom = nullptr;
+    trueBossRoom = nullptr;
+    minibossKilled = false;
+    truebossKilled = false;
+	roamingEnemies.clear();
+
     // Setup pointer arrays
     char* floorPtrs[128];
     char* innerPtrs[256];
@@ -31,21 +48,6 @@ void Map::CreateNewFloor(int Difficulty, Player& MC, Shop& shop) {
     // Clear both boards
     fillBoard(floorPtrs, 128, 128, MC);
     fillBoard(innerPtrs, 256, 256, MC);
-
-    // Clear previous room data
-    rooms.clear();
-    roomLookup.clear();
-	clearAllRoamingEnemies();
-    currentRoom = nullptr;
-    nextRoomId = 1;
-    minibossGenerated = false;
-    trueBossGenerated = false;
-    minibossRoom = nullptr;
-    trueBossRoom = nullptr;
-
-	// Clear miniboss and true boss status
-    resetMinibossStatus();
-	resetTruebossStatus();
 
     // Create all possible positions
     std::vector<std::pair<int, int>> allPositions;
@@ -1472,6 +1474,10 @@ Enemy* Map::getTrueboss() {
     return nullptr;
 }
 
+bool Map::isTrueBossKilled() const {
+    return minibossKilled;
+}
+
 bool Map::checkTruebossKilled() {
     if (trueBossGenerated && !truebossKilled && truebossPtr) {
         if (truebossPtr->GetEnemyHP() <= 0) {
@@ -1481,6 +1487,7 @@ bool Map::checkTruebossKilled() {
     }
     return false;
 }
+
 
 void Map::resetTruebossStatus() {
     trueBossGenerated = false;

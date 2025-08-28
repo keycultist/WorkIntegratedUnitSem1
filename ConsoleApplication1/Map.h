@@ -179,6 +179,7 @@ public:
     Enemy* getTrueboss();
     bool checkTruebossKilled();
     void resetTruebossStatus();
+	bool isTrueBossKilled() const;
 
     void clearAllRoamingEnemies();
 };
