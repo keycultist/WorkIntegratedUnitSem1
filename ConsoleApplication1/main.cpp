@@ -277,7 +277,7 @@ int main()
 
     //When init combat
     //if (Collide) {
-    //    Combat::InitCombat(MC, CollidedEnemy);
+        //Combat::InitCombat(MC, CollidedEnemy);
     //}
 
     //...
