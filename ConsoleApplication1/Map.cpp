@@ -562,6 +562,9 @@ void Map::renderMapWithFOV(Player& MC, int viewWidth, int viewHeight) {
 void Map::generateEnemiesForRoom(Room& room, int difficulty) {
     room.enemies.clear();
     room.enemiesCleared = false;
+	clearAllRoamingEnemies();   
+    removeDefeatedEnemies();
+    removeDefeatedRoamingEnemies();
 
     if (room.type == RoomType::SHOP || room.type == RoomType::CORRIDOR) {
         return;
@@ -587,6 +590,11 @@ void Map::generateEnemiesForRoom(Room& room, int difficulty) {
 
         std::cout << "Generated MINIBOSS in " << getRoomTypeName(room.type)
             << " room #" << room.id << " at (" << room.x << "," << room.y << ")" << std::endl;
+        std::cout << "[DEBUG] Miniboss generated at (" << miniboss.GetEnemyPosX() << "," << miniboss.GetEnemyPosY() << ") in room " << room.id << std::endl;
+    }
+
+    if (!minibossGenerated) {
+        std::cout << "[ERROR] No miniboss was generated on this floor!" << std::endl;
     }
 
     // Handle true boss (difficulty 7+)
@@ -706,20 +714,6 @@ void Map::generateEnemyForRoom(Enemy& enemy, const Room& room, int difficulty, i
     if (difficulty >= 3) {
         enemyClasses.push_back("Mani");
         enemyClasses.push_back("Cleaver");
-    }
-
-    if (difficulty >= 4) {
-        enemyClasses.push_back("Resonant");
-        enemyClasses.push_back("ColorCleaver");
-    }
-
-    if (difficulty >= 5) {
-        enemyClasses.push_back("DarkSilence");
-        enemyClasses.push_back("ManiKatti");
-    }
-
-    if (difficulty >= 6) {
-        enemyClasses.push_back("AzureResonance");
     }
 
     std::string chosenClass = enemyClasses[std::rand() % enemyClasses.size()];
@@ -995,79 +989,43 @@ bool Map::checkForCombat(Room* room, Player& MC, Shop& shop) {
     }
 
     Enemy* enemyAtPlayerPos = getEnemyAtPosition(MC.GetPlayerPosX(), MC.GetPlayerPosY());
+    if (!enemyAtPlayerPos || enemyAtPlayerPos->GetEnemyHP() <= 0) {
+        return false;
+    }
 
-    if (enemyAtPlayerPos && enemyAtPlayerPos->GetEnemyHP() > 0) {
-        std::string enemyClass = enemyAtPlayerPos->GetEnemyClass();
+    // Check if this is the miniboss before combat
+    bool isMinibossFight = (enemyAtPlayerPos == minibossPtr);
 
-        // Check if this is the miniboss
-        bool isMinibossFight = (enemyAtPlayerPos == minibossPtr);
+    // Combat section
+    Combat combat;
+    combat.InitCombat(MC, *enemyAtPlayerPos);
 
-        bool wasMinibossClass = (enemyClass == "ColorCleaver" ||
-            enemyClass == "DarkSilence" ||
-            enemyClass == "ManiKatti" ||
-            enemyClass == "AzureResonance");
+    // Check if enemy was defeated
+    if (enemyAtPlayerPos->GetEnemyHP() <= 0) {
+        // Robust miniboss check: trigger if any miniboss-class enemy in the room is dead
+        std::string cls = enemyAtPlayerPos->GetEnemyClass();
+        bool isMinibossClass = (cls == "ColorCleaver" || cls == "DarkSilence" ||
+            cls == "ManiKatti" || cls == "AzureResonance");
+        if ((isMinibossFight || isMinibossClass) && !minibossKilled) {
+            minibossKilled = true;
+            std::cout << "\n!!! MINIBOSS DEFEATED !!!" << std::endl;
+            std::cout << "The guardian has fallen! You feel the Abyss shift around you..." << std::endl;
 
-        if (enemyClass == "OneWingedAngel" || enemyClass == "JovialChaos" || enemyClass == "Bob" || enemyClass == "Susanoo" || enemyClass == "DevilGene") {
-            std::cout << "\n!!! TRUE BOSS ENCOUNTER !!!" << std::endl;
-            std::cout << "The final challenge awaits..." << std::endl;
-        }
-        else if (enemyClass == "ColorCleaver" || enemyClass == "DarkSilence" || enemyClass == "ManiKatti" || enemyClass == "AzureResonance") {
-            if (isMinibossFight) {
-                std::cout << "\n!!! MINIBOSS ENCOUNTER !!!" << std::endl;
-                std::cout << "A powerful guardian blocks your path..." << std::endl;
-            }
-            else {
-                std::cout << "\nPowerful enemy encountered: " << enemyClass << "!" << std::endl;
-            }
-        }
-        else {
-            std::cout << "\nEnemy encountered: " << enemyClass << "!" << std::endl;
-        }
-
-        std::cout << "Press any key to engage!" << std::endl;
-        int chP = _getch();
-        system("cls");
-
-        Combat combat;
-        combat.InitCombat(MC, *enemyAtPlayerPos);
-
-        // IMMEDIATE cleanup after combat - don't wait
-        removeDefeatedEnemies();
-        removeDefeatedRoamingEnemies();
-
-        // Check room status
-        isRoomEnemiesCleared(room);
-
-        // Check if miniboss was killed
-        if (isMinibossFight && checkMinibossKilled()) {
-            // Miniboss was killed - trigger special events here
-            // For example, force progression to next floor, unlock special items, etc.
             MC.SetCurrentDifficulty(MC.GetCurrentDifficulty() + 1);
             MC.SetPlayerPos(0, 0);
             CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
             renderMapWithFOV(MC, 50, 25);
             system("cls");
+            return true;
         }
 
-        if (enemyAtPlayerPos->GetEnemyHP() <= 0) {
-            removeDefeatedEnemies();
-        }
-
+        // Regular cleanup
+        removeDefeatedEnemies();
+        removeDefeatedRoamingEnemies();
         isRoomEnemiesCleared(room);
-
-        if ((isMinibossFight || wasMinibossClass) && enemyAtPlayerPos->GetEnemyHP() <= 0) {
-            if (minibossGenerated && !minibossKilled) {
-                minibossKilled = true;
-                std::cout << "\n!!! MINIBOSS DEFEATED !!!" << std::endl;
-                std::cout << "The guardian has fallen! You feel the Abyss shift around you..." << std::endl;
-                return true;
-            }
-        }
-
-        return true;
     }
 
-    return false;
+    return true;
 }
 
 void Map::generateRoamingEnemies(int difficulty) {
@@ -1093,13 +1051,18 @@ void Map::generateRoamingEnemy(Enemy& enemy, int difficulty) {
     int basePower = 3 + (difficulty * 2);
 
     std::vector<std::string> roamingClasses = { "Grunt", "Rogue" };
+    if (difficulty >= 2) roamingClasses.push_back("Necromancer");
+    if (difficulty >= 3) roamingClasses.push_back("Silent");
 
-    if (difficulty >= 2) {
-        roamingClasses.push_back("Necromancer");
-    }
-    if (difficulty >= 3) {
-        roamingClasses.push_back("Silent");
-    }
+    // Remove any miniboss classes from the pool (defensive)
+    std::vector<std::string> minibossClasses = { "ColorCleaver", "DarkSilence", "ManiKatti", "AzureResonance" };
+    roamingClasses.erase(
+        std::remove_if(roamingClasses.begin(), roamingClasses.end(),
+            [&](const std::string& c) {
+                return std::find(minibossClasses.begin(), minibossClasses.end(), c) != minibossClasses.end();
+            }),
+        roamingClasses.end()
+    );
 
     std::string chosenClass = roamingClasses[std::rand() % roamingClasses.size()];
 

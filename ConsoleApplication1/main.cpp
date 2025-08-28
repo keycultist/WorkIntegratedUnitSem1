@@ -201,7 +201,7 @@ int main()
     while (RUNNINGHORSE) {
         //RUNNINGHORSE = GameRunning(MC, *Enemies[0], GMap, InsideRoom);
         auto startTime = std::chrono::high_resolution_clock::now();
-
+        
         if (MC.GetHP() <= 0) {
             RUNNINGHORSE = false;
         }
@@ -265,6 +265,7 @@ int main()
                 MC.SetCurrentDifficulty(MC.GetCurrentDifficulty() + 1);
                 MC.SetPlayerPos(0, 0);
                 GMap.CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
+                GMap.clearAllRoamingEnemies();
                 GMap.renderMapWithFOV(MC, 50, 25);
                 Clearcheck = false;
                 FinishShopping = false;
