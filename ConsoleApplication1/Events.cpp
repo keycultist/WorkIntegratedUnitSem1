@@ -69,7 +69,7 @@ void Events::EventTriggered(Player& MC) {
 
         // Check if it's the suspicious frog event (index 2)
         if (eventIndex == 1) {
-            int PlayerHP = PlayerHP + 5;
+            MC.SetPlayerHP(MC.GetPlayerHP() + 5);
         }
         if (eventIndex == 2) {
             handleSuspiciousFrogEvent(MC);
@@ -84,7 +84,7 @@ void Events::EventTriggered(Player& MC) {
             handleTalkingChestEvent(MC);
         }
         if (eventIndex == 13) {
-            int PlayerHP = PlayerHP + 5;
+            MC.SetPlayerHP(MC.GetPlayerHP() + 5);
         }
         if (eventIndex == 17) {
             handleBrokenPuppetEvent(MC);
@@ -464,7 +464,7 @@ void Events::handleSuspiciousFrog2Event(Player& MC) {
     std::cout << "The frog croaks once more before hopping away into the shadows. You wonder if you made the right choice." << std::endl;
 }
 
-void Events::handleBrokenPuppetEvent(int& PlayerKarma) {
+void Events::handleBrokenPuppetEvent(Player& MC) {
     std::cout << "A broken puppet slumps against a wall. As you pass, its head creaks toward you. Strings are cut... but its eyes shine briefly. Do you fix its strings out of pity or smash it to pieces just in case?" << std::endl;
     std::cout << "\nWhat do you choose?" << std::endl;
     std::cout << "1. Fix the puppet" << std::endl;
@@ -481,23 +481,23 @@ void Events::handleBrokenPuppetEvent(int& PlayerKarma) {
 
     if (choice == 1) {
         // Player chooses to fix the puppets strings
-        int PlayerKarma = PlayerKarma + 10; // Gain karma 
+        MC.SetPlayerKarma(MC.GetPlayerKarma() + 10); // Gain karma 
         std::cout << "You chose to fix the puppet" << std::endl;
         std::cout << "The puppet shook violently in response to its newly fixed strings before freezing abruptly. You noticed a slight smile forming by the puppet" << std::endl;
-        std::cout << "Karma increased by 10! Current karma: " << PlayerKarma << std::endl;
+        std::cout << "Karma increased by 10! Current karma: " << MC.GetPlayerKarma() << std::endl;
     }
     else {
         // Player chooses to smash the puppet
-        int PlayerKarma = PlayerKarma - 10; // Lose karma 
+        MC.SetPlayerKarma(MC.GetPlayerKarma() - 10); // Lose karma 
         std::cout << "You chose to smash the puppet into pieces" << std::endl;
         std::cout << "You ruthlessly raised the surprisingly light puppet above your head before smashing it into the ground. The puppet effortlessly shattered into pieces.." << std::endl;
-        std::cout << "Karma decreased by 10! Current karma: " << PlayerKarma << std::endl;
+        std::cout << "Karma decreased by 10! Current karma: " << MC.GetPlayerKarma() << std::endl;
     }
 
     std::cout << "You left after your encounter with the puppet, you wondered what that puppet was doing in a dungeon in the first place" << std::endl;
 }
 
-void Events::handleLockpickingEvent(int& PlayerCurrency) {
+void Events::handleLockpickingEvent(Player& MC) {
     std::cout << "You discover an ornate locked chest. The lock mechanism looks complex but pickable." << std::endl;
     std::cout << "Do you attempt to pick the lock?" << std::endl;
     std::cout << "1. Yes, try to pick it" << std::endl;
@@ -534,7 +534,7 @@ void Events::handleLockpickingEvent(int& PlayerCurrency) {
             if (duration.count() < 800) { // if player clicks enter within 0.8 seconds, they succeed
                 success = true;
                 std::cout << "Perfect! The lock clicks open!" << std::endl;
-                PlayerCurrency += 25;
+                MC.SetPlayerCurrency(MC.GetPlayerCurrency() + 25);
                 std::cout << "You found 25 gold pieces!" << std::endl;
             }
             else {
@@ -552,7 +552,7 @@ void Events::handleLockpickingEvent(int& PlayerCurrency) {
     }
 }
 
-void Events::handleMemoryRuneEvent(int& PlayerCurrency) {
+void Events::handleMemoryRuneEvent(Player& MC) {
     std::cout << "\n=== ANCIENT RUNE MEMORY CHALLENGE ===" << std::endl;
     std::cout << "A mystical stone tablet glows with runes. Memorize the sequence!" << std::endl;
 
@@ -610,12 +610,12 @@ void Events::handleMemoryRuneEvent(int& PlayerCurrency) {
     if (playerInput == sequence) {
         std::cout << "\nPerfect! The ancient magic rewards you!" << std::endl;
         int reward = sequenceLength * 8;
-        //player gains gold
+        MC.SetPlayerCurrency(MC.GetPlayerCurrency() + reward);
         std::cout << "You gained " << reward << " gold!" << std::endl;
     }
     else {
         std::cout << "\nWrong sequence! The runes burn your mind!" << std::endl;
-        //player loses health maybe?
+        MC.SetPlayerHP(MC.GetPlayerHP() - 3);
         std::cout << "You lose 3 HP!" << std::endl;
     }
 }
