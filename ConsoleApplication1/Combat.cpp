@@ -58,16 +58,16 @@ bool Combat::UpdateTutorial(bool& InCombat, Player& MC, Enemy& target) //WIP
 		case 1:
 			system("cls");
 			switch (ChoseAction(MC, target, 2)) {
-			case '1':
+			case 1:
 				ChosenMove = 1;
 				break;
-			case '2':
+			case 2:
 				ChosenMove = 2;
 				break;
-			case '3':
+			case 3:
 				ChosenMove = 3;
 				break;
-			case '4':
+			case 4:
 				ChosenMove = 4;
 				break;
 			default:
@@ -265,16 +265,16 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 			//MC.ShowPlayerMoves();
 			system("cls");
 			switch (ChoseAction(MC, target, 2)) {
-			case '1':
+			case 1:
 				ChosenMove = 1;
 				break;
-			case '2':
+			case 2:
 				ChosenMove = 2;
 				break;
-			case '3':
+			case 3:
 				ChosenMove = 3;
 				break;
-			case '4':
+			case 4:
 				ChosenMove = 4;
 				break;
 			default:
