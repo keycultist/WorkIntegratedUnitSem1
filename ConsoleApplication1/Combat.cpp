@@ -1419,13 +1419,15 @@ void Combat::DrawCombatUI(Player& MC, Enemy& target, std::string scene, int cont
 			
 		}
 
-		else {CombatUIString += "|`:|                   |:|                                                                                |:`|\n";
+		else {
+			CombatUIString += "|`:|                   |:|                                                                                |:`|\n";
 		}
 
 
 
 		//
-		for (int i = 0; i < 2; i++) {CombatUIString += "|`:|                   |:|                                                                                |:`|\n";
+		for (int i = 0; i < 2; i++) {
+			CombatUIString += "|`:|                   |:|                                                                                |:`|\n";
 
 		}
 
