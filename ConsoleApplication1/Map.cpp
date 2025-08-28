@@ -17,12 +17,15 @@ theres still stuff to do like actually generating the enemy spawns and etc, but 
 
 using namespace std;
 
-void Map::CreateNewFloor(int Difficulty, Player& MC) {
+void Map::CreateNewFloor(int Difficulty, Player& MC, Shop& shop) {
     // Setup pointer arrays
     char* floorPtrs[128];
     char* innerPtrs[256];
     for (int i = 0; i < 128; ++i) floorPtrs[i] = FloorGrid[i];
     for (int i = 0; i < 256; ++i) innerPtrs[i] = InnerRoom[i];
+
+    //Init Shop
+    shop.SetShopItemSlot(MC, MC.GetInventory().GetItem());
 
     // Clear both boards
     fillBoard(floorPtrs, 128, 128, MC);
@@ -339,7 +342,6 @@ void Map::switchToRoomView(int playerX, int playerY, Player& MC, Shop& shop, boo
         //drawBoard(innerPtrs, 256, 256);  // Show just this room
         if (playerRoom->type == RoomType::SHOP) {
             if (!FinishShopping) {
-                shop.SetShopItemSlot(MC, MC.GetInventory().GetItem());
                 std::cout << shop.DrawShopUI(MC, MC.GetInventory().GetItem(), MC.GetInventory()) << std::endl;
                 shop.PromptPlayerShopInteraction();
                 FinishShopping = true;
