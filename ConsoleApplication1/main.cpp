@@ -254,7 +254,7 @@ int main()
 
         }
         else {
-            if (GMap.checkMinibossKilled()) {
+            if (GMap.isMinibossKilled()) {
                 //MC.SetCurrentDifficulty(MC.GetCurrentDifficulty() + 1);
                 //GMap.CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
                 MC.SetCurrentDifficulty(MC.GetCurrentDifficulty() + 1);
