@@ -1,5 +1,6 @@
 #include "Combat.h"
 #include "divine_intervention.h"
+#include "Sound.h"
 #include <conio.h>
 #include <stdlib.h>
 #include <time.h> 
@@ -557,6 +558,7 @@ void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
 						target.SetEnemyHP(target.GetEnemyHP() - (MC.GetPlayerPower() + MC.GetMoveSet().GetMove(ChosenMove).MoveStrength));
 						std::cout << "Dealt: " << (MC.GetPlayerPower() + MC.GetMoveSet().GetMove(ChosenMove).MoveStrength) << " damage." << std::endl;
 					}
+					Sound::PlaySoundEffect("SwordSound");
 				}
 				//Physical/Dark, scales power
 				else if (MC.GetMoveSet().GetMove(ChosenMove).MoveType == "Magical") {
