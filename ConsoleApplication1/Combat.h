@@ -20,6 +20,6 @@ public:
 	static void PlayerAttack(Player& MC, Enemy& target, int ChosenMove);
 	static void EnemyAttack(Player& MC, Enemy& target, int ChosenMove, bool Defend);
 
-	static void DrawCombatUI(Player& MC, Enemy& target, std::string scene);
+	static void DrawCombatUI(Player& MC, Enemy& target, std::string scene, int controltypechosen);
 };
 

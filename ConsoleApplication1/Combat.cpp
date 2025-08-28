@@ -120,7 +120,7 @@ bool Combat::UpdateTutorial(bool& InCombat, Player& MC, Enemy& target) //WIP
 			break;
 		}
 		system("cls");
-		DrawCombatUI(MC, target, "Action");
+		DrawCombatUI(MC, target, "Action", 0);
 	}
 	if (target.GetEnemyHP() <= 0) { //Enemy death check
 		std::cout << "Enemy Defeated! Gained XP!" << std::endl;
@@ -140,7 +140,7 @@ bool Combat::UpdateTutorial(bool& InCombat, Player& MC, Enemy& target) //WIP
 		std::cout << "Enemy's turn" << std::endl;
 		int chP = _getch();
 		system("cls");
-		DrawCombatUI(MC, target, "Action");
+		DrawCombatUI(MC, target, "Action", 0);
 		int EnemyMoveChoice = target.DecisionMatrix(MC.GetPlayerHP(), MC.GetPlayerPower() > 0);
 		// Include Enemy Moveset
 		switch (EnemyMoveChoice) {
@@ -330,7 +330,7 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 			break;
 		}
 		system("cls");
-		DrawCombatUI(MC, target, "Action");
+		DrawCombatUI(MC, target, "Action", 0);
 	}
 	if (target.GetEnemyHP() <= 0) { //Enemy death check
 		std::cout << "Enemy Defeated! Gained XP!" << std::endl;
@@ -371,7 +371,7 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 		Combat::EnemyAttack(MC, target, EnemyMoveChoice, Defend);
 		chP = _getch();
 		system("cls");
-		DrawCombatUI(MC, target, "Action");
+		DrawCombatUI(MC, target, "Action", 0);
 	}
 	if (MC.GetPlayerHP() <= 0) { //Player death check
 		std::cout << "Player Defeated! You Lose!" << std::endl;
@@ -405,7 +405,7 @@ int Combat::ChoseAction(Player& MC, Enemy& target, int stage)
 				std::cout << c[1] << std::endl;
 				std::cout << c[2] << std::endl;
 				std::cout << c[3] << std::endl;*/
-				DrawCombatUI(MC, target, "Action");
+				DrawCombatUI(MC, target, "Action", 0);
 				chP = _getch();
 				//std::cout << (int)chP << std::endl;
 				system("cls");
@@ -461,7 +461,7 @@ int Combat::ChoseAction(Player& MC, Enemy& target, int stage)
 				std::cout << c[1] << std::endl;
 				std::cout << c[2] << std::endl;
 				std::cout << c[3] << std::endl;*/
-				DrawCombatUI(MC, target, "Moveset");
+				DrawCombatUI(MC, target, "Moveset", 0);
 				chP = _getch();
 				//std::cout << (int)chP << std::endl;
 				system("cls");
@@ -725,7 +725,7 @@ void Combat::EnemyAttack(Player& MC, Enemy& target, int ChosenMove, bool Defend)
 
 
 
-void Combat::DrawCombatUI(Player& MC, Enemy& target, std::string scene) {
+void Combat::DrawCombatUI(Player& MC, Enemy& target, std::string scene, int controltypechosen) {
 	std::string CombatPlayerUIString[18];
 
 	if (MC.GetCurrentDifficulty() + 1 == 1 || MC.GetCurrentDifficulty() + 1 == 2) {
@@ -1162,7 +1162,7 @@ void Combat::DrawCombatUI(Player& MC, Enemy& target, std::string scene) {
 
 	}
 
-	else if (scene == "Moveset") { // if choosing moveset
+	if (scene == "Moveset") { // if choosing moveset
 		// moveset 1, desc line 1
 		CombatUIString += "|`:|                   |:| 1) ";
 		CombatUIString += movedesc[0][0];
@@ -1322,6 +1322,122 @@ void Combat::DrawCombatUI(Player& MC, Enemy& target, std::string scene) {
 		CombatUIString += "     |:`|\n";
 	}
 
+
+
+	if (scene == "Outcome") {
+		CombatUIString += "|`:|                   |:| You used ";
+		// 70 space for attack move name
+		if (movedesc[tracker][0].length() >= 67) {
+			for (int i = 0; i < 67; i++) {
+				CombatUIString += movedesc[tracker][0][i];
+			}
+			CombatUIString += "...";
+		}
+
+		else {
+			CombatUIString += movedesc[tracker][0];
+			for (int i = 0; i < 70 - movedesc[tracker][0].length(); i++) {
+				CombatUIString += " ";
+			}
+		}
+		CombatUIString += "|:`|\n";
+
+
+
+		// heal self or dmg dealt to enemyclass
+		if (MC.GetMoveSet().GetMove(tracker).MoveType == "Heal") {
+			CombatUIString += "|`:|                   |:| Healed: ";
+			CombatUIString += MC.GetMoveSet().GetMove(tracker).MoveStrength;
+			CombatUIString += " HP to self.";
+			for (int i = 0; i < 60 - std::to_string(MC.GetMoveSet().GetMove(tracker).MoveStrength).length(); i++) {
+				CombatUIString += " ";
+			}
+			CombatUIString += "|:`|\n";
+		}
+		else {
+			CombatUIString += "|`:|                   |:| Dealt: ";
+			CombatUIString += std::to_string(MC.GetPlayerPower());
+			CombatUIString += " Damage to ";
+			CombatUIString += target.GetClass();
+			for (int i = 0; i < 62 - std::to_string(MC.GetPlayerPower()).length() - target.GetClass().length(); i++) {
+				CombatUIString += " ";
+			}
+			CombatUIString += "|:`|\n";
+		}
+		
+
+		//
+		CombatUIString += "|`:|                   |:|                                                                                |:`|\n";
+		
+
+
+		//	
+		if (MC.GetMoveSet().GetMove(tracker).MoveType == "Dark") {
+			CombatUIString += "You feel your life draining from the dark arts. -";
+			CombatUIString += std::to_string(MC.GetPlayerMaxHP() * 0.15);
+			CombatUIString += " HP.";
+			for (int i = 0; i < 26 - std::to_string(MC.GetPlayerMaxHP() * 0.15).length(); i++) {
+				CombatUIString += " ";
+			}
+			CombatUIString += "|:`|\n";
+		}
+
+		else if (MC.GetMoveSet().GetMove(tracker).MoveType == "Summon") {
+			CombatUIString += "|`:|                   |:| You feel one with your summons. +";
+			CombatUIString += std::to_string(MC.GetMoveSet().GetMove(tracker).MoveStrength);
+			CombatUIString += " Power.";
+			for (int i = 0; i < 38 - std::to_string(MC.GetMoveSet().GetMove(tracker).MoveStrength).length(); i++) {
+				CombatUIString += " ";
+			}
+			CombatUIString += "|:`|\n";
+		}
+
+		else if (MC.GetMoveSet().GetMove(tracker).MoveType == "Ritual") {
+			CombatUIString += "|`:|                   |:| Blessed be by the Acolytic. -";
+			CombatUIString += std::to_string(MC.GetMoveSet().GetMove(tracker).MoveStrength);
+			CombatUIString += " Max HP.";
+			for (int i = 0; i < 41 - std::to_string(MC.GetMoveSet().GetMove(tracker).MoveStrength).length(); i++) {
+				CombatUIString += " ";
+			}
+			CombatUIString += "|:`|\n";
+		}
+
+		else if (MC.GetMoveSet().GetMove(tracker).MoveType == "Control") {
+			CombatUIString += "|`:|                   |:| ";
+			CombatUIString += target.GetEnemyClass() + "was controlled to use " + target.GetMoveSet().GetMove(controltypechosen).MoveName + ".";
+			for (int i = 0; i < 54 - target.GetEnemyClass().length() - target.GetMoveSet().GetMove(controltypechosen).MoveName.length(); i++) {
+				CombatUIString += " ";
+			}
+			CombatUIString += "|:`|\n";
+
+			
+		}
+
+		else {CombatUIString += "|`:|                   |:|                                                                                |:`|\n";
+		}
+
+
+
+		//
+		for (int i = 0; i < 2; i++) {CombatUIString += "|`:|                   |:|                                                                                |:`|\n";
+
+		}
+
+
+		//
+		CombatUIString += "|`:|                   |:| ";
+		if (MC.GetHP() > MC.GetMaxHP() / 10 && MC.GetHP() <= MC.GetMaxHP() / 2) {
+			CombatUIString += "This battle might be tough.                                                    |:`|\n";
+		}
+		else if (MC.GetHP() <= MC.GetMaxHP() / 10) {
+			CombatUIString += "You can't let your adventure end here.                                         |:`|\n";
+		}
+
+
+
+		//
+		CombatUIString += "|`:|                   |:|                                                                                |:`|\n";
+	}
 
 
 
