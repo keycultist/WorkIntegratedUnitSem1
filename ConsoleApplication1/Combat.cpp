@@ -140,8 +140,6 @@ bool Combat::UpdateTutorial(bool& InCombat, Player& MC, Enemy& target) //WIP
 		return true;
 	}
 	else {
-		std::cout << "Enemy's turn" << std::endl;
-		int chP = _getch();
 		system("cls");
 		DrawCombatUI(MC, target, "Action", 0);
 		int EnemyMoveChoice = target.DecisionMatrix(MC.GetPlayerHP(), MC.GetPlayerPower() > 0);
@@ -163,7 +161,7 @@ bool Combat::UpdateTutorial(bool& InCombat, Player& MC, Enemy& target) //WIP
 			break;
 		}
 		Combat::EnemyAttack(MC, target, EnemyMoveChoice, Defend);
-		chP = _getch();
+		int chP = _getch();
 		system("cls");
 	}
 	if (MC.GetPlayerHP() <= 0) { //Player death check
@@ -353,8 +351,6 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 		return true;
 	}
 	else {
-		std::cout << "Enemy's turn" << std::endl;
-		int chP = _getch();
 		system("cls");
 		int EnemyMoveChoice = target.DecisionMatrix(MC.GetPlayerHP(), MC.GetPlayerPower() > 0);
 		// Include Enemy Moveset
@@ -375,7 +371,7 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 			break;
 		}
 		Combat::EnemyAttack(MC, target, EnemyMoveChoice, Defend);
-		chP = _getch();
+		int chP = _getch();
 		system("cls");
 		DrawCombatUI(MC, target, "Action", 0);
 	}
@@ -508,24 +504,24 @@ void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
 {
 	int Critting = rand() % 100 + 1;
 	bool Critted = false;
-	int controltypechosen;
+	int controltypechosen = 0;
 	if (MC.GetMoveSet().GetMove(ChosenMove).MoveType == "Heal") {
 		MC.SetPlayerHP(MC.GetPlayerHP() + (MC.GetMoveSet().GetMove(ChosenMove).MoveStrength));
-		std::cout << "Healed " << MC.GetMoveSet().GetMove(ChosenMove).MoveStrength << " HP." << std::endl;
+		//std::cout << "Healed " << MC.GetMoveSet().GetMove(ChosenMove).MoveStrength << " HP." << std::endl;
 		if (MC.GetPlayerHP() > MC.GetPlayerMaxHP()) {
 			MC.SetPlayerHP(MC.GetPlayerMaxHP());
 		}
-		std::cout << "Current HP: " << MC.GetPlayerHP() << "/" << MC.GetPlayerMaxHP() << std::endl;
+		//std::cout << "Current HP: " << MC.GetPlayerHP() << "/" << MC.GetPlayerMaxHP() << std::endl;
 	}
 	//Heal Type, based on move strength
 	else {
 		if (MC.GetMoveSet().GetMove(ChosenMove).MoveType == "Dark") {
-			std::cout << "Dark Move Used! -15%HP" << std::endl;
+			//std::cout << "Dark Move Used! -15%HP" << std::endl;
 			MC.SetPlayerHP(MC.GetPlayerHP() - (MC.GetPlayerMaxHP() * 0.15));
 		}
 		//Dark Type, -15% maxHP
 		if (MC.GetMoveSet().GetMove(ChosenMove).MoveType == "Ritual") {
-			std::cout << "Consumed " << MC.GetMoveSet().GetMove(ChosenMove).MoveStrength << " Max HP" << std::endl;
+			//std::cout << "Consumed " << MC.GetMoveSet().GetMove(ChosenMove).MoveStrength << " Max HP" << std::endl;
 			MC.SetPlayerMaxHP(MC.GetPlayerMaxHP() - MC.GetMoveSet().GetMove(ChosenMove).MoveStrength);
 			if (MC.GetPlayerHP() > MC.GetPlayerMaxHP()) {
 				MC.SetPlayerHP(MC.GetPlayerMaxHP());
@@ -533,29 +529,29 @@ void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
 		}
 		// Ritual Type, -MaxHP once, ignores hits.
 		for (int i = 0; i < MC.GetMoveSet().GetMove(ChosenMove).Hits; i++) {
-			std::cout << std::endl;
+			//std::cout << std::endl;
 			if (MC.GetMoveSet().GetMove(ChosenMove).MoveType == "Summon") {
-				std::cout << MC.GetPlayerClass() << " used " << MC.GetMoveSet().GetMove(ChosenMove).MoveName << std::endl;
+				//std::cout << MC.GetPlayerClass() << " used " << MC.GetMoveSet().GetMove(ChosenMove).MoveName << std::endl;
 				MC.SetPlayerPower(MC.GetPlayerPower() + MC.GetMoveSet().GetMove(ChosenMove).MoveStrength);
-				std::cout << "Gained " << MC.GetMoveSet().GetMove(ChosenMove).MoveStrength << " Power" << std::endl;
+				//std::cout << "Gained " << MC.GetMoveSet().GetMove(ChosenMove).MoveStrength << " Power" << std::endl;
 				target.SetEnemyHP(target.GetEnemyHP() - MC.GetPlayerPower());
-				std::cout << "Dealt: " << (MC.GetPlayerPower()) << " damage." << std::endl;
+				//std::cout << "Dealt: " << (MC.GetPlayerPower()) << " damage." << std::endl;
 			}
 			// Summon Type, adds move power to total power
 			else if (MC.GetMoveSet().GetMove(ChosenMove).MoveType == "Ritual") {
-				std::cout << MC.GetPlayerClass() << " used " << MC.GetMoveSet().GetMove(ChosenMove).MoveName << std::endl;
+				//std::cout << MC.GetPlayerClass() << " used " << MC.GetMoveSet().GetMove(ChosenMove).MoveName << std::endl;
 				target.SetEnemyHP(target.GetEnemyHP() - MC.GetMoveSet().GetMove(ChosenMove).MoveStrength);
-				std::cout << "Dealt: " << (MC.GetMoveSet().GetMove(ChosenMove).MoveStrength) << " damage." << std::endl;
+				//std::cout << "Dealt: " << (MC.GetMoveSet().GetMove(ChosenMove).MoveStrength) << " damage." << std::endl;
 			}
 			//Ritual Type, consumes MaxHP to use
 			else if (MC.GetMoveSet().GetMove(ChosenMove).MoveType == "Control") {
-				std::cout << MC.GetPlayerClass() << " used " << MC.GetMoveSet().GetMove(ChosenMove).MoveName << std::endl;
+				//std::cout << MC.GetPlayerClass() << " used " << MC.GetMoveSet().GetMove(ChosenMove).MoveName << std::endl;
 				controltypechosen = rand() % 4;
-				std::cout << MC.GetPlayerClass() << " controlled the enemy into using " << target.GetMoveSet().GetMove(controltypechosen).MoveName << std::endl;
+				//std::cout << MC.GetPlayerClass() << " controlled the enemy into using " << target.GetMoveSet().GetMove(controltypechosen).MoveName << std::endl;
 				//Can possibly add enemy move type differenciation
 				for (int i = 0; i < target.GetMoveSet().GetMove(controltypechosen).Hits; i++) {
 					target.SetEnemyHP(target.GetEnemyHP() - MC.GetPlayerPower());
-					std::cout << "Dealt: " << (target.GetMoveSet().GetMove(controltypechosen).MoveStrength) << " damage." << std::endl;
+					//std::cout << "Dealt: " << (target.GetMoveSet().GetMove(controltypechosen).MoveStrength) << " damage." << std::endl;
 				}
 			}
 			// Control Type, uses rand()%4 enemy's move
@@ -567,15 +563,15 @@ void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
 				else {
 					Critted = false;
 				}
-				std::cout << MC.GetPlayerClass() << " used " << MC.GetMoveSet().GetMove(ChosenMove).MoveName << std::endl;
+				//std::cout << MC.GetPlayerClass() << " used " << MC.GetMoveSet().GetMove(ChosenMove).MoveName << std::endl;
 				if (MC.GetMoveSet().GetMove(ChosenMove).MoveType == "Physical" || MC.GetMoveSet().GetMove(ChosenMove).MoveType == "Dark") {
 					if (Critted) {
 						target.SetEnemyHP(target.GetEnemyHP() - (MC.GetPlayerPower() + MC.GetMoveSet().GetMove(ChosenMove).MoveStrength) * 2);
-						std::cout << "Critical Hit! Dealt: " << (MC.GetPlayerPower() + MC.GetMoveSet().GetMove(ChosenMove).MoveStrength) * 2 << " damage." << std::endl;
+						//std::cout << "Critical Hit! Dealt: " << (MC.GetPlayerPower() + MC.GetMoveSet().GetMove(ChosenMove).MoveStrength) * 2 << " damage." << std::endl;
 					}
 					else {
 						target.SetEnemyHP(target.GetEnemyHP() - (MC.GetPlayerPower() + MC.GetMoveSet().GetMove(ChosenMove).MoveStrength));
-						std::cout << "Dealt: " << (MC.GetPlayerPower() + MC.GetMoveSet().GetMove(ChosenMove).MoveStrength) << " damage." << std::endl;
+						//std::cout << "Dealt: " << (MC.GetPlayerPower() + MC.GetMoveSet().GetMove(ChosenMove).MoveStrength) << " damage." << std::endl;
 					}
 					Sound::PlaySoundEffect("SwordSound");
 				}
@@ -583,21 +579,22 @@ void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
 				else if (MC.GetMoveSet().GetMove(ChosenMove).MoveType == "Magical") {
 					if (Critted) {
 						target.SetEnemyHP(target.GetEnemyHP() - ((MC.GetPlayerMaxHP() / 10) + MC.GetMoveSet().GetMove(ChosenMove).MoveStrength) * 2);
-						std::cout << "Critical Hit! Dealt: " << ((MC.GetPlayerMaxHP() / 10) + MC.GetMoveSet().GetMove(ChosenMove).MoveStrength) * 2 << " damage." << std::endl;
+						//std::cout << "Critical Hit! Dealt: " << ((MC.GetPlayerMaxHP() / 10) + MC.GetMoveSet().GetMove(ChosenMove).MoveStrength) * 2 << " damage." << std::endl;
 					}
 					else {
 						target.SetEnemyHP(target.GetEnemyHP() - ((MC.GetPlayerMaxHP() / 10) + MC.GetMoveSet().GetMove(ChosenMove).MoveStrength));
-						std::cout << "Dealt: " << ((MC.GetPlayerMaxHP() / 10) + MC.GetMoveSet().GetMove(ChosenMove).MoveStrength) << " damage." << std::endl;
+						//std::cout << "Dealt: " << ((MC.GetPlayerMaxHP() / 10) + MC.GetMoveSet().GetMove(ChosenMove).MoveStrength) << " damage." << std::endl;
 					}
 				}
 				//Magical, scales MaxHP
 			}
-			std::cout << target.GetEnemyClass() << " has " << target.GetEnemyHP() << " HP left." << std::endl;
+			//std::cout << target.GetEnemyClass() << " has " << target.GetEnemyHP() << " HP left." << std::endl;
 			if (target.GetEnemyHP() <= 0) {
 				break;
 			}
 		}
 	}
+	DrawCombatUI(MC, target, "Outcome", controltypechosen);
 	PlaySoundOPA(MC, ChosenMove);
 }
 
@@ -608,7 +605,7 @@ void Combat::EnemyAttack(Player& MC, Enemy& target, int ChosenMove, bool Defend)
 	bool Critted = false;
 	for (int i = 0; i < target.GetMoveSet().GetMove(ChosenMove).Hits; i++) {
 		int DamageTaken = 0;
-		std::cout << std::endl;
+		//std::cout << std::endl;
 		Critting = rand() % 100 + 1;
 		if (Critting <= target.GetEnemyCritChance()) {
 			Critted = true;
@@ -663,7 +660,7 @@ void Combat::EnemyAttack(Player& MC, Enemy& target, int ChosenMove, bool Defend)
 		//...
 
 
-		std::cout << target.GetEnemyClass() << " used " << target.GetMoveSet().GetMove(ChosenMove).MoveName << std::endl;
+		//std::cout << target.GetEnemyClass() << " used " << target.GetMoveSet().GetMove(ChosenMove).MoveName << std::endl;
 		if (Defend) {
 			DamageTaken = (DamageTaken * 100) / (MC.GetPlayerDefence() + 100);
 			if (DamageTaken <= 1) {
@@ -679,12 +676,14 @@ void Combat::EnemyAttack(Player& MC, Enemy& target, int ChosenMove, bool Defend)
 			MC.SetPlayerHP(MC.GetPlayerHP() - DamageTaken);
 		}
 		if (target.GetMoveSet().GetMove(ChosenMove).MoveType != "Buff") {
-			std::cout << MC.GetPlayerClass() << " has " << MC.GetPlayerHP() << " HP left." << std::endl;
+			//std::cout << MC.GetPlayerClass() << " has " << MC.GetPlayerHP() << " HP left." << std::endl;
 		}
 		else if (target.GetMoveSet().GetMove(ChosenMove).MoveType == "Buff") {
 			std::cout << target.GetEnemyClass() << " gained " << target.GetMoveSet().GetMove(ChosenMove).MoveStrength << " HP." << std::endl;
 		}
 	}
+	system("cls");
+	DrawCombatUI(MC, target, "Enemy", 0);
 }
 
 void Combat::PlaySoundOPA(Player& MC, int ChosenMove)
@@ -755,7 +754,7 @@ void Combat::PlaySoundOPA(Player& MC, int ChosenMove)
 
 
 
-void Combat::DrawCombatUI(Player& MC, Enemy& target, std::string scene, int controltypechosen) {
+void Combat::DrawCombatUI(Player& MC, Enemy& target, std::string scene, int ChosenMove) {
 	std::string CombatPlayerUIString[18];
 
 	if (MC.GetCurrentDifficulty() + 1 == 1 || MC.GetCurrentDifficulty() + 1 == 2) {
@@ -1389,7 +1388,7 @@ void Combat::DrawCombatUI(Player& MC, Enemy& target, std::string scene, int cont
 			CombatUIString += std::to_string(MC.GetPlayerPower());
 			CombatUIString += " Damage to ";
 			CombatUIString += target.GetClass();
-			for (int i = 0; i < 62 - std::to_string(MC.GetPlayerPower()).length() - target.GetClass().length(); i++) {
+			for (int i = 0; i < 61 - std::to_string(MC.GetPlayerPower()).length() - target.GetClass().length(); i++) {
 				CombatUIString += " ";
 			}
 			CombatUIString += "|:`|\n";
@@ -1434,8 +1433,8 @@ void Combat::DrawCombatUI(Player& MC, Enemy& target, std::string scene, int cont
 
 		else if (MC.GetMoveSet().GetMove(tracker).MoveType == "Control") {
 			CombatUIString += "|`:|                   |:| ";
-			CombatUIString += target.GetEnemyClass() + "was controlled to use " + target.GetMoveSet().GetMove(controltypechosen).MoveName + ".";
-			for (int i = 0; i < 54 - target.GetEnemyClass().length() - target.GetMoveSet().GetMove(controltypechosen).MoveName.length(); i++) {
+			CombatUIString += target.GetEnemyClass() + "was controlled to use " + target.GetMoveSet().GetMove(ChosenMove).MoveName + ".";
+			for (int i = 0; i < 54 - target.GetEnemyClass().length() - target.GetMoveSet().GetMove(ChosenMove).MoveName.length(); i++) {
 				CombatUIString += " ";
 			}
 			CombatUIString += "|:`|\n";
@@ -1464,11 +1463,60 @@ void Combat::DrawCombatUI(Player& MC, Enemy& target, std::string scene, int cont
 		else if (MC.GetHP() <= MC.GetMaxHP() / 10) {
 			CombatUIString += "You can't let your adventure end here.                                         |:`|\n";
 		}
+		else {
+			CombatUIString += "                                                                               |:`|\n";
+		}
 
 
 
 		//
 		CombatUIString += "|`:|                   |:|                                                                                |:`|\n";
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+	if (scene == "Enemy") {
+		// enemy move
+		CombatUIString += "|`:|                   |:| " + target.GetClass() + " used " + target.GetMoveSet().GetMove(ChosenMove).MoveName;
+		for (int i = 0; i < 73 - target.GetClass().length() - target.GetMoveSet().GetMove(ChosenMove).MoveName.length(); i++) {
+			CombatUIString += " ";
+		}
+		CombatUIString += "|:`|\n";
+
+
+
+		// player dmg taken or enemy heal
+		if (target.GetMoveSet().GetMove(ChosenMove).MoveType == "Buff") {
+			CombatUIString += "|`:|                   |:| " + target.GetClass() + " healed themselves for: " + std::to_string(target.GetMoveSet().GetMove(ChosenMove).MoveStrength) + " HP.";
+			for (int i = 0; i < 45; i++) {
+				CombatUIString += " ";
+			}
+			CombatUIString += "|:`|\n";
+		}
+
+		else {
+			CombatUIString += "|`:|                   |:| You took " + std::to_string((target.GetEnemyPower() + target.GetMoveSet().GetMove(ChosenMove).MoveStrength) * 2) + " damage.";
+			for (int i = 0; i < 62 - std::to_string((target.GetEnemyPower() + target.GetMoveSet().GetMove(ChosenMove).MoveStrength) * 2).length(); i++) {
+				CombatUIString += " ";
+			}
+			CombatUIString += "|:`|\n";
+		}
+
+
+		//
+		for (int i = 0; i < 6; i++) {
+			CombatUIString += "|`:|                   |:|                                                                                |:`|\n";
+		}
+
 	}
 
 
