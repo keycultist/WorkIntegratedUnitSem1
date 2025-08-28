@@ -1175,7 +1175,7 @@ void Combat::DrawCombatUI(Player& MC, Enemy& target, std::string scene) {
 
 
 		CombatUIString += MC.GetMoveSet().GetMove(tracker).MoveType;
-		for (int i = 0; i < 11 - MC.GetMoveSet.GetMove(tracker).MoveType.length()*/; i++) {
+		for (int i = 0; i < 11 - MC.GetMoveSet().GetMove(tracker).MoveType.length() ; i++) {
 			CombatUIString += " ";
 		}
 		CombatUIString += " |:|    ";
@@ -1216,8 +1216,8 @@ void Combat::DrawCombatUI(Player& MC, Enemy& target, std::string scene) {
 		// moveset type, desc line 2
 		CombatUIString += "|`:| Strength: ";
 
-		CombatUIString += "727"/*MC.moveset.GetMove(Combat::GetTracker()).MoveStrength*/;
-		for (int i = 0; i < 7 - 3/*MC.moveset.GetMove(Combat::GetTracker()).MoveStrength.length()*/; i++) {
+		CombatUIString += MC.GetMoveSet().GetMove(tracker).MoveStrength;
+		for (int i = 0; i < 7 - std::to_string(MC.GetMoveSet().GetMove(tracker).MoveStrength).length(); i++) {
 			CombatUIString += " ";
 		}
 		CombatUIString += " |:|    ";
@@ -1243,7 +1243,7 @@ void Combat::DrawCombatUI(Player& MC, Enemy& target, std::string scene) {
 		CombatUIString += " ";
 
 		// selection arrow
-		if (0/*Combat::GetTracker()*/ == 2) {
+		if (tracker == 2) {
 			CombatUIString += "<--";
 		}
 		else {
@@ -1258,8 +1258,8 @@ void Combat::DrawCombatUI(Player& MC, Enemy& target, std::string scene) {
 		// moveset hits, desc line 2
 		CombatUIString += "|`:| Hits: ";
 
-		CombatUIString += "1000"/*MC.moveset.GetMove(Combat::GetTracker()).Hits*/;
-		for (int i = 0; i < 11 - 4/*MC.moveset.GetMove(Combat::GetTracker()).Hits.length()*/; i++) {
+		CombatUIString += MC.GetMoveSet().GetMove(Combat::GetTracker()).Hits;
+		for (int i = 0; i < 11 - std::to_string(MC.GetMoveSet().GetMove(Combat::GetTracker()).Hits).length(); i++) {
 			CombatUIString += " ";
 		}
 		CombatUIString += " |:|    ";
@@ -1285,7 +1285,7 @@ void Combat::DrawCombatUI(Player& MC, Enemy& target, std::string scene) {
 		CombatUIString += " ";
 
 		// selection arrow
-		if (0/*Combat::GetTracker()*/ == 3) {
+		if (tracker == 3) {
 			CombatUIString += "<--";
 		}
 		else {
