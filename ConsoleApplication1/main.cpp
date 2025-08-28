@@ -235,8 +235,17 @@ int main()
             Room* currentRoom = GMap.detectPlayerRoom(MC.GetPlayerPosX(), MC.GetPlayerPosY());
 
             if (GMap.checkForCombat(currentRoom, MC)) {
-				std::cout << "All enemies efcw in this room!" << std::endl;
+                if (GMap.checkMinibossKilled()) {
+                    //MC.SetCurrentDifficulty(MC.GetCurrentDifficulty() + 1);
+                    //GMap.CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
+                }
+
+                if (GMap.checkTruebossKilled()) {
+                    RUNNINGHORSE = false;
+				}
             }
+
+
         }
         else {
             GMap.renderMapWithFOV(MC, 50, 25);
