@@ -179,4 +179,6 @@ public:
     Enemy* getTrueboss();
     bool checkTruebossKilled();
     void resetTruebossStatus();
+
+    void clearAllRoamingEnemies();
 };

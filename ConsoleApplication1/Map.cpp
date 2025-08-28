@@ -35,6 +35,7 @@ void Map::CreateNewFloor(int Difficulty, Player& MC, Shop& shop) {
     // Clear previous room data
     rooms.clear();
     roomLookup.clear();
+	clearAllRoamingEnemies();
     currentRoom = nullptr;
     nextRoomId = 1;
     minibossGenerated = false;
@@ -153,13 +154,12 @@ void Map::renderEnemiesOnBoard(char** Board, int sizeX, int sizeY) {
             int enemyY = enemy.GetEnemyPosY();
 
             if (enemyX >= 0 && enemyX < sizeX && enemyY >= 0 && enemyY < sizeY) {
-                char enemyChar = 'R';  // 'R' for roaming enemies
+                char enemyChar = getEnemyDisplayChar(enemy);  // Fixed this line
                 Board[enemyY][enemyX] = enemyChar;
             }
         }
     }
 }
-
 
 
 
@@ -1449,4 +1449,9 @@ void Map::resetTruebossStatus() {
     truebossKilled = false;
     trueBossRoom = nullptr;
     truebossPtr = nullptr;
+}
+
+void Map::clearAllRoamingEnemies() {
+    roamingEnemies.clear();
+    std::cout << "All roaming enemies cleared from floor." << std::endl;
 }
