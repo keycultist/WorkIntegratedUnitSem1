@@ -17,6 +17,7 @@
 #include "Shop.h"
 #include "Renderer.h"
 #include "Item.h"
+#include "Sound.h"
 
 static void CheckEnemyPlayerCollision(Player& MC, Enemy& target)
 {
