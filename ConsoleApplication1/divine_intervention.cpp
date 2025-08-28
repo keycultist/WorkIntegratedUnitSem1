@@ -259,7 +259,7 @@ void DivineIntervention::applyEffect(God god, Entity& player, Entity& enemy) con
                       .%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%.                    
                       =@@@@@@@@@@@@%%%%%%%%@@@@@@@@@@@@@@@@@@@@@%%%%%@@@@@@@@@@@=   
 )" << std::endl;
-        std::cout << "A luminous beam of light and song washes over the combatants!\n"; 
+        std::cout << "A luminous beam of light and song washes over the combatants!\n";
         primaryTarget.applyBuff("ATK", effect);    //applies the full effect to the primary target
         secondaryTarget.applyBuff("ATK", effect / 2);    //applies half the effect to the secondary target
         break;
@@ -608,3 +608,5 @@ void DivineIntervention::applyEffect(God god, Entity& player, Entity& enemy) con
         break;
     }
     std::cout << "==========================\n\n";
+
+}
