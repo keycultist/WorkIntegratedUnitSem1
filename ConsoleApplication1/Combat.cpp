@@ -718,7 +718,7 @@ void Combat::EnemyAttack(Player& MC, Enemy& target, int ChosenMove, bool Defend)
 void Combat::DrawCombatUI(Player& MC, Enemy& target, std::string scene) {
 	std::string CombatPlayerUIString[18];
 
-	if (MC.GetCurrentDifficulty() == 1 || MC.GetCurrentDifficulty() == 2) {
+	if (MC.GetCurrentDifficulty() + 1 == 1 || MC.GetCurrentDifficulty() + 1 == 2) {
 		std::string PlayerSpriteLines[18] = {
 			"                            ..:.                  ",
 			"                         .+@@%%@@.                ",
@@ -746,7 +746,7 @@ void Combat::DrawCombatUI(Player& MC, Enemy& target, std::string scene) {
 
 	}
 
-	else if (MC.GetCurrentDifficulty() == 3 || MC.GetCurrentDifficulty() == 4) {
+	else if (MC.GetCurrentDifficulty() + 1 == 3 || MC.GetCurrentDifficulty() + 1 == 4) {
 
 		std::string PlayerSpriteLines[18] = {
 			"                            :-=-.                 ",
@@ -776,7 +776,7 @@ void Combat::DrawCombatUI(Player& MC, Enemy& target, std::string scene) {
 
 
 
-	else if (MC.GetCurrentDifficulty() == 5 || MC.GetCurrentDifficulty() == 6) {
+	else if (MC.GetCurrentDifficulty() + 1 == 5 || MC.GetCurrentDifficulty() + 1 == 6) {
 
 		std::string PlayerSpriteLines[18] = {
 			"                                                  ",
@@ -1078,9 +1078,6 @@ void Combat::DrawCombatUI(Player& MC, Enemy& target, std::string scene) {
 	if (PlayerHPPercentBar < (static_cast<float>(MC.GetPlayerHP()) / static_cast<float>(MC.GetPlayerMaxHP())) * 15.f) { // if theres a bar with partial hp
 		CombatUIString += "+";
 	}
-	else {
-		CombatUIString += "-";
-	}
 
 	// fill rest of bar with empty -
 	for (int i = 0; i < 15 - PlayerHPPercentBar - 1; i++) {
@@ -1096,7 +1093,7 @@ void Combat::DrawCombatUI(Player& MC, Enemy& target, std::string scene) {
 	CombatUIString += "|`:|                   |:````````````````````````````````````````````````````````````````````````````````````|\n";
 	CombatUIString += "|`~*===================*~*================================================================================*~`|\n";
 
-	if (scene == "Actions") {
+	if (scene == "Action") {
 		// attack, enemy flavor text
 		CombatUIString += "|`:| Attack ";
 		if (tracker == 0) {
