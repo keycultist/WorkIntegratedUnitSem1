@@ -74,6 +74,7 @@ void PlayerInput(Player& MC) {
             MC.PRightMove(); 
             break;
         case 'i':
+        case 'e':
             MC.UpdateInventoryPlayerStats();
             std::cout << MC.GetInventory().DrawInventoryUI() << std::endl;
             std::cout << "Press any key to exit" << std::endl;
