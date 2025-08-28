@@ -12,6 +12,7 @@ theres still stuff to do like actually generating the enemy spawns and etc, but 
 #include "Shop.h"
 #include "Combat.h"
 #include "conio.h"
+#include "Events.h"
 #include <queue>
 #define NOMINMAX
 #include <windows.h> 
@@ -364,6 +365,32 @@ void Map::switchToRoomView(int playerX, int playerY, Player& MC, Shop& shop, boo
     Room* playerRoom = detectPlayerRoom(playerX, playerY);
 
     if (playerRoom) {
+        if (!playerRoom->visited) {
+            // Mark room as visited first
+            playerRoom->visited = true;
+
+            
+            /*bool isMinibossRoom = (playerRoom == minibossRoom && !minibossKilled);*/
+            bool isMinibossRoom = false;
+
+            for (const auto& enemy : playerRoom->enemies) {
+                std::string enemyClass = enemy.GetEnemyClass();
+                if (enemyClass == "ColorCleaver" || enemyClass == "DarkSilence" ||
+                    enemyClass == "ManiKatti" || enemyClass == "AzureResonance") {
+                    isMinibossRoom = true;
+                    break;
+                }
+            }
+            
+            if (playerRoom->type != RoomType::SHOP && !isMinibossRoom) {
+                Events events; // Create Events instance
+                std::cout << "\nSomething interesting happens as you explore the room...\n" << std::endl;
+                events.EventTriggered(MC);
+                std::cout << "\nPress any key to continue..." << std::endl;
+                _getch();
+                system("cls");
+            }
+        }
         // Use InnerRoom as the isolated room view
         char* innerPtrs[256];
         for (int i = 0; i < 256; ++i) innerPtrs[i] = InnerRoom[i];
