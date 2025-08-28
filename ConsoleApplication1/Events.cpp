@@ -68,6 +68,7 @@ void Events::EventTriggered(Player& MC, Enemy& target) {
 
         // Check if it's the suspicious frog event (index 2)
         if (eventIndex == 1) {
+			std::cout << "\"A run - down statue in the corner of the room catches your eye.You pray and hope for safe travels(+5 HP)\"" << std::endl;
             MC.SetPlayerHP(MC.GetPlayerHP() + 5);
         }
         if (eventIndex == 2) {
@@ -83,6 +84,7 @@ void Events::EventTriggered(Player& MC, Enemy& target) {
             handleTalkingChestEvent(MC);
         }
         if (eventIndex == 13) {
+			std::cout << "\"A small shrine dedicated to forgotten gods sit in an alcove.Shrouded in thick vines and layers of time,you cant help but to leave an offering out of respect(+5 HP)\"" << std::endl;
             MC.SetPlayerHP(MC.GetPlayerHP() + 5);
         }
         if (eventIndex == 17) {
@@ -97,6 +99,7 @@ void Events::EventTriggered(Player& MC, Enemy& target) {
         int eventIndex = std::rand() % mediumEvents.size();
 
         if (eventIndex == 20) { 
+			std::cout << "\"A skeletal warrior emerges from the darkness and ambushes you!(Trigger combat event)\"" << std::endl;
             Combat::InitCombat(MC, target);
         }
         if (eventIndex == 11) {
@@ -109,6 +112,7 @@ void Events::EventTriggered(Player& MC, Enemy& target) {
             handleMageKarmaTestEvent(MC);
         }
         if (eventIndex == 25) { 
+            std::cout << "\"In an attempt to raise morale by singing your favorite childhood song, you accidentally awakened a sleeping orc..Its anger is immeasurable!(Trigger combat event)\"" << std::endl;
             Combat::InitCombat(MC, target);
         }
         if (eventIndex == 16) { 
