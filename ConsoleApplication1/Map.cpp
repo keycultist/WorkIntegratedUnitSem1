@@ -42,6 +42,11 @@ void Map::CreateNewFloor(int Difficulty, Player& MC, Shop& shop) {
     minibossRoom = nullptr;
     trueBossRoom = nullptr;
 
+	// Clear miniboss and true boss status
+    resetMinibossStatus();
+    trueBossGenerated = false;
+    trueBossRoom = nullptr;
+
     // Create all possible positions
     std::vector<std::pair<int, int>> allPositions;
     int spacing = 30;
@@ -574,8 +579,11 @@ void Map::generateEnemiesForRoom(Room& room, int difficulty) {
         miniboss.SetEnemyPos(room.x, room.y);
 
         room.enemies.push_back(miniboss);
+
+        // Set up miniboss tracking
         minibossGenerated = true;
         minibossRoom = &room;
+        minibossPtr = &room.enemies.back();  // Point to the miniboss we just added
         isMinibossRoom = true;
 
         std::cout << "Generated MINIBOSS in " << getRoomTypeName(room.type)
@@ -968,6 +976,7 @@ Enemy* Map::getEnemyAtPosition(int x, int y) {
 
     return getRoamingEnemyAtPosition(x, y);
 }
+
 bool Map::checkForCombat(Room* room, Player& MC) {
     if (!room || room->enemiesCleared) {
         return false;
@@ -978,13 +987,21 @@ bool Map::checkForCombat(Room* room, Player& MC) {
     if (enemyAtPlayerPos && enemyAtPlayerPos->GetEnemyHP() > 0) {
         std::string enemyClass = enemyAtPlayerPos->GetEnemyClass();
 
+        // Check if this is the miniboss
+        bool isMinibossFight = (enemyAtPlayerPos == minibossPtr);
+
         if (enemyClass == "OneWingedAngel" || enemyClass == "JovialChaos" || enemyClass == "Bob" || enemyClass == "Susanoo" || enemyClass == "DevilGene") {
             std::cout << "\n!!! TRUE BOSS ENCOUNTER !!!" << std::endl;
             std::cout << "The final challenge awaits..." << std::endl;
         }
         else if (enemyClass == "ColorCleaver" || enemyClass == "DarkSilence" || enemyClass == "ManiKatti" || enemyClass == "AzureResonance") {
-            std::cout << "\n!!! MINIBOSS ENCOUNTER !!!" << std::endl;
-            std::cout << "A powerful guardian blocks your path..." << std::endl;
+            if (isMinibossFight) {
+                std::cout << "\n!!! MINIBOSS ENCOUNTER !!!" << std::endl;
+                std::cout << "A powerful guardian blocks your path..." << std::endl;
+            }
+            else {
+                std::cout << "\nPowerful enemy encountered: " << enemyClass << "!" << std::endl;
+            }
         }
         else {
             std::cout << "\nEnemy encountered: " << enemyClass << "!" << std::endl;
@@ -997,18 +1014,16 @@ bool Map::checkForCombat(Room* room, Player& MC) {
         Combat combat;
         combat.InitCombat(MC, *enemyAtPlayerPos);
 
+        // Check if miniboss was killed
+        if (isMinibossFight && checkMinibossKilled()) {
+            // Miniboss was killed - trigger special events here
+            // For example, force progression to next floor, unlock special items, etc.
+        }
+
         if (enemyAtPlayerPos->GetEnemyHP() <= 0) {
             removeDefeatedEnemies();
-
-            if (enemyClass == "OneWingedAngel" || enemyClass == "JovialChaos") {
-                std::cout << "\n!!! TRUE BOSS DEFEATED !!!" << std::endl;
-                std::cout << "Victory is yours!" << std::endl;
-            }
-            else if (enemyClass == "Guardian Elite") {
-                std::cout << "\n!!! MINIBOSS DEFEATED !!!" << std::endl;
-                std::cout << "The guardian has fallen!" << std::endl;
-            }
         }
+
         isRoomEnemiesCleared(room);
 
         return true;
@@ -1378,11 +1393,62 @@ void Map::updateRoamingEnemyAI(Player& MC) {
 }
 
 bool Map::isValidPathPositionForGoal(int x, int y, int goalX, int goalY) {
-    // If this is the goal position (player location), always allow it
     if (x == goalX && y == goalY) {
         return true;
     }
 
     // Otherwise use normal path validation
     return isValidPathPosition(x, y);
+}
+
+bool Map::isMinibossKilled() const {
+    return minibossKilled;
+}
+
+Enemy* Map::getMiniboss() {
+    if (minibossPtr && minibossPtr->GetEnemyHP() > 0) {
+        return minibossPtr;
+    }
+    return nullptr;
+}
+
+bool Map::checkMinibossKilled() {
+    if (minibossGenerated && !minibossKilled && minibossPtr) {
+        if (minibossPtr->GetEnemyHP() <= 0) {
+            minibossKilled = true;
+            return true;
+        }
+    }
+    return false;
+}
+
+void Map::resetMinibossStatus() {
+    minibossGenerated = false;
+    minibossKilled = false;
+    minibossRoom = nullptr;
+    minibossPtr = nullptr;
+}
+
+Enemy* Map::getTrueboss() {
+    if (truebossPtr && truebossPtr->GetEnemyHP() > 0) {
+        return truebossPtr;
+    }
+    return nullptr;
+}
+
+bool Map::checkMinibossKilled() {
+    if (trueBossGenerated && !truebossKilled && truebossPtr) {
+        if (truebossPtr->GetEnemyHP() <= 0) {
+            truebossKilled = true;
+            return true;
+        }
+    }
+    return false;
+}
+
+void Map::resetMinibossStatus() {
+    trueBossGenerated = false;
+    truebossKilled = false;
+    trueBossRoom = nullptr;
+    truebossPtr = nullptr;
 }

@@ -63,6 +63,12 @@ private:
     int tilesFilled;
     char InnerRoom[256][256];
 
+    bool minibossKilled = false;
+    Enemy* minibossPtr = nullptr;
+
+    bool truebossKilled = false;
+    Enemy* truebossPtr = nullptr;
+
     int enemyMoveCounter;
     std::vector<Enemy> roamingEnemies;
     std::vector<Room> rooms;
@@ -84,6 +90,8 @@ private:
 protected:
 
 public:
+
+    bool isMinibossKilled() const;
 
     void CreateNewFloor(int Difficulty, Player& MC, Shop& shop);
 
@@ -163,4 +171,12 @@ public:
     std::vector<AStarNode*> getNeighbors(AStarNode* node, int goalX, int goalY);
 
     bool isValidPathPositionForGoal(int x, int y, int goalX, int goalY);
+
+    Enemy* getMiniboss();
+    bool checkMinibossKilled();
+    void resetMinibossStatus();
+
+    Enemy* getTrueboss();
+    bool checkTruebossKilled();
+    void resetTruebossStatus();
 };
