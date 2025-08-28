@@ -33,7 +33,7 @@ void Renderer::drawBoard(char** Board, int sizeX, int sizeY) {
 }
 
 void Renderer::drawASCII(std::string asciiArt) {
-    std::string TitleScreenUIString = {
+    std::string TitleScreenUIStringP = 
         "```````````````````````````````````````````````_,-~.______.~-,_```````````````````````````````````````````````\n"
         "````````````````````````````````````````````__-=+=-=+#$$#+=-=+=-__````````````````````````````````````````````\n"
         "`````````_````````````````````````````~~~``/ Laments Of The Abyss \\``~~~```````````````````````````````````_``\n"
@@ -64,7 +64,7 @@ void Renderer::drawASCII(std::string asciiArt) {
         "``````````````````````````````/%#+`       ``       ``\"^*``    `   `       `+*#\\```````````````````````````````\n"
         "`````````````````````````````|#=`    `       `        `      `           `` `+#\\_`````````````````````````````\n"
         "````````````````````````````/#+-            `     `                 `      `  -+#|````````````````````````````\n"
-    };
+    ;
     //Add more art here liek the format above
 
     const char* DivineInterventionSagacityString = R"(
@@ -453,33 +453,33 @@ void Renderer::drawASCII(std::string asciiArt) {
     )";
 
     if (asciiArt == "TitleScreenUIString") {
-        std::cout << TitleScreenUIString << std::endl;
+        std::cout << TitleScreenUIStringP << std::endl;
     }
     //Add more activation here
 
-    if (asciiArt == "DivineInterventionSagacity") {
+    else if (asciiArt == "DivineInterventionSagacity") {
         std::cout << DivineInterventionSagacityString << std::endl;
     }
     
-    if (asciiArt == "DivineInterventionAurora") {
+    else if (asciiArt == "DivineInterventionAurora") {
         std::cout << DivineInterventionAuroraString << std::endl;
     }
-    if (asciiArt == "DivineInterventionChryses") {
+    else if (asciiArt == "DivineInterventionChryses") {
         std::cout << DivineInterventionChrysesString << std::endl;
     }
-    if (asciiArt == "DivineInterventionFeronia") {
+    else if (asciiArt == "DivineInterventionFeronia") {
         std::cout << DivineInterventionFeroniaString << std::endl;
     }
-    if (asciiArt == "DivineInterventionKeres") {
+    else if (asciiArt == "DivineInterventionKeres") {
         std::cout << DivineInterventionKeresString << std::endl;
     }
-    if (asciiArt == "DivineInterventionSanctorum") {
+    else if (asciiArt == "DivineInterventionSanctorum") {
         std::cout << DivineInterventionSanctorumString << std::endl;
     }
-    if (asciiArt == "DivineInterventionPreyseye") {
+    else if (asciiArt == "DivineInterventionPreyseye") {
         std::cout << DivineInterventionPreyseyeString << std::endl;
     }
-    if (asciiArt == "DivineInterventionBoon") {
+    else if (asciiArt == "DivineInterventionBoon") {
         std::cout << DivineInterventionBoonString << std::endl;
     }
 

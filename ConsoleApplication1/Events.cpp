@@ -254,6 +254,7 @@ void Events::handleTalkingChestEvent(Player& MC) {
         std::cout << "You chose to talk to the chest" << std::endl;
         std::cout << "You find yourself having a pleasant and knowledge-filled conversation with the chest" << std::endl;
         std::cout << "Karma increased by 10! Current karma: " << MC.GetPlayerKarma() << std::endl;
+        std::cout << "Powert increased by 2! Current karma: " << MC.GetPlayerPower() << std::endl;
     }
     else {
         // Player chooses NOT to talk to the chest
