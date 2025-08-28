@@ -1270,10 +1270,6 @@ void Map::moveEnemyTowardsPlayer(Enemy& enemy, int playerX, int playerY) {
 
     int currentDistance = calculateManhattanDistance(enemyX, enemyY, playerX, playerY);
 
-    if (currentDistance <= 0) {
-        return;
-    }
-
     if (currentDistance > 15) {
         return;
     }
@@ -1338,10 +1334,11 @@ void Map::moveEnemyTowardsPlayerAStar(Enemy& enemy, int playerX, int playerY) {
 
     int currentDistance = calculateManhattanDistance(enemyX, enemyY, playerX, playerY);
 
-    // Don't move if already adjacent
-    if (currentDistance <= 0) {
+
+    if (currentDistance == 0) {
         return;
     }
+
 
     std::vector<std::pair<int, int>> path = findPathAStar(enemyX, enemyY, playerX, playerY, 15);
 
@@ -1349,15 +1346,24 @@ void Map::moveEnemyTowardsPlayerAStar(Enemy& enemy, int playerX, int playerY) {
         int nextX = path[0].first;
         int nextY = path[0].second;
 
-        if (isValidEnemyPosition(nextX, nextY)) {
+        if (nextX == playerX && nextY == playerY) {
             enemy.SetEnemyPos(nextX, nextY);
 
             std::cout << "Enemy " << enemy.GetEnemyClass()
-                << " following A* path to (" << nextX << "," << nextY
-                << ") towards player at (" << playerX << "," << playerY << ")" << std::endl;
+                << " moves into combat position at (" << nextX << "," << nextY << ")" << std::endl;
+        }
+        else {
+            if (isValidEnemyPosition(nextX, nextY)) {
+                enemy.SetEnemyPos(nextX, nextY);
+
+                std::cout << "Enemy " << enemy.GetEnemyClass()
+                    << " following A* path to (" << nextX << "," << nextY
+                    << ") towards player at (" << playerX << "," << playerY << ")" << std::endl;
+            }
         }
     }
     else {
+        std::cout << "No A* path found, using greedy movement" << std::endl;
         moveEnemyTowardsPlayer(enemy, playerX, playerY);
     }
 }
@@ -1402,4 +1408,34 @@ void Map::updateRoamingEnemyAI(Player& MC) {
             }
         }
     }
+}
+
+bool Map::isValidPathPosition(int x, int y) {
+    // Check bounds
+    if (x < 0 || x >= 128 || y < 0 || y >= 128) {
+        return false;
+    }
+
+    // Can't path through walls
+    if (FloorGrid[y][x] == '#') {
+        return false;
+    }
+
+    // Can't path through rooms (roaming enemies stay in corridors)
+    if (isPositionInAnyRoom(x, y)) {
+        return false;
+    }
+
+    // Allow pathing through empty space and corridors
+    return (FloorGrid[y][x] == ' ' || FloorGrid[y][x] == '.');
+}
+
+bool Map::isValidPathPositionForGoal(int x, int y, int goalX, int goalY) {
+    // If this is the goal position (player location), always allow it
+    if (x == goalX && y == goalY) {
+        return true;
+    }
+
+    // Otherwise use normal path validation
+    return isValidPathPosition(x, y);
 }

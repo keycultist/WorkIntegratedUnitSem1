@@ -162,4 +162,5 @@ public:
     bool isValidPathPosition(int x, int y);
     std::vector<AStarNode*> getNeighbors(AStarNode* node, int goalX, int goalY);
 
+    bool isValidPathPositionForGoal(int x, int y, int goalX, int goalY);
 };
