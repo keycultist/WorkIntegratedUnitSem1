@@ -17,12 +17,15 @@ theres still stuff to do like actually generating the enemy spawns and etc, but 
 
 using namespace std;
 
-void Map::CreateNewFloor(int Difficulty, Player& MC) {
+void Map::CreateNewFloor(int Difficulty, Player& MC, Shop& shop) {
     // Setup pointer arrays
     char* floorPtrs[128];
     char* innerPtrs[256];
     for (int i = 0; i < 128; ++i) floorPtrs[i] = FloorGrid[i];
     for (int i = 0; i < 256; ++i) innerPtrs[i] = InnerRoom[i];
+
+    //Init Shop
+    shop.SetShopItemSlot(MC, MC.GetInventory().GetItem());
 
     // Clear both boards
     fillBoard(floorPtrs, 128, 128, MC);
@@ -338,11 +341,19 @@ void Map::switchToRoomView(int playerX, int playerY, Player& MC, Shop& shop, boo
         std::cout << "Entered " << getRoomTypeName(playerRoom->type) << " room!" << std::endl;
         //drawBoard(innerPtrs, 256, 256);  // Show just this room
         if (playerRoom->type == RoomType::SHOP) {
-            if (!FinishShopping) {
-                std::cout << shop.DrawShopUI() << std::endl;
-                shop.PromptPlayerShopInteraction();
-                FinishShopping = true;
-                system("cls");
+            //
+            shop.SetShopItemSlot(MC, MC.GetInventory().GetItem());
+            while (!FinishShopping) {
+                shop.SetPlayerIsShopping(true);
+                std::cout << shop.DrawShopUI(MC, MC.GetInventory().GetItem(), MC.GetInventory()) << std::endl;
+                if (shop.PromptPlayerShopInteraction(MC, MC.GetInventory().GetItem(), MC.GetInventory()) == 0) {
+                    FinishShopping = true;
+                    system("cls");
+                }
+                else {
+                    FinishShopping = false;
+                    system("cls");
+                }
             }
         }
     } else {
@@ -467,7 +478,7 @@ Room* Map::getFinalShop() {
     return (lastRoom && lastRoom->type == RoomType::SHOP) ? lastRoom : nullptr;
 }
 
-void Map::renderMapWithFOV(Player& MC, int viewWidth = 40, int viewHeight = 20) {
+void Map::renderMapWithFOV(Player& MC, int viewWidth, int viewHeight) {
     int mapWidth = 128, mapHeight = 128;
 
     int topLeftX = MC.GetPlayerPosX() - viewWidth / 2;

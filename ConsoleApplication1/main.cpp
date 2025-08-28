@@ -17,6 +17,7 @@
 #include "Shop.h"
 #include "Renderer.h"
 #include "Item.h"
+#include "Sound.h"
 
 static void CheckEnemyPlayerCollision(Player& MC, Enemy& target)
 {
@@ -28,7 +29,7 @@ static void CheckEnemyPlayerCollision(Player& MC, Enemy& target)
     // Check if player touches enemy (collision)
     if (EnemyX == MC.GetPlayerPosX() && EnemyY == MC.GetPlayerPosY()) {
         // Enter combat with this enemy
-        Combat::InitCombat(MC, target);           //suspects that it can be solved by enemy inheiriting from entity class. checkenemy func not being called
+        Combat::InitCombat(MC, target);        
     }
 }
 
@@ -60,10 +61,25 @@ void PlayerInput(Player& MC) {
 
 
         switch (key) {
-        case 'w': MC.PUpMove(); break;
-        case 's': MC.PDownMove(); break;
-        case 'a': MC.PLeftMove(); break;
-        case 'd': MC.PRightMove(); break;
+        case 'w': 
+            MC.PUpMove(); 
+            break;
+        case 's': 
+            MC.PDownMove(); 
+            break;
+        case 'a': 
+            MC.PLeftMove(); 
+            break;
+        case 'd': 
+            MC.PRightMove(); 
+            break;
+        case 'i':
+            MC.UpdateInventoryPlayerStats();
+            std::cout << MC.GetInventory().DrawInventoryUI() << std::endl;
+            std::cout << "Press any key to exit" << std::endl;
+            int chP = _getch();
+            MC.UpdatePlayerStatsInventory();
+            system("cls");
         }
     }
 }
@@ -108,11 +124,16 @@ int main()
 {
     Renderer render;
     int StartGame = false;
+    bool debugEnd = false;
     while (!StartGame) {
         render.drawASCII("TitleScreenUIString");
 
         int chP = _getch();
         if (chP == 13) {
+            StartGame = true;
+        }
+        else if (chP == 'h') {
+            debugEnd = true;
             StartGame = true;
         }
         system("cls");
@@ -123,8 +144,8 @@ int main()
     Item items;
     Shop shop;
     MC.InitPlayer();
-    items.SetItemPlayerClass(MC.GetPlayerClass());
-    items.SetItemList();
+    MC.GetInventory().GetItem().SetItemPlayerClass(MC.GetPlayerClass());
+    MC.GetInventory().GetItem().SetItemList(); MC.GetInventory().GetItem().SetItemDescriptionList(); MC.GetInventory().GetItem().SetItemCostList(); MC.GetInventory().GetItem().SetItemTypeList(); MC.GetInventory().GetItem().SetEquipmentStatsList(); MC.GetInventory().GetItem().SetWeaponList(); items.SetWeaponList();
     // init player's inventory
     Enemy* Enemies[10]{};
     for (int i = 0; i < 10; i++) {
@@ -137,14 +158,22 @@ int main()
     //82308 bytes of stack!!
 
     Map GMap;
-
-    GMap.CreateNewFloor(6, MC);
+    if (debugEnd) {
+        MC.SetCurrentDifficulty(6);
+        GMap.CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
+    }
+    else {
+        MC.SetCurrentDifficulty(0);
+        GMap.CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
+    }
+    //GMap.RequestFloorUpdate(MC);
 
     // GMap.RequestFloorUpdate(MC);
 
     system("cls");
     //Kombat Tutorial Insert Here
     std::cout << "Guardsman: Welcome to the Abyss, let's make sure you're up to the challenge." << std::endl;
+    int chP = _getch();
     std::cout << std::endl;
     std::cout << "Guardsman: There are some Grunts here, show me what you can do." << std::endl;
     Combat::InitTutorialCombat(MC, *Enemies[0]);
@@ -193,7 +222,7 @@ int main()
             }
         }
         else {
-            GMap.renderMapWithFOV(MC, 40, 20);
+            GMap.renderMapWithFOV(MC, 50, 25);
             Clearcheck = false;
             FinishShopping = false;
         }

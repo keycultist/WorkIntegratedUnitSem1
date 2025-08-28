@@ -55,6 +55,7 @@ public:
     DivineIntervention();
     God getRandomGod() const;  // Changed to correct function name
     void applyEffect(God god, Entity& player, Entity& enemy) const;
+    // Change this line in the applyEffect function declaration:
 };
 
 #endif

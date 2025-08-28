@@ -162,6 +162,9 @@
   <ItemGroup>
     <ClInclude Include="Enemy.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Media Include="SwordSound.wav" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

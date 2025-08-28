@@ -1,5 +1,6 @@
 #include "Combat.h"
 #include "divine_intervention.h"
+#include "Sound.h"
 #include <conio.h>
 #include <stdlib.h>
 #include <time.h> 
@@ -316,6 +317,8 @@ bool Combat::Update(bool& InCombat, Player& MC, Enemy& target)
 			break;
 		case 65:
 			std::cout << HORSEAscii << "\n";
+			MC.SetPlayerXP(MC.GetPlayerXP() + 1000);
+			target.SetEnemyHP(0);
 			turnEnd = true;
 			break;
 		default:
@@ -555,6 +558,7 @@ void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
 						target.SetEnemyHP(target.GetEnemyHP() - (MC.GetPlayerPower() + MC.GetMoveSet().GetMove(ChosenMove).MoveStrength));
 						std::cout << "Dealt: " << (MC.GetPlayerPower() + MC.GetMoveSet().GetMove(ChosenMove).MoveStrength) << " damage." << std::endl;
 					}
+					Sound::PlaySoundEffect("SwordSound");
 				}
 				//Physical/Dark, scales power
 				else if (MC.GetMoveSet().GetMove(ChosenMove).MoveType == "Magical") {
@@ -663,3 +667,673 @@ void Combat::EnemyAttack(Player& MC, Enemy& target, int ChosenMove, bool Defend)
 	}
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void Combat::DrawCombatUI(Player& MC, Enemy& target, std::string scene) {
+	std::string CombatPlayerUIString[18];
+
+	if (MC.GetCurrentDifficulty() == 1 || MC.GetCurrentDifficulty() == 2) {
+		std::string PlayerSpriteLines[18] = {
+			"                            ..:.                  ",
+			"                         .+@@%%@@.                ",
+			"                        =@#.   :@*                ",
+			"                       .@*     .@%                ",
+			"                       .@*    .*@-                ",
+			"                    .:=+=@%-:#@%.                 ",
+			"                   .@@@@@%#*+:.                   ",
+			"                   -@@@@@@@@@@@@@=                ",
+			"                   %@@@@@@@@@@@@@@.               ",
+			"                  -@=@@@@@@@@@@@@#.               ",
+			"                 :@+ .@@@@@@@@@@@.                ",
+			"                .@%.@@:.*@@%%**@@:                ",
+			"                *@. %@@@@@@@@@@@@-                ",
+			"               =@-  #@@@@@@@@@@:@=                ",
+			"                    .*@@@@@@@* .@+                ",
+			"                    .@% ..  %% .@#                ",
+			"                    #%      *@: .:                ",
+			"                   +@-      .@+                   ",
+		};
+
+		for (int i = 0; i < 18; i++) {
+			CombatPlayerUIString[i] = PlayerSpriteLines[i];
+		}
+
+	}
+
+	else if (MC.GetCurrentDifficulty() == 3 || MC.GetCurrentDifficulty() == 4) {
+
+		std::string PlayerSpriteLines[18] = {
+			"                            :-=-.                 ",
+			"                          .+#***%@+.              ",
+			"                        .+#+-----*@:              ",
+			"                        =#=:----:+@=              ",
+			"                        =#-:::---*%.              ",
+			"                     ...:*#=---=#*.               ",
+			"                   .+%%@@#*####+:                 ",
+			"                   -*###%@@@@*+=--.               ",
+			"                  :=*###@@@@@@@####-.             ",
+			"                 :-+*##@@@@@@@@####*:             ",
+			"                .:=*=+@@@@@@@@@###*-:             ",
+			"               .:=#+--:%@@@@@@@%+#=::             ",
+			"              .:-#+-*@*-:+%#****##+::.            ",
+			"              .-**-:#@@@@@@@@@@@##*-:.            ",
+			"             .:+#-:.*@@@@@@@@@@@*+#-:.            ",
+			"             ::--:. .+@@@@@@@@@:.=*-::.           ",
+			"              .::.   %@==++-=#@..=*=::.           ",
+			"                    -@=      +@:.-*-::.           ",
+		};
+
+		for (int i = 0; i < 18; i++) {
+			CombatPlayerUIString[i] = PlayerSpriteLines[i];
+		}
+	}
+
+
+
+	else if (MC.GetCurrentDifficulty() == 5 || MC.GetCurrentDifficulty() == 6) {
+
+		std::string PlayerSpriteLines[18] = {
+			"                                                  ",
+			"                                                  ",
+			"                        :*##@@*                   ",
+			"                      -**=--:=#=                  ",
+			"                     -*=::--:.#%.                 ",
+			"                     -+::::::-*+                  ",
+			"                     :+=::::-+=                   ",
+			"                 :#***-====+=.                    ",
+			"                .++==+++++--:::                   ",
+			"               .:+====++====--=-.                 ",
+			"              .:====+++=====----:                 ",
+			"              :-=::+++======---:.                 ",
+			"             .-+-:: -+======-:-...                ",
+			"            .:+=:-*+-..::..-=--:..                ",
+			"           .:++::=***++++++++==:..                ",
+			"          .:-+-:.:#******+++=:=-::.               ",
+			"          .::::   :##******- .==::.               ",
+			"            .    .*#.    .*+ .=+::.               ",
+		};
+
+		for (int i = 0; i < 18; i++) {
+			CombatPlayerUIString[i] = PlayerSpriteLines[i];
+		}
+	}
+
+
+
+	else {
+		std::string PlayerSpriteLines[18] = {
+			"                                                  ",
+			"                              -+*=.               ",
+			"                           :++=--+#=              ",
+			"                          =+-:::::+*.             ",
+			"                       ..-+:::::::+*.             ",
+			"                   .....:-=------==-..            ",
+			"                      .:=:-=----==:.              ",
+			"                  ...-=======-----:-:::::.......  ",
+			"                 ...:==============-----::.....   ",
+			"                   .:=--========--=-:.......      ",
+			"            .....:--==-=========----:..........   ",
+			"           ...:...:==--==========--:::...         ",
+			"               ..:-=---:-=====--::-::.            ",
+			"    .. ...:::...:-=-:=+==::::..----:.. .          ",
+			"    ...   ::-::::==::=+++========--:..            ",
+			"       ....::::-===---++++++++++-:--..            ",
+			"         .....::::-::::+*++++++-.:--:.            ",
+			"                .    .*+     .+= .==::.           ",
+		};
+
+		for (int i = 0; i < 18; i++) {
+			CombatPlayerUIString[i] = PlayerSpriteLines[i];
+		}
+	}
+
+	std::string EnemySpriteLines[20] = {
+		"           .::::.        #+                            ",
+		"                :#####%##%*+=   :+             *.      ",
+		"     =-          *###%%#%%#%#####+*.    =      #:      ",
+		"      =+  =      :--#%+#%=*#*###########:      #:      ",
+		"       -+. +: :  % #% -%  %: ###################:      ",
+		"     .+ :+- =+=+#*#%%#%%#%%%%#########*##====@@#****   ",
+		"      :+  +=.%+*%-%# #%#%%%%############%@@%+%-#=      ",
+		"       :+: +%::%=##.%%**%#%%%########%@@@#@@##*#=      ",
+		"      +++##%%#%%%%%%%%%%%%%%%%%%%%@@@@%@@%#%+#-=*      ",
+		"       +- *%-#%#%%%%%%%%%%%%@@@@@@@@@@@@@@#%.#= #      ",
+		"        +*%%%%%%%%%%#%%%%@@%%%@@%@@@%@@@%=@@+#=        ",
+		"     :=+#%%%%%%%%%%%%@@@@@@@@@@@@%@@@%:%@@@#=##        ",
+		"       -#***#%%%%%@@@@@@@@@@@@@@@@%#@@@@#-#@#.*%:   %@.",
+		"    #%%%%%#####*****%*%=%%##@@@@@@@@@@:+@%*%@@* @@@+   ",
+		"       *:#%%@@@@@@@@@@@@@#@@@%@@@@###@@+%@@@=#@@-      ",
+		"          -####%%@@@@@@@@@@@@@@@@@@@@@@@@= @@-         ",
+		"        =+=+#########%%%%@@@@@@@@@@@@@@ #@+            ",
+		"             +: =+===+.#@%#*#@%#%%%%%%%*##===          ",
+		"              +:     =++++=#%%%####***                 ",
+		"                          .=+=.      .::---:           ",
+	};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	std::string movedesc[4][2];
+
+	// setting moveset names
+	std::string PlayerMovesetName[4];
+	for (int i = 0; i < 4; i++) {
+		PlayerMovesetName[i] = MC.GetMoveSet().GetMove(i).MoveName;
+	}
+
+	// split names
+	for (int i = 0; i < 4; i++) {
+
+		// if length > 71 char
+		if (PlayerMovesetName[i].length()/*MC.moveset.GetMove(0).length()*/ >= 71) {
+			if (PlayerMovesetName[i][71] == ' ') {
+				// moves all element from index 71 forward, replacing the ' ' at index 71
+				for (int j = 71; j < PlayerMovesetName[i].length(); j++) {
+					PlayerMovesetName[i][j] = PlayerMovesetName[i][j + 1];
+				}
+				// adds an empty ' ' at the end to keep string length constant
+				PlayerMovesetName[i][PlayerMovesetName[i].length() - 1] = ' ';
+			}
+
+			for (int j = 0; j < 71; j++) {
+				movedesc[i][0] += PlayerMovesetName[i][j];
+			}
+
+			for (int j = 71; j < PlayerMovesetName[i].length(); j++) {
+				movedesc[i][1] += PlayerMovesetName[i][j];
+			}
+		}
+
+		// if length <= 71
+		else {
+			for (int j = 0; j < PlayerMovesetName[i].length(); j++) {
+				movedesc[i][0] += PlayerMovesetName[i][j];
+			}
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	std::string CombatUIString;
+
+	//
+	CombatUIString += "+------------------------------------------------------------------------------------------------------------+\n";
+	CombatUIString += "|````````````````````````````````````````````````````````````````````````````````````````````````````````````|\n";
+	CombatUIString += "|``````````````````````````````````````````````````````````````````~.______________________________________.~|\n";
+	CombatUIString += "|``````````````````````````````````````````````````````````````````:|                                      |:|\n";
+
+
+
+	// enemy name
+	CombatUIString += "|``````````````````````````````````````````````````````````````````:| ";
+	CombatUIString += target.GetEnemyClass();
+	// 36 spaces for enemy name
+	for (int i = 0; i < 36 - target.GetEnemyClass().length(); i++) {
+		CombatUIString += " ";
+	}
+	CombatUIString += " |:|\n";
+
+
+
+	//
+	CombatUIString += "|``````````````````````````````````````````````````````````````````:|                                      |:|\n";
+
+
+
+	// enemy hp
+	CombatUIString += "|``````````````````````````````````````````````````````````````````:| ";
+	CombatUIString += std::to_string(target.GetHP()) + "/" + std::to_string(target.GetMaxHP()) + " HP";
+	// 36 spaces for HP/MAXHP HP
+	for (int i = 0; i < 36 - std::to_string(target.GetHP()).length() - 1 - std::to_string(target.GetMaxHP()).length() - 3; i++) {
+		CombatUIString += " ";
+	}
+	CombatUIString += " |:|\n";
+
+
+
+	// enemy hp bar
+	CombatUIString += "|``````````````````````````````````````````````````````````````````:| |";
+	// 34 characters for hp bar
+	// calculate percentage of maxhp
+	int EnemyHPPercentBar = (static_cast<float>(target.GetHP()) / static_cast<float>(target.GetMaxHP())) * 34.f;
+
+	// fill bar sections if full to %
+	for (int i = 0; i < EnemyHPPercentBar; i++) {
+		CombatUIString += "%";
+	}
+
+	// fill bar section if its partially filled to +
+	if (EnemyHPPercentBar < (static_cast<float>(target.GetHP()) / static_cast<float>(target.GetMaxHP())) * 34.f) { // if theres a bar with partial hp
+		CombatUIString += "+";
+	}
+
+	// fill rest of bar with empty -
+	for (int i = 0; i < 34 - EnemyHPPercentBar - 1; i++) {
+		CombatUIString += "-";
+	}
+
+	//
+	CombatUIString += "| |:|\n";
+
+
+
+	//
+	CombatUIString += "|``````````````````````````````````````````````````````````````````:|                                      |:|\n";
+	CombatUIString += "|``````````````````````````````````````````````````````````````````~*======================================*~|\n";
+	CombatUIString += "|````````````````````````````````````````````````````````````````````````````````````````````````````````````|\n";
+	CombatUIString += "|````````````````````````````````````````````````````````````````````````````````````````````````````````````|\n";
+	CombatUIString += "|`                                                  `                                                       `|\n";
+	CombatUIString += "|`                                                  `                                                       `|\n";
+
+
+
+	// player and enemy sprites
+
+	for (int i = 0; i < 20; i++) {
+		CombatUIString += "|`";
+
+		// player
+		if (i >= 2) {
+			CombatUIString += CombatPlayerUIString[i - 2] + "`";
+		}
+
+		else {
+			CombatUIString += "                                                  `";
+		}
+
+		// enemy // and border
+		CombatUIString += EnemySpriteLines[i] + "`|\n";
+	}
+
+
+
+	//
+	CombatUIString += "|````````````````````````````````````````````````````````````````````````````````````````````````````````````|\n";
+	CombatUIString += "|`~.___________________.~````````````````````````````````````````````````````````````````````````````````````|\n";
+	CombatUIString += "|`:|                   |:````````````````````````````````````````````````````````````````````````````````````|\n";
+
+
+	// player class, lvl
+	CombatUIString += "|`:| ";
+	CombatUIString += MC.GetPlayerClass();
+
+	// 11 spaces for class
+	for (int i = 0; i < 11 - MC.GetPlayerClass().length(); i++) {
+		CombatUIString += " ";
+	}
+
+	CombatUIString += "Lvl ";
+	CombatUIString += std::to_string(MC.GetPlayerLvl());
+
+	// 2 spaces for lvl
+	for (int i = 0; i < 2 - std::to_string(MC.GetPlayerLvl()).length(); i++) {
+		CombatUIString += " ";
+	}
+
+	CombatUIString += " |:````````````````````````````````````````````````````````````````````````````````````|\n";
+
+
+
+	//
+	CombatUIString += "|`:|                   |:````````````````````````````````````````````````````````````````````````````````````|\n";
+
+
+	// player hp
+	CombatUIString += "|`:| ";
+	CombatUIString += std::to_string(MC.GetPlayerHP()) + "/" + std::to_string(MC.GetPlayerMaxHP()) + " HP";
+	// 17 spaces for hp/maxhp
+	for (int i = 0; i < 17 - std::to_string(MC.GetPlayerHP()).length() - 1 - std::to_string(MC.GetPlayerMaxHP()).length() - 3; i++) {
+		CombatUIString += " ";
+	}
+
+	CombatUIString += " |:````````````````````````````````````````````````````````````````````````````````````|\n";
+
+
+
+	// hp bar
+	CombatUIString += "|`:| |";
+	// calculate percentage based of 15 characters yaya
+	int PlayerHPPercentBar = (static_cast<float>(MC.GetPlayerHP()) / static_cast<float>(MC.GetPlayerMaxHP())) * 15.f;
+
+	// fill bar sections if full to %
+	for (int i = 0; i < PlayerHPPercentBar; i++) {
+		CombatUIString += "%";
+	}
+
+	// fill bar section if its partially filled to +
+	if (PlayerHPPercentBar < (static_cast<float>(MC.GetPlayerHP()) / static_cast<float>(MC.GetPlayerMaxHP())) * 15.f) { // if theres a bar with partial hp
+		CombatUIString += "+";
+	}
+	else {
+		CombatUIString += "-";
+	}
+
+	// fill rest of bar with empty -
+	for (int i = 0; i < 15 - PlayerHPPercentBar - 1; i++) {
+		CombatUIString += "-";
+	}
+
+	//
+	CombatUIString += "| |:````````````````````````````````````````````````````````````````````````````````````|\n";
+
+
+
+	//
+	CombatUIString += "|`:|                   |:````````````````````````````````````````````````````````````````````````````````````|\n";
+	CombatUIString += "|`~*===================*~*================================================================================*~`|\n";
+
+	if (scene == "Actions") {
+		// attack, enemy flavor text
+		CombatUIString += "|`:| Attack ";
+		if (tracker == 0) {
+			CombatUIString += "<--";
+		}
+		else {
+			CombatUIString += "   ";
+		}
+		CombatUIString += "        |:| Foe ";
+		CombatUIString += target.GetEnemyClass();
+		CombatUIString += " stands before you.                                   |:`|\n";
+
+
+
+		//
+
+		CombatUIString += "|`:|                   |:|                                                                                |:`|\n";
+		CombatUIString += "|`:| Defend ";
+		if (tracker == 1) {
+			CombatUIString += "<--";
+		}
+		else {
+			CombatUIString += "   ";
+		}
+		CombatUIString += "        |:|                                                                                |:`|\n";
+
+
+		CombatUIString += "|`:|                   |:|                                                                                |:`|\n";
+		CombatUIString += "|`:| Inventory ";
+		if (tracker == 2) {
+			CombatUIString += "<--";
+		}
+		else {
+			CombatUIString += "   ";
+		}
+		CombatUIString += "     |:|                                                                                |:`|\n";
+
+
+
+		CombatUIString += "|`:|                   |:|                                                                                |:`|\n";
+		CombatUIString += "|`:| Run ";
+		if (tracker == 3) {
+			CombatUIString += "<--";
+		}
+		else {
+			CombatUIString += "   ";
+		}
+		CombatUIString += "           |:|                                                                                |:`|\n";
+
+
+		CombatUIString += "|`:|                   |:|                                                                                |:`|\n";
+
+	}
+
+	else if (scene == "Moveset") { // if choosing moveset
+		// moveset 1, desc line 1
+		CombatUIString += "|`:|                   |:| 1) ";
+		CombatUIString += movedesc[0][0];
+		// 71 char for movedesc 1 line 1
+		for (int i = 0; i < 71 - movedesc[0][0].length(); i++) {
+			CombatUIString += " ";
+		}
+		CombatUIString += " ";
+
+		// selection arrow
+		if (tracker == 0) {
+			CombatUIString += "<--";
+		}
+		else {
+			CombatUIString += "   ";
+		}
+
+		//
+		CombatUIString += " |:`|\n";
+
+
+
+		// moveset type, desc line 2
+		CombatUIString += "|`:| Type: ";
+
+
+		CombatUIString += MC.GetMoveSet().GetMove(tracker).MoveType;
+		for (int i = 0; i < 11 - MC.GetMoveSet().GetMove(tracker).MoveType.length() ; i++) {
+			CombatUIString += " ";
+		}
+		CombatUIString += " |:|    ";
+
+		// 71 space for line 2
+		CombatUIString += movedesc[0][1];
+		for (int i = 0; i < 71 - movedesc[0][1].length(); i++) {
+			CombatUIString += " ";
+		}
+
+		//
+		CombatUIString += "     |:`|\n";
+
+
+
+		// moveset 2, desc line 1
+		CombatUIString += "|`:|                   |:| 2) ";
+		CombatUIString += movedesc[1][0];
+		// 71 char for movedesc 2 line 1
+		for (int i = 0; i < 71 - movedesc[1][0].length(); i++) {
+			CombatUIString += " ";
+		}
+		CombatUIString += " ";
+
+		// selection arrow
+		if (tracker == 1) {
+			CombatUIString += "<--";
+		}
+		else {
+			CombatUIString += "   ";
+		}
+
+		//
+		CombatUIString += " |:`|\n";
+
+
+
+		// moveset type, desc line 2
+		CombatUIString += "|`:| Strength: ";
+
+		CombatUIString += MC.GetMoveSet().GetMove(tracker).MoveStrength;
+		for (int i = 0; i < 7 - std::to_string(MC.GetMoveSet().GetMove(tracker).MoveStrength).length(); i++) {
+			CombatUIString += " ";
+		}
+		CombatUIString += " |:|    ";
+
+		// 71 space for line 2
+		CombatUIString += movedesc[1][1];
+		for (int i = 0; i < 71 - movedesc[1][1].length(); i++) {
+			CombatUIString += " ";
+		}
+
+		//
+		CombatUIString += "     |:`|\n";
+
+
+
+		// moveset 3, desc line 1
+		CombatUIString += "|`:|                   |:| 3) ";
+		CombatUIString += movedesc[2][0];
+		// 71 char for movedesc 2 line 1
+		for (int i = 0; i < 71 - movedesc[2][0].length(); i++) {
+			CombatUIString += " ";
+		}
+		CombatUIString += " ";
+
+		// selection arrow
+		if (tracker == 2) {
+			CombatUIString += "<--";
+		}
+		else {
+			CombatUIString += "   ";
+		}
+
+		//
+		CombatUIString += " |:`|\n";
+
+
+
+		// moveset hits, desc line 2
+		CombatUIString += "|`:| Hits: ";
+
+		CombatUIString += MC.GetMoveSet().GetMove(Combat::GetTracker()).Hits;
+		for (int i = 0; i < 11 - std::to_string(MC.GetMoveSet().GetMove(Combat::GetTracker()).Hits).length(); i++) {
+			CombatUIString += " ";
+		}
+		CombatUIString += " |:|    ";
+
+		// 71 space for line 2
+		CombatUIString += movedesc[2][1];
+		for (int i = 0; i < 71 - movedesc[2][1].length(); i++) {
+			CombatUIString += " ";
+		}
+
+		//
+		CombatUIString += "     |:`|\n";
+
+
+
+		// moveset 4, desc line 1
+		CombatUIString += "|`:|                   |:| 4) ";
+		CombatUIString += movedesc[3][0];
+		// 71 char for movedesc 4 line 1
+		for (int i = 0; i < 71 - movedesc[3][0].length(); i++) {
+			CombatUIString += " ";
+		}
+		CombatUIString += " ";
+
+		// selection arrow
+		if (tracker == 3) {
+			CombatUIString += "<--";
+		}
+		else {
+			CombatUIString += "   ";
+		}
+
+		//
+		CombatUIString += " |:`|\n";
+
+
+
+		// moveset 4, desc line 2
+		CombatUIString += "|`:|                   |:|    ";
+		CombatUIString += movedesc[3][1];
+		// 71 spaces for movedesc line 2
+		for (int i = 0; i < 71 - movedesc[3][1].length(); i++) {
+			CombatUIString += " ";
+		}
+		CombatUIString += "     |:`|\n";
+	}
+
+
+
+
+
+	//
+	CombatUIString += "|`~*===================*~*================================================================================*~`|\n";
+	CombatUIString += "|````````````````````````````````````````````````````````````````````````````````````````````````````````````|\n";
+	CombatUIString += "+============================================================================================================+\n";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	std::cout << CombatUIString;
+}

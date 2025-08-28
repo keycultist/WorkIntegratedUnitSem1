@@ -191,17 +191,23 @@ void DivineIntervention::applyEffect(God god, Entity& player, Entity& enemy) con
         break;
     }
     case God::PREYSEYE: {
-        int karmaChange = randomInt(1, 20);  //pick number to determine how much karma changes
-		if (randomBool(0.5f)) {    //Flip a coin. 50% chance to make karma positive or negative
-            karmaChange = -karmaChange;    ////If the coin landed on heads, make the karma number NEGATIVE
+        int karmaChange = randomInt(1, 20);  // Pick number to determine how much karma changes
+        if (randomBool(0.5f)) {              // Flip a coin. 50% chance to make karma positive or negative
+            karmaChange = -karmaChange;      // If coin landed on heads, make karma NEGATIVE
         }
-        float multiplierChange = randomFloat(0.1f, 0.3f);     // //Pick a random decimal number between 0.1 and 0.3
-        if (karmaChange < 0) {    //see if the karma is negative
-            multiplierChange = -multiplierChange;   //if karma is negative make the multiplier NEGATIVE too
+        float multiplierChange = randomFloat(0.1f, 0.3f);  // Pick random decimal number
+        if (karmaChange < 0) {               // If karma is negative
+            multiplierChange = -multiplierChange;  // Make multiplier negative too
         }
         std::cout << "The very fabric of morality bends around you!\n";
-        primaryTarget.applyKarmaEffect(karmaChange, 0, multiplierChange);  //Give the main target the full karma effect
-        secondaryTarget.applyKarmaEffect(karmaChange / 2, 0, multiplierChange / 2);   //Give secondary target half the karma effect
+        if (affectsPlayer) {
+            // If primary target is player, secondary (enemy) gets half effect
+            primaryTarget.applyKarmaEffect(karmaChange, 0, multiplierChange);
+        }
+        else {
+            // If primary target is enemy, player (who is secondary) gets the karma effect
+            secondaryTarget.applyKarmaEffect(-karmaChange, 0, multiplierChange);
+        }
         break;
     }
     case God::BOON: {

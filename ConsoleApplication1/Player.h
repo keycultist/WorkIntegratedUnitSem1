@@ -85,6 +85,7 @@ public:
 	void UpdateInventoryPlayerStats();
 	void UpdatePlayerStatsInventory();
 	void AddPlayerEquipmentStats();
+	//void applyKarmaEffect(int value, int PlayerKarma, float multiplierChange);
 
 	//virtual void move();
 
