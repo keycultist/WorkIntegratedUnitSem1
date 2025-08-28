@@ -987,7 +987,6 @@ bool Map::checkForCombat(Room* room, Player& MC) {
 
         // Check if this is the miniboss
         bool isMinibossFight = (enemyAtPlayerPos == minibossPtr);
-        std::string enemyClass = enemyAtPlayerPos->GetEnemyClass();
 
         bool wasMinibossClass = (enemyClass == "ColorCleaver" ||
             enemyClass == "DarkSilence" ||

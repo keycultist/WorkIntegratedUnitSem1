@@ -295,7 +295,7 @@ std::string Inventory::DrawInventoryUI() {
 	// 29 spaces for lvl, class, space, (xp/reqxp XP)
 	// space = 29 - lvl length - 1 space, classname length - xp length - required xp length - 6 (for "(/ XP)")
 	std::string PlayerLvl = std::to_string(InventoryPlayerLvl);
-	std::string RequiredEXP = std::to_string(18 * (InventoryPlayerLvl - 1) + 10);
+	std::string RequiredEXP = std::to_string(50 * (InventoryPlayerLvl - 1) + 10);
 	std::string PlayerEXP = std::to_string(InventoryPlayerEXP);
 
 	SpaceAmount = 29 - PlayerLvl.length() - 1 - InventoryPlayerClass.length() - PlayerEXP.length() - RequiredEXP.length() - 6;
@@ -452,7 +452,7 @@ std::string Inventory::DrawInventoryUI() {
 	// 22 spaces for floor
 	// space amount = 22 - 1 (for floor length, always single digit) - 1 (for "F")
 
-	InventoryUIString += "|```````:| Floor: F" + std::to_string(InventoryCurrentDifficulty);
+	InventoryUIString += "|```````:| Floor: F" + std::to_string(InventoryCurrentDifficulty + 1);
 	for (int i = 0; i < 20; i++) {
 		InventoryUIString += " ";
 	}
