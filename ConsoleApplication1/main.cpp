@@ -128,8 +128,8 @@ int main()
     Item items;
     Shop shop;
     MC.InitPlayer();
-    items.SetItemPlayerClass(MC.GetPlayerClass());
-    items.SetItemList();
+    MC.GetInventory().GetItem().SetItemPlayerClass(MC.GetPlayerClass());
+    MC.GetInventory().GetItem().SetItemList(); MC.GetInventory().GetItem().SetItemDescriptionList(); MC.GetInventory().GetItem().SetItemCostList(); MC.GetInventory().GetItem().SetItemTypeList();
     // init player's inventory
     Enemy* Enemies[10]{};
     for (int i = 0; i < 10; i++) {
@@ -143,10 +143,10 @@ int main()
 
     Map GMap;
     if (debugEnd) {
-        GMap.CreateNewFloor(6, MC);
+        GMap.CreateNewFloor(6, MC, shop);
     }
     else {
-        GMap.CreateNewFloor(0, MC);
+        GMap.CreateNewFloor(0, MC, shop);
     }
     //GMap.RequestFloorUpdate(MC);
 

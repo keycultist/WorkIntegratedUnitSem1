@@ -66,7 +66,7 @@ protected:
 
 public:
 
-    void CreateNewFloor(int Difficulty, Player& MC);
+    void CreateNewFloor(int Difficulty, Player& MC, Shop& shop);
 
     void RequestFloorUpdate(Player& MC);
 
