@@ -1411,26 +1411,6 @@ void Map::updateRoamingEnemyAI(Player& MC) {
     }
 }
 
-bool Map::isValidPathPosition(int x, int y) {
-    // Check bounds
-    if (x < 0 || x >= 128 || y < 0 || y >= 128) {
-        return false;
-    }
-
-    // Can't path through walls
-    if (FloorGrid[y][x] == '#') {
-        return false;
-    }
-
-    // Can't path through rooms (roaming enemies stay in corridors)
-    if (isPositionInAnyRoom(x, y)) {
-        return false;
-    }
-
-    // Allow pathing through empty space and corridors
-    return (FloorGrid[y][x] == ' ' || FloorGrid[y][x] == '.');
-}
-
 bool Map::isValidPathPositionForGoal(int x, int y, int goalX, int goalY) {
     // If this is the goal position (player location), always allow it
     if (x == goalX && y == goalY) {
