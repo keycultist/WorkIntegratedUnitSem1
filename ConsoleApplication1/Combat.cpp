@@ -508,6 +508,7 @@ void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
 {
 	int Critting = rand() % 100 + 1;
 	bool Critted = false;
+	int controltypechosen;
 	if (MC.GetMoveSet().GetMove(ChosenMove).MoveType == "Heal") {
 		MC.SetPlayerHP(MC.GetPlayerHP() + (MC.GetMoveSet().GetMove(ChosenMove).MoveStrength));
 		std::cout << "Healed " << MC.GetMoveSet().GetMove(ChosenMove).MoveStrength << " HP." << std::endl;
@@ -523,7 +524,10 @@ void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
 			MC.SetPlayerHP(MC.GetPlayerHP() - (MC.GetPlayerMaxHP() * 0.15));
 		}
 		//Dark Type, -15% maxHP
-
+		if (MC.GetMoveSet().GetMove(ChosenMove).MoveType == "Ritual") {
+			std::cout << "Consumed " << MC.GetMoveSet().GetMove(ChosenMove).MoveStrength << " Max HP" << std::endl;
+		}
+		// Ritual Type, -MaxHP once, ignores hits.
 		for (int i = 0; i < MC.GetMoveSet().GetMove(ChosenMove).Hits; i++) {
 			std::cout << std::endl;
 			if (MC.GetMoveSet().GetMove(ChosenMove).MoveType == "Summon") {
@@ -540,14 +544,13 @@ void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
 				if (MC.GetPlayerHP() > MC.GetPlayerMaxHP()) {
 					MC.SetPlayerHP(MC.GetPlayerMaxHP());
 				}
-				std::cout << "Consumed " << MC.GetMoveSet().GetMove(ChosenMove).MoveStrength << " Max HP" << std::endl;
 				target.SetEnemyHP(target.GetEnemyHP() - MC.GetMoveSet().GetMove(ChosenMove).MoveStrength);
-				std::cout << "Dealt: " << (MC.GetPlayerPower()) << " damage." << std::endl;
+				std::cout << "Dealt: " << (MC.GetMoveSet().GetMove(ChosenMove).MoveStrength) << " damage." << std::endl;
 			}
 			//Ritual Type, consumes MaxHP to use
-			if (MC.GetMoveSet().GetMove(ChosenMove).MoveType == "Control") {
+			else if (MC.GetMoveSet().GetMove(ChosenMove).MoveType == "Control") {
 				std::cout << MC.GetPlayerClass() << " used " << MC.GetMoveSet().GetMove(ChosenMove).MoveName << std::endl;
-				int controltypechosen = rand() % 4;
+				controltypechosen = rand() % 4;
 				std::cout << MC.GetPlayerClass() << " controlled the enemy into using " << target.GetMoveSet().GetMove(controltypechosen).MoveName << std::endl;
 				//Can possibly add enemy move type differenciation
 				for (int i = 0; i < target.GetMoveSet().GetMove(controltypechosen).Hits; i++) {
@@ -595,6 +598,7 @@ void Combat::PlayerAttack(Player& MC, Enemy& target, int ChosenMove)
 			}
 		}
 	}
+	PlaySoundOPA(MC, ChosenMove);
 }
 
 void Combat::EnemyAttack(Player& MC, Enemy& target, int ChosenMove, bool Defend)
@@ -680,6 +684,26 @@ void Combat::EnemyAttack(Player& MC, Enemy& target, int ChosenMove, bool Defend)
 		else if (target.GetMoveSet().GetMove(ChosenMove).MoveType == "Buff") {
 			std::cout << target.GetEnemyClass() << " gained " << target.GetMoveSet().GetMove(ChosenMove).MoveStrength << " HP." << std::endl;
 		}
+	}
+}
+
+void Combat::PlaySoundOPA(Player& MC, int ChosenMove)
+{
+	int SC = rand() % 2;
+	if (MC.GetMoveSet().GetMove(ChosenMove).MoveType == "Physical" || MC.GetMoveSet().GetMove(ChosenMove).MoveType == "Dark") {
+		if (SC == 0)
+			Sound::PlaySoundEffect("SwordSound");
+		else
+			Sound::PlaySoundEffect("SwordSound2");
+	}
+	else if (MC.GetMoveSet().GetMove(ChosenMove).MoveType == "Magical" || MC.GetMoveSet().GetMove(ChosenMove).MoveType == "Heal" || MC.GetMoveSet().GetMove(ChosenMove).MoveType == "Control") {
+		if (SC == 0)
+			Sound::PlaySoundEffect("MagicSound");
+		else
+			Sound::PlaySoundEffect("MagicSound2");
+	}
+	else if (MC.GetMoveSet().GetMove(ChosenMove).MoveType == "Ritual" || MC.GetMoveSet().GetMove(ChosenMove).MoveType == "Summon") {
+		Sound::PlaySoundEffect("SummonSound");
 	}
 }
 
