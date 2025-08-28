@@ -142,7 +142,7 @@ public:
 
     std::vector<Enemy*> getEnemiesInRoom(Room* room);
     bool isRoomEnemiesCleared(Room* room);
-    bool checkForCombat(Room* room, Player& MC);
+    bool checkForCombat(Room* room, Player& MC, Shop& shop);
     Room* getMinibossRoom() { return minibossRoom; }
     Room* getTrueBossRoom() { return trueBossRoom; }
     bool hasMiniboss() { return minibossGenerated; }
@@ -179,4 +179,6 @@ public:
     Enemy* getTrueboss();
     bool checkTruebossKilled();
     void resetTruebossStatus();
+
+    void clearAllRoamingEnemies();
 };

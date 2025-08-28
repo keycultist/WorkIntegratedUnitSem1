@@ -19,7 +19,7 @@ private:
 
 public:
     Events();
-    void EventTriggered(Player& MC, Enemy& target);
+    void EventTriggered(Player& MC);
     void handleSuspiciousFrogEvent(Player& MC);
     void handleFreePrisonerEvent(Player& MC);
     void handleMutatedRatEvent(Player& MC);
@@ -27,7 +27,7 @@ public:
     void handleSpectralEntityEvent(Player& MC);
     void handleHunchedBackGoblinEvent(Player& MC);
     void handleMageKarmaTestEvent(Player& MC);
-    void handleGoblinJesterEvent(Player& MC, Enemy& target);
+    void handleGoblinJesterEvent(Player& MC);
     void handleSuspiciousFrog2Event(Player& MC);
 	void handleBrokenPuppetEvent(Player& MC);
     void handleLockpickingEvent(Player& MC);

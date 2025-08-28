@@ -1,5 +1,4 @@
 #include "Events.h"
-#include "Combat.h"
 #include <iostream>
 #include <random>
 #include <chrono>
@@ -42,12 +41,12 @@ void Events::initializeEvents() {
 
     // Initialize Medium Events
     mediumEvents = {
-        "A skeletal warrior emerges from the darkness and ambushes you! (Trigger combat event)",
+        "A skeletal warrior emerges from the darkness and ambushes you!",
         "A spectral entity presents you with a choice, to burn the straw doll in its hands and be rewarded with a rare weapon but suffer a karma penalty.",
         "A hunchedback goblin wants to test your knowledge with a series of riddles! Answer all of them right to gain gold!\n- What has keys but cant open locks? A piano\n- What goes up but never comes down? Age\n- What can you catch but not throw? A cold",
         "A mage wants to test your luck on a dice throw! Roll 5 or 6 and be rewarded with a health potion! Any other number and gain nothing! (luck is determined by current karma level)",
         "You could have sworn that the statue moved when you turned away..lets ignore it..for now.",
-        "In an attempt to raise morale by singing your favorite childhood song, you accidentally awakened a sleeping orc.. Its anger is immeasurable! (Trigger combat event)",
+        "In an attempt to raise morale by singing your favorite childhood song, you accidentally awakened a sleeping orc.. Its anger is immeasurable!",
         "A goblin dressed in jester attire steals your gold! Fight for your belongings back or admit defeat and lose your gold (Trigger combat event or go on as per normal)",
         "You entered a room where the familiarity of darkness envelops the room but scribbles on the wall catches your attention. The mural on the wall tells tales of an ancient-sealed entity wreaking havoc who can only be stopped by a person possessing unwavering courage."
         "The suspicious frog, seemingly appearing out of nowhere asks you a question again, “You are doomed to die by an ancient curse. Luckily, there lies a chest with a potion which would save you. However, guarding the chest is a child possessing the same fate as you. Do you take the cure for yourself or let the child take the cure.”"
@@ -55,11 +54,10 @@ void Events::initializeEvents() {
         "You discover an ornate chest with an intricate lock mechanism. The craftsmanship suggests valuable contents within. (Trigger lockpicking minigame)",
         "You discover an ancient stone tablet etched with glowing runes. As you trace the symbols with your fingers, they flash briefly before fading .Suddenly, the tablet challenges you to replicate the sequence to unlock a hidden reward. Will your memory serve you well? (Trigger Memory Test minigame)"
         "You find a room filled with mirrors, each showing a different version of yourself making different life choices. One mirror cracks as you approach.",
-
     };
 }
 
-void Events::EventTriggered(Player& MC, Enemy& target) {
+void Events::EventTriggered(Player& MC) {
     int eventTypeChance = std::rand() % 100 + 1;
 
     if (eventTypeChance <= 60) {
@@ -99,8 +97,8 @@ void Events::EventTriggered(Player& MC, Enemy& target) {
         int eventIndex = std::rand() % mediumEvents.size();
 
         if (eventIndex == 20) { 
-			std::cout << "\"A skeletal warrior emerges from the darkness and ambushes you!(Trigger combat event)\"" << std::endl;
-            Combat::InitCombat(MC, target);
+			std::cout << "\"A skeletal warrior emerges from the darkness and ambushes you! You lose 5 HP!\"" << std::endl;
+            MC.SetPlayerHP(MC.GetPlayerHP() - 5);
         }
         if (eventIndex == 11) {
             handleSpectralEntityEvent(MC);
@@ -112,11 +110,11 @@ void Events::EventTriggered(Player& MC, Enemy& target) {
             handleMageKarmaTestEvent(MC);
         }
         if (eventIndex == 25) { 
-            std::cout << "\"In an attempt to raise morale by singing your favorite childhood song, you accidentally awakened a sleeping orc..Its anger is immeasurable!(Trigger combat event)\"" << std::endl;
-            Combat::InitCombat(MC, target);
+            std::cout << "\"In an attempt to raise morale by singing your favorite childhood song, you accidentally awakened a sleeping orc..Its anger is immeasurable! You lose 8 HP!\"" << std::endl;
+            MC.SetPlayerHP(MC.GetPlayerHP() - 8);
         }
         if (eventIndex == 16) { 
-            handleGoblinJesterEvent(MC, target);
+            handleGoblinJesterEvent(MC);
         }
         if (eventIndex == 18) { 
             handleSuspiciousFrog2Event(MC);
@@ -269,9 +267,9 @@ void Events::handleTalkingChestEvent(Player& MC) {
 }
 
 void Events::handleSpectralEntityEvent(Player& MC) {
-    std::cout << "A spectral entity presents you with a choice, to burn the straw doll in its hands and be rewarded with a rare weapon but suffer a karma penalty." << std::endl;
+    std::cout << "A spectral entity presents you with a choice, to burn the straw doll in its hands and be rewarded with gold but suffer a karma penalty." << std::endl;
     std::cout << "\nWhat do you choose?" << std::endl;
-    std::cout << "1. Burn the doll and lose karma but gain a weapon" << std::endl;
+    std::cout << "1. Burn the doll and lose karma but earn gold" << std::endl;
     std::cout << "2. Nothing, i dont want to lose karma" << std::endl;
     std::cout << "Enter your choice (1 or 2): ";
 
@@ -285,11 +283,13 @@ void Events::handleSpectralEntityEvent(Player& MC) {
 
     if (choice == 1) {
         // Player chooses to burn the straw doll
-        MC.SetPlayerKarma(MC.GetPlayerKarma() - 10);  //Lose karma but gain weapon
-        //weapon code here
-        std::cout << "You chose to burn the strawdoll, you felt a slight chill run down your spine but a new weapon in your hands" << std::endl;
+        MC.SetPlayerKarma(MC.GetPlayerKarma() - 10);  //Lose karma but gain gold
+        
+        std::cout << "You chose to burn the strawdoll, you felt a slight chill run down your spine but your gold bag getting heavier" << std::endl;
         std::cout << "The entity hummed lowly. \"Lets see if your sacrifice will prove useful down the road..\"" << std::endl;
         std::cout << "Karma decreased by 10! Current karma: " << MC.GetPlayerKarma() << std::endl;
+        MC.SetPlayerCurrency(MC.GetPlayerCurrency() + 50);
+        std::cout << "You have... " << MC.GetPlayerCurrency() << " gold coins.";
     }
     else {
         // Player chooses NOT to burn the strawdoll
@@ -326,6 +326,7 @@ void Events::handleHunchedBackGoblinEvent(Player& MC) {
             if (answer == "piano" || answer == "a piano") {
                 std::cout << "The goblin snarls, disappointed. \"Grrr... correct.\"\n";
                 MC.SetPlayerCurrency(MC.GetPlayerCurrency() + 10);
+
             }
             else {
                 std::cout << "The goblin cackles. \"Wrong! The answer was 'piano'.\"\n";
@@ -368,7 +369,7 @@ void Events::handleHunchedBackGoblinEvent(Player& MC) {
 }
 
 void Events::handleMageKarmaTestEvent(Player& MC) {
-    std::cout << "A mage wants to test your karma, have a high enough karma and be rewarded with a health potion" << std::endl;
+    std::cout << "A mage wants to test your karma, have a high enough karma and be rewarded" << std::endl;
     std::cout << "\nWhat do you choose?" << std::endl;
     std::cout << "1. Lets go for it" << std::endl;
     std::cout << "2. Maybe next time" << std::endl;
@@ -387,7 +388,9 @@ void Events::handleMageKarmaTestEvent(Player& MC) {
         std::cout << "You chose to test your karma" << std::endl;
         if (MC.GetPlayerKarma() >= 70) {
             std::cout << "\"Ahh..a karma worthy of respect, may your path stay true..the dungeon always watches\"" << std::endl;
-            //Player give healath potion? Gold? code
+            MC.SetPlayerCurrency(MC.GetPlayerCurrency() + 10);
+            std::cout << "Your reward... " << MC.GetPlayerCurrency() << " gold coins.";
+            
         }
         else {
             std::cout << "\"This place has many monsters..but you..you wear your evil like armor.\"" << std::endl;
@@ -403,7 +406,7 @@ void Events::handleMageKarmaTestEvent(Player& MC) {
     std::cout << "After your interaction with the mage, you cant help but think that a lucky rock could help you in your future endeavours" << std::endl;
 }
 
-void Events::handleGoblinJesterEvent(Player& MC, Enemy& target) {
+void Events::handleGoblinJesterEvent(Player& MC) {
     std::cout << "A goblin dressed in jester attire steals your gold! Fight for your precious gold back or admit defeat and lose it!" << std::endl;
     std::cout << "\nWhat do you choose?" << std::endl;
     std::cout << "1. Fight the goblin" << std::endl;
@@ -421,13 +424,14 @@ void Events::handleGoblinJesterEvent(Player& MC, Enemy& target) {
     if (choice == 1) {
         // Player chooses to fight the goblin
         std::cout << "You chose to fight the goblin" << std::endl;
-        Combat::InitCombat(MC, target);
-
+        std::cout << "You easily slayed the goblin and regained your gold" << std::endl;
     }
     else {
         // Player chooses NOT to fight the goblin
         std::cout << "You chose NOT to fight the goblin" << std::endl;
         std::cout << "The goblin quickly darts around the room gleefully before making his exit" << std::endl;
+        MC.SetPlayerCurrency(MC.GetPlayerCurrency() - 10);
+        std::cout << "You have... " << MC.GetPlayerCurrency() << " gold coins.";
     }
 
     std::cout << "After that close encounter with the goblin, you cant help but remember why you always hated goblins" << std::endl;
@@ -539,6 +543,7 @@ void Events::handleLockpickingEvent(Player& MC) {
                 std::cout << "Perfect! The lock clicks open!" << std::endl;
                 MC.SetPlayerCurrency(MC.GetPlayerCurrency() + 25);
                 std::cout << "You found 25 gold pieces!" << std::endl;
+                std::cout << "You have... " << MC.GetPlayerCurrency() << " gold coins.";
             }
             else {
                 attempts--;

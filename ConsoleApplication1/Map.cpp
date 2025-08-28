@@ -35,6 +35,7 @@ void Map::CreateNewFloor(int Difficulty, Player& MC, Shop& shop) {
     // Clear previous room data
     rooms.clear();
     roomLookup.clear();
+	clearAllRoamingEnemies();
     currentRoom = nullptr;
     nextRoomId = 1;
     minibossGenerated = false;
@@ -132,9 +133,9 @@ void Map::CreateNewFloor(int Difficulty, Player& MC, Shop& shop) {
 
 void Map::renderEnemiesOnBoard(char** Board, int sizeX, int sizeY) {
     // Render room enemies
-    for (const auto& room : rooms) {
-        for (const auto& enemy : room.enemies) {
-            if (enemy.GetEnemyHP() > 0) {
+    for (auto& room : rooms) {
+        for (auto& enemy : room.enemies) {
+            if (enemy.GetEnemyHP() > 0 && enemy.GetEnemyMaxHP() > 0) {
                 int enemyX = enemy.GetEnemyPosX();
                 int enemyY = enemy.GetEnemyPosY();
 
@@ -146,20 +147,18 @@ void Map::renderEnemiesOnBoard(char** Board, int sizeX, int sizeY) {
         }
     }
 
-    // Render roaming enemies
-    for (const auto& enemy : roamingEnemies) {
-        if (enemy.GetEnemyHP() > 0) {
+    for (auto& enemy : roamingEnemies) {
+        if (enemy.GetEnemyHP() > 0 && enemy.GetEnemyMaxHP() > 0) {
             int enemyX = enemy.GetEnemyPosX();
             int enemyY = enemy.GetEnemyPosY();
 
             if (enemyX >= 0 && enemyX < sizeX && enemyY >= 0 && enemyY < sizeY) {
-                char enemyChar = 'R';  // 'R' for roaming enemies
+                char enemyChar = getEnemyDisplayChar(enemy);
                 Board[enemyY][enemyX] = enemyChar;
             }
         }
     }
 }
-
 
 
 
@@ -913,13 +912,20 @@ void Map::setEnemyEquipment(Enemy& enemy, const std::string& enemyClass, int dif
 }
 
 char Map::getEnemyDisplayChar(const Enemy& enemy) {
+    // Don't display dead enemies
+    if (enemy.GetEnemyHP() <= 0) {
+        return ' '; // Return space instead of enemy char
+    }
+
     std::string enemyClass = enemy.GetEnemyClass();
 
     // Boss characters
-    if (enemyClass == "OneWingedAngel" || enemyClass == "JovialChaos" || enemyClass == "Bob" || enemyClass == "Susanoo" || enemyClass == "DevilGene") {
+    if (enemyClass == "OneWingedAngel" || enemyClass == "JovialChaos" ||
+        enemyClass == "Bob" || enemyClass == "Susanoo" || enemyClass == "DevilGene") {
         return '?';
     }
-    else if (enemyClass == "ColorCleaver" || enemyClass == "DarkSilence" || enemyClass == "ManiKatti" || enemyClass == "AzureResonance") {
+    else if (enemyClass == "ColorCleaver" || enemyClass == "DarkSilence" ||
+        enemyClass == "ManiKatti" || enemyClass == "AzureResonance") {
         return 'M';
     }
     else {
@@ -964,18 +970,24 @@ void Map::removeDefeatedEnemies() {
 Enemy* Map::getEnemyAtPosition(int x, int y) {
     for (auto& room : rooms) {
         for (auto& enemy : room.enemies) {
-            if (enemy.GetEnemyHP() > 0 &&
-                enemy.GetEnemyPosX() == x &&
-                enemy.GetEnemyPosY() == y) {
+            if (enemy.GetEnemyHP() > 0 && enemy.GetEnemyMaxHP() > 0 &&
+                enemy.GetEnemyPosX() == x && enemy.GetEnemyPosY() == y) {
                 return &enemy;
             }
         }
     }
 
-    return getRoamingEnemyAtPosition(x, y);
+    for (auto& enemy : roamingEnemies) {
+        if (enemy.GetEnemyHP() > 0 && enemy.GetEnemyMaxHP() > 0 &&
+            enemy.GetEnemyPosX() == x && enemy.GetEnemyPosY() == y) {
+            return &enemy;
+        }
+    }
+
+    return nullptr;
 }
 
-bool Map::checkForCombat(Room* room, Player& MC) {
+bool Map::checkForCombat(Room* room, Player& MC, Shop& shop) {
     if (!room || room->enemiesCleared) {
         return false;
     }
@@ -987,6 +999,11 @@ bool Map::checkForCombat(Room* room, Player& MC) {
 
         // Check if this is the miniboss
         bool isMinibossFight = (enemyAtPlayerPos == minibossPtr);
+
+        bool wasMinibossClass = (enemyClass == "ColorCleaver" ||
+            enemyClass == "DarkSilence" ||
+            enemyClass == "ManiKatti" ||
+            enemyClass == "AzureResonance");
 
         if (enemyClass == "OneWingedAngel" || enemyClass == "JovialChaos" || enemyClass == "Bob" || enemyClass == "Susanoo" || enemyClass == "DevilGene") {
             std::cout << "\n!!! TRUE BOSS ENCOUNTER !!!" << std::endl;
@@ -1012,10 +1029,22 @@ bool Map::checkForCombat(Room* room, Player& MC) {
         Combat combat;
         combat.InitCombat(MC, *enemyAtPlayerPos);
 
+        // IMMEDIATE cleanup after combat - don't wait
+        removeDefeatedEnemies();
+        removeDefeatedRoamingEnemies();
+
+        // Check room status
+        isRoomEnemiesCleared(room);
+
         // Check if miniboss was killed
         if (isMinibossFight && checkMinibossKilled()) {
             // Miniboss was killed - trigger special events here
             // For example, force progression to next floor, unlock special items, etc.
+            MC.SetCurrentDifficulty(MC.GetCurrentDifficulty() + 1);
+            MC.SetPlayerPos(0, 0);
+            CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
+            renderMapWithFOV(MC, 50, 25);
+            system("cls");
         }
 
         if (enemyAtPlayerPos->GetEnemyHP() <= 0) {
@@ -1023,6 +1052,15 @@ bool Map::checkForCombat(Room* room, Player& MC) {
         }
 
         isRoomEnemiesCleared(room);
+
+        if ((isMinibossFight || wasMinibossClass) && enemyAtPlayerPos->GetEnemyHP() <= 0) {
+            if (minibossGenerated && !minibossKilled) {
+                minibossKilled = true;
+                std::cout << "\n!!! MINIBOSS DEFEATED !!!" << std::endl;
+                std::cout << "The guardian has fallen! You feel the Abyss shift around you..." << std::endl;
+                return true;
+            }
+        }
 
         return true;
     }
@@ -1147,9 +1185,9 @@ bool Map::checkForRoamingCombat(Player& MC) {
         Combat combat;
         combat.InitCombat(MC, *roamingEnemy);
 
-        if (roamingEnemy->GetEnemyHP() <= 0) {
-            removeDefeatedRoamingEnemies();
-        }
+        // IMMEDIATE cleanup
+        removeDefeatedRoamingEnemies();
+        removeDefeatedEnemies();
 
         return true;
     }
@@ -1449,4 +1487,9 @@ void Map::resetTruebossStatus() {
     truebossKilled = false;
     trueBossRoom = nullptr;
     truebossPtr = nullptr;
+}
+
+void Map::clearAllRoamingEnemies() {
+    roamingEnemies.clear();
+    std::cout << "All roaming enemies cleared from floor." << std::endl;
 }

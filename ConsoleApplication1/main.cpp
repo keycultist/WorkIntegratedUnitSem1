@@ -29,7 +29,7 @@ static void CheckEnemyPlayerCollision(Player& MC, Enemy& target)
     // Check if player touches enemy (collision)
     if (EnemyX == MC.GetPlayerPosX() && EnemyY == MC.GetPlayerPosY()) {
         // Enter combat with this enemy
-        Combat::InitCombat(MC, target);        
+        Combat::InitCombat(MC, target);
     }
 }
 
@@ -61,17 +61,17 @@ void PlayerInput(Player& MC) {
 
 
         switch (key) {
-        case 'w': 
-            MC.PUpMove(); 
+        case 'w':
+            MC.PUpMove();
             break;
-        case 's': 
-            MC.PDownMove(); 
+        case 's':
+            MC.PDownMove();
             break;
-        case 'a': 
-            MC.PLeftMove(); 
+        case 'a':
+            MC.PLeftMove();
             break;
-        case 'd': 
-            MC.PRightMove(); 
+        case 'd':
+            MC.PRightMove();
             break;
         case 'i':
         case 'e':
@@ -209,14 +209,14 @@ int main()
         // 1. Handle input if any
         PlayerInput(MC);
 
-		// 2. Handle roaming enemies
+        // 2. Handle roaming enemies
         if (!InsideRoom) {
             if (GMap.checkForRoamingCombat(MC)) {
                 // Combat happened, continue
             }
         }
 
-		// 3. Update roaming enemies
+        // 3. Update roaming enemies
         GMap.updateRoamingEnemyAI(MC);
 
         // 4. Update game state
@@ -231,24 +231,25 @@ int main()
                 Clearcheck = true;
             }
             GMap.switchToRoomView(MC.GetPlayerPosX(), MC.GetPlayerPosY(), MC, shop, FinishShopping);
-        
+
             Room* currentRoom = GMap.detectPlayerRoom(MC.GetPlayerPosX(), MC.GetPlayerPosY());
 
-            if (GMap.checkForCombat(currentRoom, MC)) {
-                //if (GMap.checkMinibossKilled()) {
-                //    //MC.SetCurrentDifficulty(MC.GetCurrentDifficulty() + 1);
-                //    //GMap.CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
-                //    MC.SetCurrentDifficulty(MC.GetCurrentDifficulty() + 1);
-                //    MC.SetPlayerPos(0, 0);
-                //    GMap.CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
-                //    GMap.renderMapWithFOV(MC, 50, 25);
-                //    Clearcheck = false;
-                //    FinishShopping = false;
-                //}
-
+            if (GMap.checkForCombat(currentRoom, MC, shop)) {
                 if (GMap.checkTruebossKilled()) {
                     RUNNINGHORSE = false;
-				}
+                }
+
+                if (GMap.checkForCombat(currentRoom, MC, shop)) {
+                    if (GMap.checkMinibossKilled()) {
+                        // Force progression to next floor
+                        std::cout << "The Abyss forces you deeper..." << std::endl;
+                        int chP = _getch();
+                        system("cls");
+
+                        MC.SetCurrentDifficulty(MC.GetCurrentDifficulty() + 1);
+                        GMap.CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
+                    }
+                }
             }
 
 
@@ -263,12 +264,15 @@ int main()
                 GMap.renderMapWithFOV(MC, 50, 25);
                 Clearcheck = false;
                 FinishShopping = false;
+                system("cls");
             }
 
             GMap.renderMapWithFOV(MC, 50, 25);
             Clearcheck = false;
             FinishShopping = false;
         }
+
+
 
         // 6. Wait until next frame (~16ms for ~60 FPS)
         auto endTime = std::chrono::high_resolution_clock::now();
@@ -279,11 +283,13 @@ int main()
     }
 
 
+
+
     //When init combat
     //if (Collide) {
         //Combat::InitCombat(MC, CollidedEnemy);
     //}
-            
+
     //...
 
     //Print map again
