@@ -218,6 +218,13 @@ int main()
             }
         }
 
+        if (InsideRoom) {
+            Room* currentRoom = GMap.detectPlayerRoom(MC.GetPlayerPosX(), MC.GetPlayerPosY());
+            if (currentRoom && GMap.checkForCombat(currentRoom, MC, shop)) {
+                // Combat happened, continue
+			}
+        }
+
         // 3. Update roaming enemies
         GMap.updateRoamingEnemyAI(MC);
 
