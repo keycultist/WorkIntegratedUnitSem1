@@ -1187,6 +1187,7 @@ std::vector<std::pair<int, int>> Map::findPathAStar(int startX, int startY, int 
 
     std::vector<std::unique_ptr<AStarNode>> nodeStorage;
 
+
     std::vector<std::vector<AStarNode*>> nodeGrid(128, std::vector<AStarNode*>(128, nullptr));
 
     auto startNode = std::make_unique<AStarNode>(startX, startY);
@@ -1200,7 +1201,7 @@ std::vector<std::pair<int, int>> Map::findPathAStar(int startX, int startY, int 
     openSet.push(*startPtr);
 
     int nodesEvaluated = 0;
-    const int MAX_NODES = 200;
+    const int MAX_NODES = 200; 
 
     while (!openSet.empty() && nodesEvaluated < MAX_NODES) {
         AStarNode current = openSet.top();
@@ -1230,7 +1231,7 @@ std::vector<std::pair<int, int>> Map::findPathAStar(int startX, int startY, int 
             int newX = current.x + directions[i][0];
             int newY = current.y + directions[i][1];
 
-            if (!isValidPathPosition(newX, newY) || closedSet[newY][newX]) {
+            if (!isValidPathPositionForGoal(newX, newY, goalX, goalY) || closedSet[newY][newX]) {
                 continue;
             }
 
