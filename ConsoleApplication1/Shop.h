@@ -1,5 +1,7 @@
 #pragma once
 #include <string>
+#include "Player.h"
+#include "Item.h"
 #include "Inventory.h"
 
 class Shop {
@@ -47,7 +49,7 @@ public:
 	void SetShopItemDescriptionListIndex(std::string descriptions, int index);
 	void SetShopItemCostListIndex(int costs, int index);
 	void SetShopItemTypeListIndex(std::string types, int index);
-	void SetShopItemSlot();
+	void SetShopItemSlot(Player& MC, Item& items);
 	void SetShopPlayerClass(const std::string& c);
 	void SetShopFloor(int floor);
 	void SetPlayerIsShopping(bool a);
@@ -73,7 +75,7 @@ public:
 	std::string GetConsumablesListIndex(int index);
 
 	// methods
-	std::string DrawShopUI();
+	std::string DrawShopUI(Player& MC, Item& items, Inventory& inv);
 	int PromptPlayerShopInteraction();
 	void EquipBoughtWeapon(int slot);
 	void EquipBoughtArmor(int slot);

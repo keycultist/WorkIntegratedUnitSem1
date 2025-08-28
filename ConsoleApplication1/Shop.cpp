@@ -37,7 +37,7 @@ Shop::Shop() {
 
 
 
-void Shop::SetShopItemSlot() {
+void Shop::SetShopItemSlot(Player& MC, Item& items) {
 	for (int i = 0; i < 3; i++) {
 		int rng = rand() % 1000; // 0.1% each number
 
@@ -60,7 +60,7 @@ void Shop::SetShopItemSlot() {
 
 
 
-		switch (ShopFloor) {
+		switch (MC.GetCurrentDifficulty() + 1) {
 		case 1: // floor 1 [81.9% common / 15% uncommon / 3% rare / 0.1% secret]
 
 			// common
@@ -251,10 +251,10 @@ void Shop::SetShopItemSlot() {
 
 		}
 
-		ShopSlotItemName[i] = ShopItemList[ShopSlotIndex];
-		ShopSlotItemDescription[i] = ShopItemDescriptionList[ShopSlotIndex];
-		ShopSlotItemCost[i] = ShopItemCostList[ShopSlotIndex];
-		ShopSlotItemType[i] = ShopItemTypeList[ShopSlotIndex];
+		ShopSlotItemName[i] = items.GetItemListIndex(ShopSlotIndex);
+		ShopSlotItemDescription[i] = items.GetItemDescriptionListIndex(ShopSlotIndex);
+		ShopSlotItemCost[i] = items.GetItemCostListIndex(ShopSlotIndex);
+		ShopSlotItemType[i] = items.GetItemTypeListIndex(ShopSlotIndex);
 		ItemIsInStock[i] = true;
 	}
 }
@@ -515,7 +515,7 @@ void Shop::SplitDescriptionString(std::string description) {
 
 
 
-std::string Shop::DrawShopUI() {
+std::string Shop::DrawShopUI(Player& MC, Item& items, Inventory& inv) {
 	std::ostringstream ShopUIString;
 
 	ShopUIString.str("");
@@ -563,7 +563,7 @@ std::string Shop::DrawShopUI() {
 		}
 
 		if (ShopSlotItemType[0] == "Weapon") {
-			if (ShopPlayerClass == "Warrior" || ShopPlayerClass == "Hunter" || ShopPlayerClass == "Assassin" || ShopPlayerClass == "Berserker") {
+			if (MC.GetPlayerClass() == "Warrior" || MC.GetPlayerClass() == "Hunter" || MC.GetPlayerClass() == "Assassin" || MC.GetPlayerClass() == "Berserker") {
 				descline[0] = "A fine weapon choice. May it fell great foes under your wield.";
 			}
 			else {
@@ -672,7 +672,7 @@ std::string Shop::DrawShopUI() {
 		}
 
 		if (ShopSlotItemType[1] == "Weapon") {
-			if (ShopPlayerClass == "Warrior" || ShopPlayerClass == "Hunter" || ShopPlayerClass == "Assassin" || ShopPlayerClass == "Berserker") {
+			if (MC.GetPlayerClass() == "Warrior" || MC.GetPlayerClass() == "Hunter" || MC.GetPlayerClass() == "Assassin" || MC.GetPlayerClass() == "Berserker") {
 				descline[0] = "A fine weapon choice. May it fell great foes under your wield.";
 			}
 			else {
@@ -787,7 +787,7 @@ std::string Shop::DrawShopUI() {
 		}
 
 		if (ShopSlotItemType[2] == "Weapon") {
-			if (ShopPlayerClass == "Warrior" || ShopPlayerClass == "Hunter" || ShopPlayerClass == "Assassin" || ShopPlayerClass == "Berserker") {
+			if (MC.GetPlayerClass() == "Warrior" || MC.GetPlayerClass() == "Hunter" || MC.GetPlayerClass() == "Assassin" || MC.GetPlayerClass() == "Berserker") {
 				descline[0] = "A fine weapon choice. May it fell great foes under your wield.";
 			}
 			else {
