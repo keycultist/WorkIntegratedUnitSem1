@@ -525,10 +525,6 @@ void Map::renderMapWithFOV(Player& MC, int viewWidth, int viewHeight) {
     frameBuffer += '+';
     for (int x = 0; x < viewWidth; ++x) frameBuffer += '-';
     frameBuffer += "+\n";
-    frameBuffer += "Current Position: ";
-    frameBuffer += std::to_string(MC.GetPlayerPosX());
-    frameBuffer += ',';
-    frameBuffer += std::to_string(MC.GetPlayerPosY());
 
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     COORD topLeft = { 0,0 };

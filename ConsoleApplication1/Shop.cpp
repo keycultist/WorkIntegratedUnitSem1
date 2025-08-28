@@ -504,7 +504,8 @@ std::string Shop::DrawShopUI(Player& MC, Item& items, Inventory& inv) {
 
 		if (ShopSlotItemType[1] == "Weapon") {
 			if (MC.GetPlayerClass() == "Warrior" || MC.GetPlayerClass() == "Hunter" || MC.GetPlayerClass() == "Assassin" || MC.GetPlayerClass() == "Berserker") {
-				descline[0] = "A fine weapon choice. May it fell great foes under your wield.";
+				descline[0] = "A fine weapon choice. May it fell great foes under your";
+				descline[1] = "wield.";
 			}
 			else {
 				descline[0] = "A wise choice. May the Elder Sages guide your arcanism.";
@@ -619,7 +620,8 @@ std::string Shop::DrawShopUI(Player& MC, Item& items, Inventory& inv) {
 
 		if (ShopSlotItemType[2] == "Weapon") {
 			if (MC.GetPlayerClass() == "Warrior" || MC.GetPlayerClass() == "Hunter" || MC.GetPlayerClass() == "Assassin" || MC.GetPlayerClass() == "Berserker") {
-				descline[0] = "A fine weapon choice. May it fell great foes under your wield.";
+				descline[0] = "A fine weapon choice. May it fell great foes under your";
+				descline[1] = "wield.";
 			}
 			else {
 				descline[0] = "A wise choice. May the Elder Sages guide your arcanism.";
