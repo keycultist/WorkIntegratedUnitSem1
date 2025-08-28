@@ -12,6 +12,7 @@ theres still stuff to do like actually generating the enemy spawns and etc, but 
 #include "Shop.h"
 #include "Combat.h"
 #include "conio.h"
+#include <queue>
 #define NOMINMAX
 #include <windows.h> 
 
@@ -39,6 +40,11 @@ void Map::CreateNewFloor(int Difficulty, Player& MC, Shop& shop) {
     minibossGenerated = false;
     trueBossGenerated = false;
     minibossRoom = nullptr;
+    trueBossRoom = nullptr;
+
+	// Clear miniboss and true boss status
+    resetMinibossStatus();
+    trueBossGenerated = false;
     trueBossRoom = nullptr;
 
     // Create all possible positions
@@ -109,6 +115,11 @@ void Map::CreateNewFloor(int Difficulty, Player& MC, Shop& shop) {
         generateEnemiesForRoom(rooms.back(), Difficulty);
     }
 
+    // NOW ggenerate roaming enemies for this floor (after all rooms are created)
+    generateRoamingEnemies(Difficulty);
+
+    enemyMoveCounter = 0; // initialize movecounter
+
     std::cout << "Generated " << numRooms << " rooms (last room is shop)" << std::endl;
 
     // Verify the last room is a shop
@@ -121,6 +132,7 @@ void Map::CreateNewFloor(int Difficulty, Player& MC, Shop& shop) {
 
 
 void Map::renderEnemiesOnBoard(char** Board, int sizeX, int sizeY) {
+    // Render room enemies
     for (const auto& room : rooms) {
         for (const auto& enemy : room.enemies) {
             if (enemy.GetEnemyHP() > 0) {
@@ -134,7 +146,21 @@ void Map::renderEnemiesOnBoard(char** Board, int sizeX, int sizeY) {
             }
         }
     }
+
+    // Render roaming enemies
+    for (const auto& enemy : roamingEnemies) {
+        if (enemy.GetEnemyHP() > 0) {
+            int enemyX = enemy.GetEnemyPosX();
+            int enemyY = enemy.GetEnemyPosY();
+
+            if (enemyX >= 0 && enemyX < sizeX && enemyY >= 0 && enemyY < sizeY) {
+                char enemyChar = 'R';  // 'R' for roaming enemies
+                Board[enemyY][enemyX] = enemyChar;
+            }
+        }
+    }
 }
+
 
 
 
@@ -336,14 +362,14 @@ void Map::renderCurrentRoom(Room* room, char** roomBoard, int boardSize, Player&
 
 void Map::switchToRoomView(int playerX, int playerY, Player& MC, Shop& shop, bool& FinishShopping) {
     Room* playerRoom = detectPlayerRoom(playerX, playerY);
-    
+
     if (playerRoom) {
         // Use InnerRoom as the isolated room view
         char* innerPtrs[256];
         for (int i = 0; i < 256; ++i) innerPtrs[i] = InnerRoom[i];
-        
+
         renderCurrentRoom(playerRoom, innerPtrs, 256, MC);
-        
+
         std::cout << "Entered " << getRoomTypeName(playerRoom->type) << " room!" << std::endl;
         //drawBoard(innerPtrs, 256, 256);  // Show just this room
         if (playerRoom->type == RoomType::SHOP) {
@@ -362,7 +388,8 @@ void Map::switchToRoomView(int playerX, int playerY, Player& MC, Shop& shop, boo
                 }
             }
         }
-    } else {
+    }
+    else {
         std::cout << "Player is in a corridor or empty space." << std::endl;
     }
 
@@ -538,12 +565,10 @@ void Map::generateEnemiesForRoom(Room& room, int difficulty) {
     room.enemies.clear();
     room.enemiesCleared = false;
 
-    // Don't spawn enemies in shops or corridors
     if (room.type == RoomType::SHOP || room.type == RoomType::CORRIDOR) {
         return;
     }
 
-    // Handle miniboss placement (every floor) - but don't return early!
     bool isMinibossRoom = false;
     if (!minibossGenerated && (room.type == RoomType::TREASURE ||
         room.type == RoomType::MEDIUM ||
@@ -551,18 +576,18 @@ void Map::generateEnemiesForRoom(Room& room, int difficulty) {
         Enemy miniboss;
         generateBossForRoom(miniboss, "Miniboss", difficulty);
 
-        // Position the miniboss at room center
         miniboss.SetEnemyPos(room.x, room.y);
 
         room.enemies.push_back(miniboss);
+
+        // Set up miniboss tracking
         minibossGenerated = true;
         minibossRoom = &room;
+        minibossPtr = &room.enemies.back();  // Point to the miniboss we just added
         isMinibossRoom = true;
 
         std::cout << "Generated MINIBOSS in " << getRoomTypeName(room.type)
             << " room #" << room.id << " at (" << room.x << "," << room.y << ")" << std::endl;
-
-        // Don't return here - we can still add regular enemies!
     }
 
     // Handle true boss (difficulty 7+)
@@ -572,7 +597,6 @@ void Map::generateEnemiesForRoom(Room& room, int difficulty) {
             Enemy trueBoss;
             generateBossForRoom(trueBoss, "TrueBoss", difficulty);
 
-            // Position the true boss at room center
             trueBoss.SetEnemyPos(room.x, room.y);
 
             room.enemies.push_back(trueBoss);
@@ -581,11 +605,10 @@ void Map::generateEnemiesForRoom(Room& room, int difficulty) {
 
             std::cout << "Generated TRUE BOSS in " << getRoomTypeName(room.type)
                 << " room #" << room.id << " at (" << room.x << "," << room.y << ")" << std::endl;
-            return; // True boss rooms only have the boss
+            return;
         }
     }
 
-    // Determine max regular enemies for this room type
     int maxEnemies = 0;
     switch (room.type) {
     case RoomType::SMALL:
@@ -605,31 +628,25 @@ void Map::generateEnemiesForRoom(Room& room, int difficulty) {
         break;
     }
 
-    // Reduce regular enemies if there's already a miniboss
     if (isMinibossRoom) {
         maxEnemies = std::max(0, maxEnemies - 1);
     }
 
-    // At difficulty 7+, reduce regular enemy spawns slightly
     if (difficulty >= 7) {
         maxEnemies = std::max(1, maxEnemies - 1);
     }
 
-    // FIXED: Ensure at least 1 enemy in non-boss rooms (unless it's a miniboss room)
     int numEnemies;
     if (maxEnemies <= 0) {
         numEnemies = 0;
     }
     else if (isMinibossRoom) {
-        // Miniboss rooms can have 0-maxEnemies additional enemies
         numEnemies = std::rand() % (maxEnemies + 1);
     }
     else {
-        // Regular rooms always have at least 1 enemy
         numEnemies = 1 + (std::rand() % maxEnemies);
     }
 
-    // Generate regular enemies
     for (int i = 0; i < numEnemies; ++i) {
         Enemy newEnemy;
         generateEnemyForRoom(newEnemy, room, difficulty, i);
@@ -646,14 +663,12 @@ void Map::generateEnemiesForRoom(Room& room, int difficulty) {
 void Map::generateEnemyForRoom(Enemy& enemy, const Room& room, int difficulty, int enemyIndex) {
     enemy.InitEnemy();
 
-    // Base stats scaling with difficulty
     int baseHP = 40;
     int basePower = 5;
     int baseCrit = 5;
     int baseXP = 10;
     int baseCurrency = 5;
 
-    // Room type modifiers
     float hpMultiplier = 1.0f;
     float powerMultiplier = 1.0f;
 
@@ -676,7 +691,6 @@ void Map::generateEnemyForRoom(Enemy& enemy, const Room& room, int difficulty, i
     int finalHP = static_cast<int>(baseHP * hpMultiplier);
     int finalPower = static_cast<int>(basePower * powerMultiplier);
 
-    // Choose enemy class based on difficulty
     std::vector<std::string> enemyClasses;
     enemyClasses.push_back("Grunt");
 
@@ -720,21 +734,17 @@ void Map::generateEnemyForRoom(Enemy& enemy, const Room& room, int difficulty, i
     enemy.SetEnemyCurrency(baseCurrency);
     enemy.SetEnemyLvl(difficulty + 1);
 
-    // FIXED: Position within room interior only, and validate it's on a floor tile
     int halfW = room.width / 2;
     int halfH = room.height / 2;
     int attempts = 0;
     int enemyX, enemyY;
 
     do {
-        // Calculate interior bounds (avoid walls)
         enemyX = room.x - halfW + 1 + (std::rand() % (room.width - 2));
         enemyY = room.y - halfH + 1 + (std::rand() % (room.height - 2));
         attempts++;
 
-        // Safety check to avoid infinite loop
         if (attempts > 50) {
-            // Fallback to room center if we can't find a good spot
             enemyX = room.x;
             enemyY = room.y;
             break;
@@ -763,7 +773,7 @@ void Map::generateBossForRoom(Enemy& enemy, const std::string& bossType, int dif
         switch (bossChoice) {
         case 0:
             enemy.SetEnemyClass("ColorCleaver");
-            break; 
+            break;
         case 1:
             enemy.SetEnemyClass("DarkSilence");
             break;
@@ -775,7 +785,6 @@ void Map::generateBossForRoom(Enemy& enemy, const std::string& bossType, int dif
             break;
         }
 
-        // Enhanced miniboss stats
         int baseHP = 80 + (difficulty * 20);
         int basePower = 12 + (difficulty * 3);
 
@@ -946,7 +955,6 @@ bool Map::isRoomEnemiesCleared(Room* room) {
 
 void Map::removeDefeatedEnemies() {
     for (auto& room : rooms) {
-        // Remove enemies with HP <= 0 from the vector
         room.enemies.erase(
             std::remove_if(room.enemies.begin(), room.enemies.end(),
                 [](const Enemy& enemy) { return enemy.GetEnemyHP() <= 0; }),
@@ -965,7 +973,8 @@ Enemy* Map::getEnemyAtPosition(int x, int y) {
             }
         }
     }
-    return nullptr;
+
+    return getRoamingEnemyAtPosition(x, y);
 }
 
 bool Map::checkForCombat(Room* room, Player& MC) {
@@ -978,13 +987,21 @@ bool Map::checkForCombat(Room* room, Player& MC) {
     if (enemyAtPlayerPos && enemyAtPlayerPos->GetEnemyHP() > 0) {
         std::string enemyClass = enemyAtPlayerPos->GetEnemyClass();
 
+        // Check if this is the miniboss
+        bool isMinibossFight = (enemyAtPlayerPos == minibossPtr);
+
         if (enemyClass == "OneWingedAngel" || enemyClass == "JovialChaos" || enemyClass == "Bob" || enemyClass == "Susanoo" || enemyClass == "DevilGene") {
             std::cout << "\n!!! TRUE BOSS ENCOUNTER !!!" << std::endl;
             std::cout << "The final challenge awaits..." << std::endl;
         }
         else if (enemyClass == "ColorCleaver" || enemyClass == "DarkSilence" || enemyClass == "ManiKatti" || enemyClass == "AzureResonance") {
-            std::cout << "\n!!! MINIBOSS ENCOUNTER !!!" << std::endl;
-            std::cout << "A powerful guardian blocks your path..." << std::endl;
+            if (isMinibossFight) {
+                std::cout << "\n!!! MINIBOSS ENCOUNTER !!!" << std::endl;
+                std::cout << "A powerful guardian blocks your path..." << std::endl;
+            }
+            else {
+                std::cout << "\nPowerful enemy encountered: " << enemyClass << "!" << std::endl;
+            }
         }
         else {
             std::cout << "\nEnemy encountered: " << enemyClass << "!" << std::endl;
@@ -997,22 +1014,441 @@ bool Map::checkForCombat(Room* room, Player& MC) {
         Combat combat;
         combat.InitCombat(MC, *enemyAtPlayerPos);
 
+        // Check if miniboss was killed
+        if (isMinibossFight && checkMinibossKilled()) {
+            // Miniboss was killed - trigger special events here
+            // For example, force progression to next floor, unlock special items, etc.
+        }
+
         if (enemyAtPlayerPos->GetEnemyHP() <= 0) {
             removeDefeatedEnemies();
-
-            if (enemyClass == "OneWingedAngel" || enemyClass == "JovialChaos") {
-                std::cout << "\n!!! TRUE BOSS DEFEATED !!!" << std::endl;
-                std::cout << "Victory is yours!" << std::endl;
-            }
-            else if (enemyClass == "Guardian Elite") {
-                std::cout << "\n!!! MINIBOSS DEFEATED !!!" << std::endl;
-                std::cout << "The guardian has fallen!" << std::endl;
-            }
         }
+
         isRoomEnemiesCleared(room);
 
         return true;
     }
 
     return false;
+}
+
+void Map::generateRoamingEnemies(int difficulty) {
+    roamingEnemies.clear();
+
+
+    int numRoamingEnemies = 3 + (difficulty); 
+    if (numRoamingEnemies > 10) numRoamingEnemies = 10;
+
+    std::cout << "Generating " << numRoamingEnemies << " roaming enemies..." << std::endl;
+
+    for (int i = 0; i < numRoamingEnemies; ++i) {
+        Enemy roamingEnemy;
+        generateRoamingEnemy(roamingEnemy, difficulty);
+        roamingEnemies.push_back(roamingEnemy);
+    }
+}
+
+void Map::generateRoamingEnemy(Enemy& enemy, int difficulty) {
+    enemy.InitEnemy();
+
+    int baseHP = 25 + (difficulty * 8);
+    int basePower = 3 + (difficulty * 2);
+
+    std::vector<std::string> roamingClasses = { "Grunt", "Rogue" };
+
+    if (difficulty >= 2) {
+        roamingClasses.push_back("Necromancer");
+    }
+    if (difficulty >= 3) {
+        roamingClasses.push_back("Silent");
+    }
+
+    std::string chosenClass = roamingClasses[std::rand() % roamingClasses.size()];
+
+    enemy.SetEnemyClass(chosenClass);
+    enemy.SetEnemyMaxHP(baseHP);
+    enemy.SetEnemyHP(baseHP);
+    enemy.SetEnemyPower(basePower);
+    enemy.SetEnemyCritChance(5);
+    enemy.SetEnemyXP(8);
+    enemy.SetEnemyCurrency(3);
+    enemy.SetEnemyLvl(difficulty);
+
+    setEnemyEquipment(enemy, chosenClass, difficulty);
+
+    int attempts = 0;
+    int enemyX, enemyY;
+
+    do {
+        enemyX = std::rand() % 128;
+        enemyY = std::rand() % 128;
+        attempts++;
+
+        if (attempts > 100) {
+            enemyX = 64;
+            enemyY = 64;
+            break;
+        }
+    } while (enemyX < 0 || enemyX >= 128 || enemyY < 0 || enemyY >= 128 ||
+        FloorGrid[enemyY][enemyX] != ' ' ||
+        isPositionInAnyRoom(enemyX, enemyY));
+
+    enemy.SetEnemyPos(enemyX, enemyY);
+
+    std::cout << "Roaming " << chosenClass << " placed at ("
+        << enemyX << "," << enemyY << ")" << std::endl;
+}
+
+bool Map::isPositionInAnyRoom(int x, int y) {
+    for (const auto& room : rooms) {
+        if (isPlayerInRoom(x, y, room)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+std::vector<Enemy*> Map::getRoamingEnemies() {
+    std::vector<Enemy*> alivePtrs;
+    for (auto& enemy : roamingEnemies) {
+        if (enemy.GetEnemyHP() > 0) {
+            alivePtrs.push_back(&enemy);
+        }
+    }
+    return alivePtrs;
+}
+
+void Map::removeDefeatedRoamingEnemies() {
+    roamingEnemies.erase(
+        std::remove_if(roamingEnemies.begin(), roamingEnemies.end(),
+            [](const Enemy& enemy) { return enemy.GetEnemyHP() <= 0; }),
+        roamingEnemies.end()
+    );
+}
+
+Enemy* Map::getRoamingEnemyAtPosition(int x, int y) {
+    for (auto& enemy : roamingEnemies) {
+        if (enemy.GetEnemyHP() > 0 &&
+            enemy.GetEnemyPosX() == x &&
+            enemy.GetEnemyPosY() == y) {
+            return &enemy;
+        }
+    }
+    return nullptr;
+}
+
+bool Map::checkForRoamingCombat(Player& MC) {
+    Enemy* roamingEnemy = getRoamingEnemyAtPosition(MC.GetPlayerPosX(), MC.GetPlayerPosY());
+
+    if (roamingEnemy && roamingEnemy->GetEnemyHP() > 0) {
+        std::cout << "\nRoaming enemy encountered: " << roamingEnemy->GetEnemyClass() << "!" << std::endl;
+        std::cout << "Press any key to engage!" << std::endl;
+        int chP = _getch();
+        system("cls");
+
+        Combat combat;
+        combat.InitCombat(MC, *roamingEnemy);
+
+        if (roamingEnemy->GetEnemyHP() <= 0) {
+            removeDefeatedRoamingEnemies();
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+std::vector<std::pair<int, int>> Map::findPathAStar(int startX, int startY, int goalX, int goalY, int maxDistance) {
+    std::vector<std::pair<int, int>> path;
+
+    if (startX == goalX && startY == goalY) {
+        return path;
+    }
+
+    if (calculateManhattanDistance(startX, startY, goalX, goalY) > maxDistance) {
+        return path;
+    }
+
+    std::priority_queue<AStarNode> openSet;
+
+    std::vector<std::vector<bool>> closedSet(128, std::vector<bool>(128, false));
+
+    std::vector<std::unique_ptr<AStarNode>> nodeStorage;
+
+
+    std::vector<std::vector<AStarNode*>> nodeGrid(128, std::vector<AStarNode*>(128, nullptr));
+
+    auto startNode = std::make_unique<AStarNode>(startX, startY);
+    startNode->gCost = 0;
+    startNode->hCost = calculateHeuristic(startX, startY, goalX, goalY);
+    startNode->fCost = startNode->hCost;
+
+    AStarNode* startPtr = startNode.get();
+    nodeGrid[startY][startX] = startPtr;
+    nodeStorage.push_back(std::move(startNode));
+    openSet.push(*startPtr);
+
+    int nodesEvaluated = 0;
+    const int MAX_NODES = 200; 
+
+    while (!openSet.empty() && nodesEvaluated < MAX_NODES) {
+        AStarNode current = openSet.top();
+        openSet.pop();
+        nodesEvaluated++;
+
+        if (closedSet[current.y][current.x]) {
+            continue;
+        }
+
+        closedSet[current.y][current.x] = true;
+
+        if (current.x == goalX && current.y == goalY) {
+            AStarNode* pathNode = nodeGrid[current.y][current.x];
+            while (pathNode && pathNode->parent) {
+                path.push_back({ pathNode->x, pathNode->y });
+                pathNode = pathNode->parent;
+            }
+
+            std::reverse(path.begin(), path.end());
+            return path;
+        }
+
+        int directions[4][2] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
+
+        for (int i = 0; i < 4; ++i) {
+            int newX = current.x + directions[i][0];
+            int newY = current.y + directions[i][1];
+
+            if (!isValidPathPositionForGoal(newX, newY, goalX, goalY) || closedSet[newY][newX]) {
+                continue;
+            }
+
+            int tentativeGCost = nodeGrid[current.y][current.x]->gCost + 1;
+
+            AStarNode* neighborNode = nodeGrid[newY][newX];
+
+            if (!neighborNode) {
+                auto newNode = std::make_unique<AStarNode>(newX, newY);
+                newNode->gCost = tentativeGCost;
+                newNode->hCost = calculateHeuristic(newX, newY, goalX, goalY);
+                newNode->fCost = newNode->gCost + newNode->hCost;
+                newNode->parent = nodeGrid[current.y][current.x];
+
+                neighborNode = newNode.get();
+                nodeGrid[newY][newX] = neighborNode;
+                nodeStorage.push_back(std::move(newNode));
+
+                openSet.push(*neighborNode);
+            }
+            else if (tentativeGCost < neighborNode->gCost) {
+                neighborNode->gCost = tentativeGCost;
+                neighborNode->fCost = neighborNode->gCost + neighborNode->hCost;
+                neighborNode->parent = nodeGrid[current.y][current.x];
+
+                openSet.push(*neighborNode);
+            }
+        }
+    }
+
+    return path;
+}
+
+void Map::moveEnemyTowardsPlayer(Enemy& enemy, int playerX, int playerY) {
+    int enemyX = enemy.GetEnemyPosX();
+    int enemyY = enemy.GetEnemyPosY();
+
+    int currentDistance = calculateManhattanDistance(enemyX, enemyY, playerX, playerY);
+
+    if (currentDistance > 15) {
+        return;
+    }
+
+    int bestX = enemyX;
+    int bestY = enemyY;
+    int bestDistance = currentDistance;
+
+    int directions[4][2] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
+
+    for (int i = 0; i < 4; ++i) {
+        int newX = enemyX + directions[i][0];
+        int newY = enemyY + directions[i][1];
+
+        if (isValidEnemyPosition(newX, newY)) {
+            int newDistance = calculateManhattanDistance(newX, newY, playerX, playerY);
+
+            if (newDistance < bestDistance) {
+                bestX = newX;
+                bestY = newY;
+                bestDistance = newDistance;
+            }
+        }
+    }
+
+    if (bestX != enemyX || bestY != enemyY) {
+        enemy.SetEnemyPos(bestX, bestY);
+    }
+}
+
+int Map::calculateManhattanDistance(int x1, int y1, int x2, int y2) {
+    return abs(x1 - x2) + abs(y1 - y2);
+}
+
+bool Map::isValidEnemyPosition(int x, int y) {
+    if (x < 0 || x >= 128 || y < 0 || y >= 128) {
+        return false;
+    }
+
+    if (FloorGrid[y][x] == '#') {
+        return false;
+    }
+
+    if (isPositionInAnyRoom(x, y)) {
+        return false;
+    }
+
+    for (const auto& otherEnemy : roamingEnemies) {
+        if (otherEnemy.GetEnemyHP() > 0 &&
+            otherEnemy.GetEnemyPosX() == x &&
+            otherEnemy.GetEnemyPosY() == y) {
+            return false;
+        }
+    }
+
+    return (FloorGrid[y][x] == ' ' || FloorGrid[y][x] == '.');
+}
+
+void Map::moveEnemyTowardsPlayerAStar(Enemy& enemy, int playerX, int playerY) {
+    int enemyX = enemy.GetEnemyPosX();
+    int enemyY = enemy.GetEnemyPosY();
+
+    int currentDistance = calculateManhattanDistance(enemyX, enemyY, playerX, playerY);
+
+
+    if (currentDistance == 0) {
+        return;
+    }
+
+
+    std::vector<std::pair<int, int>> path = findPathAStar(enemyX, enemyY, playerX, playerY, 15);
+
+    if (!path.empty()) {
+        int nextX = path[0].first;
+        int nextY = path[0].second;
+
+        if (nextX == playerX && nextY == playerY) {
+            enemy.SetEnemyPos(nextX, nextY);
+        }
+        else {
+            if (isValidEnemyPosition(nextX, nextY)) {
+                enemy.SetEnemyPos(nextX, nextY);
+            }
+        }
+    }
+    else {
+        moveEnemyTowardsPlayer(enemy, playerX, playerY);
+    }
+}
+
+int Map::calculateHeuristic(int x1, int y1, int x2, int y2) {
+  
+    return abs(x1 - x2) + abs(y1 - y2);
+}
+
+bool Map::isValidPathPosition(int x, int y) {
+
+    if (x < 0 || x >= 128 || y < 0 || y >= 128) {
+        return false;
+    }
+
+
+    if (FloorGrid[y][x] == '#') {
+        return false;
+    }
+
+
+    if (isPositionInAnyRoom(x, y)) {
+        return false;
+    }
+
+
+    return (FloorGrid[y][x] == ' ' || FloorGrid[y][x] == '.');
+}
+
+void Map::updateRoamingEnemyAI(Player& MC) {
+    enemyMoveCounter++;
+
+    if (enemyMoveCounter >= 3) {
+        enemyMoveCounter = 0;
+
+        int playerX = MC.GetPlayerPosX();
+        int playerY = MC.GetPlayerPosY();
+
+        for (auto& enemy : roamingEnemies) {
+            if (enemy.GetEnemyHP() > 0) {
+                moveEnemyTowardsPlayerAStar(enemy, playerX, playerY);
+            }
+        }
+    }
+}
+
+bool Map::isValidPathPositionForGoal(int x, int y, int goalX, int goalY) {
+    if (x == goalX && y == goalY) {
+        return true;
+    }
+
+    // Otherwise use normal path validation
+    return isValidPathPosition(x, y);
+}
+
+bool Map::isMinibossKilled() const {
+    return minibossKilled;
+}
+
+Enemy* Map::getMiniboss() {
+    if (minibossPtr && minibossPtr->GetEnemyHP() > 0) {
+        return minibossPtr;
+    }
+    return nullptr;
+}
+
+bool Map::checkMinibossKilled() {
+    if (minibossGenerated && !minibossKilled && minibossPtr) {
+        if (minibossPtr->GetEnemyHP() <= 0) {
+            minibossKilled = true;
+            return true;
+        }
+    }
+    return false;
+}
+
+void Map::resetMinibossStatus() {
+    minibossGenerated = false;
+    minibossKilled = false;
+    minibossRoom = nullptr;
+    minibossPtr = nullptr;
+}
+
+Enemy* Map::getTrueboss() {
+    if (truebossPtr && truebossPtr->GetEnemyHP() > 0) {
+        return truebossPtr;
+    }
+    return nullptr;
+}
+
+bool Map::checkMinibossKilled() {
+    if (trueBossGenerated && !truebossKilled && truebossPtr) {
+        if (truebossPtr->GetEnemyHP() <= 0) {
+            truebossKilled = true;
+            return true;
+        }
+    }
+    return false;
+}
+
+void Map::resetMinibossStatus() {
+    trueBossGenerated = false;
+    truebossKilled = false;
+    trueBossRoom = nullptr;
+    truebossPtr = nullptr;
 }

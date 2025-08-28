@@ -182,7 +182,16 @@ int main()
         delete Enemies[0];
         Enemies[0] = nullptr;
     }
-
+    system("cls");
+    std::cout << "Guardsman: Great job (even if you ran away)!." << std::endl;
+    chP = _getch();
+    std::cout << std::endl;
+    std::cout << "Guardsman: Be warned though, on each floor is is an enemy stronger than any other enemies(M)." << std::endl;
+    chP = _getch();
+    std::cout << std::endl;
+    std::cout << "Guardsman: Defeating these enemies will cause the Abyss to force you into the next floor, you have been warned." << std::endl;
+    chP = _getch();
+    std::cout << std::endl;
     system("cls");
 
     bool RUNNINGHORSE = true;
@@ -200,14 +209,21 @@ int main()
         // 1. Handle input if any
         PlayerInput(MC);
 
-        // 2. Update enemies
-        //updateEnemies();
+		// 2. Handle roaming enemies
+        if (!InsideRoom) {
+            if (GMap.checkForRoamingCombat(MC)) {
+                // Combat happened, continue
+            }
+        }
 
-        // 3. Update game state
+		// 3. Update roaming enemies
+        GMap.updateRoamingEnemyAI(MC);
+
+        // 4. Update game state
         InsideRoom = (GMap.detectPlayerRoom(MC.GetPlayerPosX(), MC.GetPlayerPosY()) != nullptr);
 
 
-        // 4. Render
+        // 5. Render
         if (InsideRoom) {
             if (!Clearcheck) {
                 //clearConsole();
@@ -219,8 +235,17 @@ int main()
             Room* currentRoom = GMap.detectPlayerRoom(MC.GetPlayerPosX(), MC.GetPlayerPosY());
 
             if (GMap.checkForCombat(currentRoom, MC)) {
-				std::cout << "All enemies efcw in this room!" << std::endl;
+                if (GMap.checkMinibossKilled()) {
+                    //MC.SetCurrentDifficulty(MC.GetCurrentDifficulty() + 1);
+                    //GMap.CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
+                }
+
+                if (GMap.checkTruebossKilled()) {
+                    RUNNINGHORSE = false;
+				}
             }
+
+
         }
         else {
             GMap.renderMapWithFOV(MC, 50, 25);
@@ -228,13 +253,15 @@ int main()
             FinishShopping = false;
         }
 
-        // 5. Wait until next frame (~16ms for ~60 FPS)
+        // 6. Wait until next frame (~16ms for ~60 FPS)
         auto endTime = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double, std::milli> elapsed = endTime - startTime;
         int frameDelay = 1000 / 30; // 30 FPS
         if (elapsed.count() < frameDelay)
             std::this_thread::sleep_for(std::chrono::milliseconds(frameDelay) - elapsed);
     }
+
+
     //When init combat
     //if (Collide) {
         //Combat::InitCombat(MC, CollidedEnemy);

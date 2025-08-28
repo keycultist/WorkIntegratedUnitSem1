@@ -25,7 +25,7 @@ struct Room {
     char floorChar;     // What character to fill floor with
     bool visited;       // Has player been here?
     bool cleared;       // Has room been completed?
-	std::vector<Enemy> enemies; // Enemy Table
+    std::vector<Enemy> enemies; // Enemy Table
     bool enemiesCleared = false;
 
     Room(int id, int x, int y, RoomType type) : id(id), x(x), y(y), type(type), visited(false), cleared(false) {
@@ -40,6 +40,21 @@ struct Room {
     }
 };
 
+// FUCK A STAR OH MY GLOB THIS IS WHY I USE MANHATTAN DISTANCE
+struct AStarNode {
+    int x, y;
+    int gCost;
+    int hCost;
+    int fCost;
+    AStarNode* parent;
+
+    AStarNode(int x, int y) : x(x), y(y), gCost(0), hCost(0), fCost(0), parent(nullptr) {}
+
+    bool operator<(const AStarNode& other) const {
+        return fCost > other.fCost;
+    }
+};
+
 class Map : public Renderer
 {
 
@@ -47,16 +62,26 @@ private:
     char FloorGrid[128][128];
     int tilesFilled;
     char InnerRoom[256][256];
-	
-    std::vector<Room> rooms;    
-    std::map<int, Room*> roomLookup;  
-    Room* currentRoom;                 
-    int nextRoomId;     
-    bool minibossGenerated = false; 
+
+    bool minibossKilled = false;
+    Enemy* minibossPtr = nullptr;
+
+    bool truebossKilled = false;
+    Enemy* truebossPtr = nullptr;
+
+    int enemyMoveCounter;
+    std::vector<Enemy> roamingEnemies;
+    std::vector<Room> rooms;
+    std::map<int, Room*> roomLookup;
+    Room* currentRoom;
+    int nextRoomId;
+    bool minibossGenerated = false;
     bool trueBossGenerated = false;
     Room* minibossRoom = nullptr;
     Room* trueBossRoom = nullptr;
-    
+
+    bool isPositionInAnyRoom(int x, int y);
+    void generateRoamingEnemy(Enemy& enemy, int difficulty);
     char getEnemyDisplayChar(const Enemy& enemy);
     void renderEnemiesOnBoard(char** Board, int sizeX, int sizeY);
     void generateEnemiesForRoom(Room& room, int difficulty);
@@ -66,12 +91,14 @@ protected:
 
 public:
 
+    bool isMinibossKilled() const;
+
     void CreateNewFloor(int Difficulty, Player& MC, Shop& shop);
 
-    void RequestFloorUpdate(Player& MC);
+    // void RequestFloorUpdate(Player& MC);
 
-    void RequestRoomUpdate();
-        
+    // void RequestRoomUpdate();
+
     void fillBoard(char** Board, int sizeX, int sizeY, Player& MC);
 
     void fillBoardPlayer(char** Board, int sizeX, int sizeY, Player& MC);
@@ -80,7 +107,7 @@ public:
 
     void generateRoom(const Room& room, char** board, int boardSizeX, int boardSizeY);
     void generateLargeRoom(const Room& room);  // Uses InnerRoom for big rooms
-    
+
     Room* detectPlayerRoom(int playerX, int playerY);
     void renderCurrentRoom(Room* room, char** roomBoard, int boardSize, Player& MC);
     bool isPlayerInRoom(int playerX, int playerY, const Room& room);
@@ -123,7 +150,33 @@ public:
 
     void generateBossForRoom(Enemy& enemy, const std::string& bossType, int difficulty);
     void removeDefeatedEnemies();
-	Enemy* getEnemyAtPosition(int x, int y);
+    Enemy* getEnemyAtPosition(int x, int y);
 
     void renderMapWithFOV(Player& MC, int viewWidth, int viewHeight);
+    void generateRoamingEnemies(int difficulty);
+    std::vector<Enemy*> getRoamingEnemies();
+    void removeDefeatedRoamingEnemies();
+    Enemy* getRoamingEnemyAtPosition(int x, int y);
+    bool checkForRoamingCombat(Player& MC);
+
+    void updateRoamingEnemyAI(Player& MC);
+    void moveEnemyTowardsPlayer(Enemy& enemy, int playerX, int playerY);
+    int calculateManhattanDistance(int x1, int y1, int x2, int y2);
+    bool isValidEnemyPosition(int x, int y);
+
+    std::vector<std::pair<int, int>> findPathAStar(int startX, int startY, int goalX, int goalY, int maxDistance = 15);
+    void moveEnemyTowardsPlayerAStar(Enemy& enemy, int playerX, int playerY);
+    int calculateHeuristic(int x1, int y1, int x2, int y2);
+    bool isValidPathPosition(int x, int y);
+    std::vector<AStarNode*> getNeighbors(AStarNode* node, int goalX, int goalY);
+
+    bool isValidPathPositionForGoal(int x, int y, int goalX, int goalY);
+
+    Enemy* getMiniboss();
+    bool checkMinibossKilled();
+    void resetMinibossStatus();
+
+    Enemy* getTrueboss();
+    bool checkTruebossKilled();
+    void resetTruebossStatus();
 };
