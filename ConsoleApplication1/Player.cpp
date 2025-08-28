@@ -85,6 +85,11 @@ void Player::SetCurrentDifficulty(int Difficulty)
     CurrentDifficulty = Difficulty;
 }
 
+void Player::SetbaseXP(int baseXP)
+{
+    this->baseXP = baseXP;
+}
+
 
 
 std::string Player::GetPlayerClass(void) const {
@@ -165,6 +170,11 @@ int Player::GetPlayerKarma(void) const
 int Player::GetCurrentDifficulty(void) const
 {
     return CurrentDifficulty;
+}
+
+int Player::GetbaseXP(void) const
+{
+    return baseXP;
 }
 
 Moveset& Player::GetMoveSet()
@@ -300,6 +310,7 @@ void Player::InitPlayer()
         SetPlayerDefence(0);
         SetPlayerKarma(50);
         SetCurrentDifficulty(0);
+        SetbaseXP(0);
         system("cls");
         moveset.PlayerInit(GetPlayerClass());
         ShowPlayerStats();
@@ -352,27 +363,26 @@ void Player::ShowPlayerMoves() const
     std::cout << "(4) [" << moveset.GetMove(3).MoveName << "] Strength: " << moveset.GetMove(3).MoveStrength << " Hit(s): " << moveset.GetMove(3).Hits << " Type: " << moveset.GetMove(3).MoveType << std::endl;
 }
 
-void Player::LevelUpCheck()
+void Player::LevelUpCheck(Player& MC)
 {
-    int baseXP = 10;
 
     if (GetPlayerLvl() < 10 && GetPlayerClass() != "Conduit") {
-        while (GetPlayerXP() >= baseXP && GetPlayerLvl() < 11)
+        while (GetPlayerXP() >= GetbaseXP() && GetPlayerLvl() < 11)
         {
-            SetPlayerXP(GetPlayerXP() - baseXP);
+            SetPlayerXP(GetPlayerXP() - GetbaseXP());
             SetPlayerLvl(GetPlayerLvl() + 1);
             LevelUp();
 
             std::cout << std::endl;
             std::cout << "Level up! You are now level " << GetPlayerLvl() << "!" << std::endl;
 
-            baseXP += 25;
+            SetbaseXP(GetbaseXP() + 25);
         }
     }
     else if (GetPlayerLvl() < 11 && GetPlayerClass() == "Conduit") {
-        while (GetPlayerXP() >= baseXP && GetPlayerLvl() < 11)
+        while (GetPlayerXP() >= GetbaseXP() && GetPlayerLvl() < 11)
         {
-            SetPlayerXP(GetPlayerXP() - baseXP);
+            SetPlayerXP(GetPlayerXP() - GetbaseXP());
             SetPlayerLvl(GetPlayerLvl() + 1);
 
             std::cout << std::endl;
@@ -380,10 +390,10 @@ void Player::LevelUpCheck()
             LevelUp();
 
             if (GetPlayerLvl() < 10) {
-                baseXP += 25;
+                SetbaseXP(GetbaseXP() + 25);
             }
             else {
-                baseXP += 100;
+                SetbaseXP(GetbaseXP() + 100);
             }
         }
     }
