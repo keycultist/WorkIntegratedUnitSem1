@@ -339,6 +339,7 @@ void Map::switchToRoomView(int playerX, int playerY, Player& MC, Shop& shop, boo
         //drawBoard(innerPtrs, 256, 256);  // Show just this room
         if (playerRoom->type == RoomType::SHOP) {
             if (!FinishShopping) {
+                shop.SetShopItemSlot();
                 std::cout << shop.DrawShopUI() << std::endl;
                 shop.PromptPlayerShopInteraction();
                 FinishShopping = true;
