@@ -987,7 +987,7 @@ Enemy* Map::getEnemyAtPosition(int x, int y) {
     return nullptr;
 }
 
-bool Map::checkForCombat(Room* room, Player& MC) {
+bool Map::checkForCombat(Room* room, Player& MC, Shop& shop) {
     if (!room || room->enemiesCleared) {
         return false;
     }
@@ -1040,6 +1040,11 @@ bool Map::checkForCombat(Room* room, Player& MC) {
         if (isMinibossFight && checkMinibossKilled()) {
             // Miniboss was killed - trigger special events here
             // For example, force progression to next floor, unlock special items, etc.
+            MC.SetCurrentDifficulty(MC.GetCurrentDifficulty() + 1);
+            MC.SetPlayerPos(0, 0);
+            CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
+            renderMapWithFOV(MC, 50, 25);
+            system("cls");
         }
 
         if (enemyAtPlayerPos->GetEnemyHP() <= 0) {

@@ -234,12 +234,12 @@ int main()
 
             Room* currentRoom = GMap.detectPlayerRoom(MC.GetPlayerPosX(), MC.GetPlayerPosY());
 
-            if (GMap.checkForCombat(currentRoom, MC)) {
+            if (GMap.checkForCombat(currentRoom, MC, shop)) {
                 if (GMap.checkTruebossKilled()) {
                     RUNNINGHORSE = false;
                 }
 
-                if (GMap.checkForCombat(currentRoom, MC)) {
+                if (GMap.checkForCombat(currentRoom, MC, shop)) {
                     if (GMap.checkMinibossKilled()) {
                         // Force progression to next floor
                         std::cout << "The Abyss forces you deeper..." << std::endl;
