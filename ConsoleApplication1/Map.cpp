@@ -1268,15 +1268,12 @@ void Map::moveEnemyTowardsPlayer(Enemy& enemy, int playerX, int playerY) {
     int enemyX = enemy.GetEnemyPosX();
     int enemyY = enemy.GetEnemyPosY();
 
-    // Calculate Manhattan distance to player
     int currentDistance = calculateManhattanDistance(enemyX, enemyY, playerX, playerY);
 
-    // Don't move if already adjacent to player (let combat handle it)
-    if (currentDistance <= 1) {
+    if (currentDistance <= 0) {
         return;
     }
 
-    // Don't chase if player is too far away (avoid cross-map chasing)
     if (currentDistance > 15) {
         return;
     }
