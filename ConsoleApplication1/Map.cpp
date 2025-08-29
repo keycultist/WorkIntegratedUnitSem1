@@ -29,15 +29,29 @@ void Map::CreateNewFloor(int Difficulty, Player& MC, Shop& shop) {
     currentRoom = nullptr;
     nextRoomId = 1;
 
-    // CRITICAL FIX: Reset ALL miniboss state when creating new floor
-    minibossGenerated = false;  // This was missing!
+    // CRITICAL: Clear the floor grid FIRST
+    for (int i = 0; i < 128; ++i) {
+        for (int j = 0; j < 128; ++j) {
+            FloorGrid[i][j] = ' ';
+        }
+    }
+
+    // CRITICAL: Clear InnerRoom too
+    for (int i = 0; i < 256; ++i) {
+        for (int j = 0; j < 256; ++j) {
+            InnerRoom[i][j] = ' ';
+        }
+    }
+
+    // Reset ALL boss state
+    minibossGenerated = false;
     trueBossGenerated = false;
     minibossRoom = nullptr;
     trueBossRoom = nullptr;
     minibossKilled = false;
     truebossKilled = false;
-    minibossPtr = nullptr;      // Reset the pointer
-    truebossPtr = nullptr;      // Reset the pointer
+    minibossPtr = nullptr;
+    truebossPtr = nullptr;  // THIS WAS MISSING FOR TRUE BOSS
     roamingEnemies.clear();
 
     // Setup pointer arrays
@@ -609,64 +623,8 @@ void Map::generateEnemiesForRoom(Room& room, int difficulty) {
         Enemy miniboss;
         generateBossForRoom(miniboss, "Miniboss", difficulty);
 
-        // ROBUST FIX: Use mathematical bounds checking instead of FloorGrid validation
-        int halfW = room.width / 2;
-        int halfH = room.height / 2;
+        placeBossInRoom(miniboss, room, "MINIBOSS");
 
-        // Calculate valid interior bounds (inside walls)
-        int minX = room.x - halfW + 1;  // Left wall + 1
-        int maxX = room.x + halfW - 1;  // Right wall - 1  
-        int minY = room.y - halfH + 1;  // Top wall + 1
-        int maxY = room.y + halfH - 1;  // Bottom wall - 1
-
-        // Ensure bounds are within map limits
-        minX = std::max(0, minX);
-        maxX = std::min(127, maxX);
-        minY = std::max(0, minY);
-        maxY = std::min(127, maxY);
-
-        int attempts = 0;
-        int minibossX, minibossY;
-        bool validPosition = false;
-
-        do {
-            // Generate position within calculated bounds
-            minibossX = minX + (std::rand() % (maxX - minX + 1));
-            minibossY = minY + (std::rand() % (maxY - minY + 1));
-            attempts++;
-
-            // Check if position is valid (not on boundaries and within room)
-            if (minibossX >= minX && minibossX <= maxX &&
-                minibossY >= minY && minibossY <= maxY &&
-                minibossX >= 0 && minibossX < 128 &&
-                minibossY >= 0 && minibossY < 128) {
-
-                // Double-check it's actually inside the room mathematically
-                if (minibossX >= room.x - halfW + 1 && minibossX <= room.x + halfW - 1 &&
-                    minibossY >= room.y - halfH + 1 && minibossY <= room.y + halfH - 1) {
-                    validPosition = true;
-                }
-            }
-
-            if (attempts > 100) {
-                // Ultimate fallback - center of room
-                minibossX = room.x;
-                minibossY = room.y;
-
-                // Adjust center if it's too close to edges
-                if (minibossX <= 1) minibossX = 2;
-                if (minibossX >= 126) minibossX = 125;
-                if (minibossY <= 1) minibossY = 2;
-                if (minibossY >= 126) minibossY = 125;
-
-                validPosition = true;
-                std::cout << "WARNING: Miniboss placed at fallback position ("
-                    << minibossX << "," << minibossY << ")" << std::endl;
-            }
-
-        } while (!validPosition);
-
-        miniboss.SetEnemyPos(minibossX, minibossY);
         room.enemies.push_back(miniboss);
 
         // Set up miniboss tracking
@@ -674,21 +632,7 @@ void Map::generateEnemiesForRoom(Room& room, int difficulty) {
         minibossRoom = &room;
         minibossPtr = &room.enemies.back();
         isMinibossRoom = true;
-
-        std::cout << "Generated MINIBOSS in " << getRoomTypeName(room.type)
-            << " room #" << room.id << " at (" << minibossX << "," << minibossY << ")" << std::endl;
-        std::cout << "Room bounds: x[" << minX << "-" << maxX << "] y[" << minY << "-" << maxY << "]" << std::endl;
-
-        // VERIFICATION: Check if miniboss is actually in the room
-        if (!isPlayerInRoom(minibossX, minibossY, room)) {
-            std::cout << "ERROR: Miniboss placed outside room! Attempting correction..." << std::endl;
-
-            // Force place in room center
-            miniboss.SetEnemyPos(room.x, room.y);
-            std::cout << "Corrected miniboss position to room center: (" << room.x << "," << room.y << ")" << std::endl;
-        }
     }
-
 
     if (!minibossGenerated) {
         std::cout << "[ERROR] No miniboss was generated on this floor!" << std::endl;
@@ -698,18 +642,18 @@ void Map::generateEnemiesForRoom(Room& room, int difficulty) {
     if (difficulty >= 7 && !trueBossGenerated && !isMinibossRoom) {
         if ((isLastRoom(&room) && room.type != RoomType::SHOP) ||
             room.type == RoomType::LARGE) {
+
             Enemy trueBoss;
             generateBossForRoom(trueBoss, "TrueBoss", difficulty);
 
-            trueBoss.SetEnemyPos(room.x, room.y);
+            placeBossInRoom(trueBoss, room, "TRUE BOSS");
 
             room.enemies.push_back(trueBoss);
             trueBossGenerated = true;
             trueBossRoom = &room;
+            truebossPtr = &room.enemies.back();  // Fix: you had this missing
 
-            std::cout << "Generated TRUE BOSS in " << getRoomTypeName(room.type)
-                << " room #" << room.id << " at (" << room.x << "," << room.y << ")" << std::endl;
-            return;
+            return; // Exit early for true boss rooms
         }
     }
 
@@ -753,7 +697,8 @@ void Map::generateEnemiesForRoom(Room& room, int difficulty) {
 
     for (int i = 0; i < numEnemies; ++i) {
         Enemy newEnemy;
-        generateEnemyForRoom(newEnemy, room, difficulty, i);
+        generateEnemyForRoom(newEnemy, room, difficulty, i);  // This sets stats/class
+        placeRegularEnemyInRoom(newEnemy, room);             // This handles positioning
         room.enemies.push_back(newEnemy);
     }
 
@@ -1133,8 +1078,21 @@ bool Map::checkForCombat(Room* room, Player& MC, Shop& shop) {
         return false;
     }
 
+    // Debug: Print player position and nearby enemies
+    std::cout << "Player at (" << MC.GetPlayerPosX() << "," << MC.GetPlayerPosY() << ")" << std::endl;
+
     Enemy* enemyAtPlayerPos = getEnemyAtPosition(MC.GetPlayerPosX(), MC.GetPlayerPosY());
     if (!enemyAtPlayerPos || enemyAtPlayerPos->GetEnemyHP() <= 0) {
+        // Debug: Check if there are any alive enemies in the room
+        int aliveCount = 0;
+        for (const auto& enemy : room->enemies) {
+            if (enemy.GetEnemyHP() > 0) {
+                aliveCount++;
+                std::cout << "Alive enemy: " << enemy.GetEnemyClass()
+                    << " at (" << enemy.GetEnemyPosX() << "," << enemy.GetEnemyPosY() << ")" << std::endl;
+            }
+        }
+        std::cout << "No enemy at player position. Total alive in room: " << aliveCount << std::endl;
         return false;
     }
 
@@ -1673,5 +1631,146 @@ void Map::debugMinibossPosition() {
             }
         }
         std::cout << "===================" << std::endl;
+    }
+}
+
+bool Map::isValidRoomPosition(int x, int y, const Room& room) {
+    // First check mathematical bounds
+    int halfW = room.width / 2;
+    int halfH = room.height / 2;
+
+    // Must be within map bounds
+    if (x < 0 || x >= 128 || y < 0 || y >= 128) {
+        return false;
+    }
+
+    // Must be inside room walls (not on boundary)
+    if (x <= room.x - halfW || x >= room.x + halfW ||
+        y <= room.y - halfH || y >= room.y + halfH) {
+        return false;
+    }
+
+    // Must not be a wall
+    if (FloorGrid[y][x] == '#') {
+        return false;
+    }
+
+    // Must be a floor tile (any valid floor character)
+    char tile = FloorGrid[y][x];
+    return (tile == '.' || tile == '$' || tile == 'B' || tile == room.floorChar);
+}
+
+
+std::vector<std::pair<int, int>> Map::getValidPositionsInRoom(const Room& room, int maxPositions) {
+    std::vector<std::pair<int, int>> validPositions;
+
+    int halfW = room.width / 2;
+    int halfH = room.height / 2;
+
+    // Scan all interior positions
+    for (int y = room.y - halfH + 1; y < room.y + halfH; ++y) {
+        for (int x = room.x - halfW + 1; x < room.x + halfW; ++x) {
+            if (isValidRoomPosition(x, y, room)) {
+                validPositions.push_back({ x, y });
+                if (validPositions.size() >= maxPositions) {
+                    break;
+                }
+            }
+        }
+        if (validPositions.size() >= maxPositions) {
+            break;
+        }
+    }
+
+    return validPositions;
+}
+
+void Map::placeBossInRoom(Enemy& boss, Room& room, const std::string& bossType) {
+    std::vector<std::pair<int, int>> validPositions = getValidPositionsInRoom(room);
+
+    if (validPositions.empty()) {
+        std::cout << "ERROR: No valid positions found in room " << room.id
+            << " for " << bossType << ". Forcing room regeneration." << std::endl;
+
+        // Force regenerate room floor
+        char* floorPtrs[128];
+        for (int i = 0; i < 128; ++i) floorPtrs[i] = FloorGrid[i];
+        generateRoom(room, floorPtrs, 128, 128);
+
+        // Try again
+        validPositions = getValidPositionsInRoom(room);
+
+        if (validPositions.empty()) {
+            // Ultimate fallback - clear a spot at room center
+            int centerX = room.x;
+            int centerY = room.y;
+
+            // Ensure center is within bounds
+            centerX = std::max(1, std::min(126, centerX));
+            centerY = std::max(1, std::min(126, centerY));
+
+            FloorGrid[centerY][centerX] = room.floorChar;
+            boss.SetEnemyPos(centerX, centerY);
+
+            std::cout << "EMERGENCY: " << bossType << " placed at emergency center position ("
+                << centerX << "," << centerY << ")" << std::endl;
+            return;
+        }
+    }
+
+    // Pick random valid position
+    int randomIndex = std::rand() % validPositions.size();
+    auto position = validPositions[randomIndex];
+
+    boss.SetEnemyPos(position.first, position.second);
+
+    std::cout << bossType << " placed at validated position ("
+        << position.first << "," << position.second << ") in room " << room.id << std::endl;
+
+    // Double verification
+    if (!isPlayerInRoom(position.first, position.second, room)) {
+        std::cout << "CRITICAL ERROR: " << bossType << " placement failed room detection!" << std::endl;
+        std::cout << "Position: (" << position.first << "," << position.second << ")" << std::endl;
+        std::cout << "Room center: (" << room.x << "," << room.y << ")" << std::endl;
+        std::cout << "Room bounds: [" << room.x - room.width / 2 << "-" << room.x + room.width / 2
+            << ", " << room.y - room.height / 2 << "-" << room.y + room.height / 2 << "]" << std::endl;
+        std::cout << "FloorGrid[" << position.second << "][" << position.first << "] = '"
+            << FloorGrid[position.second][position.first] << "'" << std::endl;
+    }
+}
+
+void Map::placeRegularEnemyInRoom(Enemy& enemy, const Room& room) {
+    std::vector<std::pair<int, int>> validPositions = getValidPositionsInRoom(room, 20);
+
+    if (validPositions.empty()) {
+        // Fallback to old random method but with better validation
+        int halfW = room.width / 2;
+        int halfH = room.height / 2;
+        int attempts = 0;
+        int enemyX, enemyY;
+
+        do {
+            enemyX = room.x - halfW + 1 + (std::rand() % (room.width - 2));
+            enemyY = room.y - halfH + 1 + (std::rand() % (room.height - 2));
+            attempts++;
+
+            if (attempts > 100) {
+                enemyX = room.x;
+                enemyY = room.y;
+                // Force valid floor tile
+                if (enemyX >= 0 && enemyX < 128 && enemyY >= 0 && enemyY < 128) {
+                    FloorGrid[enemyY][enemyX] = room.floorChar;
+                }
+                break;
+            }
+        } while (!isValidRoomPosition(enemyX, enemyY, room));
+
+        enemy.SetEnemyPos(enemyX, enemyY);
+    }
+    else {
+        // Use validated position
+        int randomIndex = std::rand() % validPositions.size();
+        auto position = validPositions[randomIndex];
+        enemy.SetEnemyPos(position.first, position.second);
     }
 }
