@@ -91,6 +91,11 @@ protected:
 
 public:
 
+    bool isValidRoomPosition(int x, int y, const Room& room);
+    std::vector<std::pair<int, int>> getValidPositionsInRoom(const Room& room, int maxPositions = 50);
+    void placeBossInRoom(Enemy& boss, Room& room, const std::string& bossType);
+    void placeRegularEnemyInRoom(Enemy& enemy, const Room& room);
+
     bool isMinibossKilled() const;
 
     void CreateNewFloor(int Difficulty, Player& MC, Shop& shop);
@@ -175,7 +180,10 @@ public:
     Enemy* getMiniboss();
     bool checkMinibossKilled();
     void resetMinibossStatus();
+    void debugMinibossPosition();
+    void validateMinibossState();
 
+    void validateEnemyPositions();
     Enemy* getTrueboss();
     bool checkTruebossKilled();
     void resetTruebossStatus();

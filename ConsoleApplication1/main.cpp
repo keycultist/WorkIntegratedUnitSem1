@@ -162,10 +162,12 @@ int main()
     if (debugEnd) {
         MC.SetCurrentDifficulty(6);
         GMap.CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
+        GMap.validateEnemyPositions();
     }
     else {
         MC.SetCurrentDifficulty(0);
         GMap.CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
+        GMap.validateEnemyPositions();
     }
     //GMap.RequestFloorUpdate(MC);
 
@@ -216,6 +218,13 @@ int main()
             }
         }
 
+        if (InsideRoom) {
+            Room* currentRoom = GMap.detectPlayerRoom(MC.GetPlayerPosX(), MC.GetPlayerPosY());
+            if (currentRoom && GMap.checkForCombat(currentRoom, MC, shop)) {
+                // Combat happened, continue
+			}
+        }
+
         // 3. Update roaming enemies
         GMap.updateRoamingEnemyAI(MC);
 
@@ -234,29 +243,6 @@ int main()
 
             Room* currentRoom = GMap.detectPlayerRoom(MC.GetPlayerPosX(), MC.GetPlayerPosY());
 
-            if (GMap.checkForCombat(currentRoom, MC, shop)) {
-                if (GMap.checkTruebossKilled() || GMap.isTrueBossKilled() ) {
-                    // RUNNINGHORSE = false;
-                }
-
-      //          if (GMap.checkForCombat(currentRoom, MC, shop)) {
-      //              if (GMap.checkMinibossKilled()) {
-      //                  // Force progression to next floor
-      //                  std::cout << "The Abyss forces you deeper..." << std::endl;
-      //                  int chP = _getch();
-      //                  system("cls");
-
-						//GMap.removeDefeatedEnemies();
-						//GMap.removeDefeatedRoamingEnemies();
-						//GMap.clearAllRoamingEnemies();
-
-      //                  MC.SetCurrentDifficulty(MC.GetCurrentDifficulty() + 1);
-      //                  GMap.CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
-      //              }
-      //          }
-            }
-
-
         }
         else {
             if (GMap.isMinibossKilled() || GMap.checkMinibossKilled()) {
@@ -265,11 +251,17 @@ int main()
                 MC.SetCurrentDifficulty(MC.GetCurrentDifficulty() + 1);
                 MC.SetPlayerPos(0, 0);
                 GMap.CreateNewFloor(MC.GetCurrentDifficulty(), MC, shop);
+                GMap.validateEnemyPositions();
                 GMap.clearAllRoamingEnemies();
                 GMap.renderMapWithFOV(MC, 50, 25);
                 Clearcheck = false;
                 FinishShopping = false;
                 system("cls");
+            }
+
+            if (GMap.checkTruebossKilled() || GMap.isTrueBossKilled()) {
+                system("cls");
+                RUNNINGHORSE = false;
             }
 
             GMap.renderMapWithFOV(MC, 50, 25);
